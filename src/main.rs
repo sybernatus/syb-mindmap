@@ -1,11 +1,13 @@
 mod text_utils;
 mod nodes;
+mod links;
 
 use crate::nodes::node::Node;
 use eframe::egui;
 use eframe::emath::Pos2;
 use eframe::epaint::{Color32, Stroke};
 use egui::{CentralPanel, ViewportBuilder};
+use crate::links::link::Link;
 
 fn main() {
     let options = eframe::NativeOptions {
@@ -30,7 +32,10 @@ fn main() {
                 Pos2::new(210.0, 210.0)
             );
             let node_rec_2 = Node::get_rect(ctx, node_2.clone());
-            ui.painter().line_segment([node_rec_1.center(), node_rec_2.center()], Stroke::new(1.5, Color32::LIGHT_GRAY));
+
+            let link_1 = Link::new_from_nodes(node_rec_1, node_rec_2);
+
+            link_1.draw_bezier(ui);
             node_1.draw(ui);
             node_2.draw(ui);
         });

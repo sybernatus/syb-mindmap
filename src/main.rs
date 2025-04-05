@@ -2,7 +2,7 @@ mod text_utils;
 mod nodes;
 
 use crate::nodes::content::NodeContent;
-use crate::nodes::node::{node_create, node_draw, Node};
+use crate::nodes::node::{Node};
 use eframe::egui;
 use eframe::emath::Pos2;
 use eframe::epaint::{Color32, Stroke};
@@ -12,7 +12,7 @@ fn main() {
     let options = eframe::NativeOptions {
         viewport: ViewportBuilder::default()
             .with_position([40000.0, 100.0])
-            .with_inner_size([800.0, 600.0]),
+            .with_inner_size([480.0, 300.0]),
         ..Default::default()
     };
 
@@ -20,7 +20,7 @@ fn main() {
 
         CentralPanel::default().show(ctx, |ui| {
 
-            let node_1 = Node {
+            let node_1 = Node::new(Node {
                 content: NodeContent {
                     text: "Hello, world!".to_string(),
                     font_id: egui::FontId::proportional(20.0),
@@ -29,10 +29,10 @@ fn main() {
                 },
                 position: Pos2::new(10.0, 20.0),
                 ..Node::default()
-            };
-            let node_rec_1 = node_create(ctx, node_1.clone());
+            });
+            let node_rec_1 = Node::get_rect(ctx, node_1.clone());
 
-            let node_2 = Node {
+            let node_2 = Node::new( Node{
                 content: NodeContent {
                     text: "Hello, world 2!".to_string(),
                     font_id: egui::FontId::proportional(20.0),
@@ -41,11 +41,11 @@ fn main() {
                 },
                 position: Pos2::new(10.0, 160.0),
                 ..Node::default()
-            };
-            let node_rec_2 = node_create(ctx, node_2.clone());
+            });
+            let node_rec_2 = Node::get_rect(ctx, node_2.clone());
             ui.painter().line_segment([node_rec_1.center(), node_rec_2.center()], Stroke::new(1.5, Color32::LIGHT_GRAY));
-            node_draw(ui, node_rec_1, node_1);
-            node_draw(ui, node_rec_2, node_2);
+            node_1.draw(ui);
+            node_2.draw(ui);
         });
     }).expect("TODO: panic message");
 }

@@ -1,4 +1,5 @@
 use std::default::Default;
+use std::rc::Weak;
 use crate::nodes::content::NodeContent;
 use crate::text_utils::text_size::calculate_text_size;
 use eframe::egui;
@@ -10,6 +11,7 @@ pub struct NodeStyle {
     pub corner_radius: f32,
     pub background_color: Color32,
     pub border_color: Color32,
+    pub hidden: bool,
     pub padding_horizontal: f32,
     pub padding_vertical: f32,
 }
@@ -20,6 +22,7 @@ impl Default for NodeStyle {
             corner_radius: 15.0,
             background_color: Color32::from_rgb(122, 10, 0),
             border_color: Color32::from_rgb(255, 255, 255),
+            hidden: false,
             padding_horizontal: 30.0,
             padding_vertical: 8.0,
         }
@@ -31,7 +34,8 @@ pub struct Node {
     pub id: i32,
     pub content: NodeContent,
     pub position: Pos2,
-    pub style: NodeStyle
+    pub style: NodeStyle,
+    pub parent: Option<Weak<Node>>,
 }
 
 impl Node {
@@ -69,6 +73,16 @@ impl Node {
         self.clone()
     }
 
+    pub fn set_parent(&mut self, parent: Weak<Node>) -> Self {
+        self.parent = Some(parent);
+        self.clone()
+    }
+
+    pub fn hidden(&mut self, hidden: bool) -> Self {
+        self.style.hidden = hidden;
+        self.clone()
+    }
+
     pub fn get_rect(ctx: &Context, node: Node) -> Rect {
 
         let Node { content, position, style, .. } = node.clone();
@@ -84,6 +98,10 @@ impl Node {
     }
 
     pub fn draw(&self, ui: &egui::Ui) {
+
+        if self.style.hidden {
+            return;
+        }
 
         let node_shape = Self::get_rect(ui.ctx(), self.clone());
         ui.painter()

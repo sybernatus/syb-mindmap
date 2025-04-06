@@ -21,34 +21,32 @@ fn main() {
         CentralPanel::default().show(ctx, |ui| {
 
             let nodes = [
-                ("Hello, world!", Pos2::new(140.0, 120.0)),
-                ("Hello, world 2!", Pos2::new(360.0, 150.0)),
-                ("Hello, world back!", Pos2::new(340.0, 250.0)),
-                ("Hello, world back back!", Pos2::new(160.0, 480.0)),
-                ("Hello, world back!", Pos2::new(80.0, 550.0)),
-                ("Hello, world back back!", Pos2::new(350.0, 680.0))
+                (0, "Hello, world!", Pos2::new(140.0, 120.0), false),
+                (1, "Hello, world 1!", Pos2::new(160.0, 250.0), false),
+                (2, "Hello, world 2!", Pos2::new(360.0, 150.0), false),
+                (3, "Hello, world back!", Pos2::new(340.0, 250.0), true),
+                (4, "Hello, world back back!", Pos2::new(160.0, 480.0), false),
+                (5, "Hello, world back!", Pos2::new(80.0, 550.0), false),
+                (6, "Hello, world back back!", Pos2::new(350.0, 680.0), false)
             ];
 
-            let node_rec_list = nodes.into_iter().enumerate().map(|(index, (text, pos))| {
+            let node_rec_list = nodes.into_iter().map(|(id, text, pos, hidden)| {
                 Node::new()
-                    .with_text(index.to_string() + " - " + text.to_string().as_str())
+                    .with_text(id.to_string() + " - " + text.to_string().as_str())
                     .with_position(pos)
-                    .with_id(index as i32)
+                    .with_id(id)
+                    .hidden(hidden)
             }).collect::<Vec<_>>();
 
             let links = [
-                // (0, 1),
-                // (2, 3),
-                // (4, 5),
-                // (0, 5),
-                // (1, 4),
-                // (3,5)
                 (3, 0),
                 (3, 1),
                 (3, 2),
                 (3, 4),
                 (3, 5),
+                (3, 6)
             ];
+
             let link_list = links.into_iter().map(|(source, target)| {
                 let node_rec_source = Node::get_rect(ctx, node_rec_list[source].clone());
                 let node_rec_target = Node::get_rect(ctx, node_rec_list[target].clone());

@@ -13,7 +13,7 @@ pub struct LinkStyleBezier {
 
 impl Default for LinkStyleBezier {
     fn default() -> Self {
-        Self { offset: 0.15, color: Color32::LIGHT_GRAY, width: 2.0 }
+        Self { offset: 0.4, color: Color32::LIGHT_GRAY, width: 2.0 }
     }
 }
 #[derive(Debug, Clone)]
@@ -31,6 +31,11 @@ impl Link {
         Self { node_source, node_target, style: LinkStyleBezier::default() }
     }
 
+    pub fn with_style(&mut self, style: LinkStyleBezier) -> Self {
+        self.style = style;
+        self.clone()
+    }
+
     pub fn draw_bezier(&self, ui: &egui::Ui) {
 
         let (p1, p2) = Self::compute_control_points_offset(
@@ -39,47 +44,11 @@ impl Link {
             self.style.offset
         );
 
-
-        let (
-            direction_x,
-            direction_y,
-            distance,
-            normal_x,
-            normal_y
-        ) = Self::get_link_metadata(self.node_source.center(), self.node_target.center());
-
-        println!("dist: {} - dx: {} - dy: {}",distance, direction_x / distance, direction_y / distance);
-
-        let p0x = match direction_x {
-            d if d > 0.0 => self.node_source.center().x + self.node_source.size().x / 2.0 - 10.0,
-            d if d < 0.0 => self.node_source.center().x - self.node_source.size().x / 2.0 + 10.0,
-            _ => 0.0
-        };
-        let p0y = match direction_y {
-            d if d > 0.0 => self.node_source.center().y + self.node_source.size().y / 2.0 - 5.0,
-            d if d < 0.0 => self.node_source.center().y - self.node_source.size().y / 2.0 + 5.0,
-            _ => 0.0
-        };
-        let p3x = match direction_x {
-            d if d > 0.0 => self.node_target.center().x - self.node_target.size().x / 2.0 + 10.0,
-            d if d < 0.0 => self.node_target.center().x + self.node_target.size().x / 2.0 - 10.0,
-            _ => 0.0
-        };
-
-        let p3y = match direction_y {
-            d if d > 0.0 => self.node_target.center().y - self.node_target.size().y / 2.0 + 5.0,
-            d if d < 0.0 => self.node_target.center().y + self.node_target.size().y / 2.0 - 5.0,
-            _ => 0.0
-        };
-
-        let p0 = Pos2::new(p0x, p0y);
-        let p3 = Pos2::new(p3x, p3y);
-
         let points = [
-            p0,
+            self.node_source.center(),
             p1,
             p2,
-            p3
+            self.node_target.center()
         ];
 
         let bezier = CubicBezierShape::from_points_stroke(

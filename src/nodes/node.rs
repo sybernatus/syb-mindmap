@@ -28,6 +28,7 @@ impl Default for NodeStyle {
 
 #[derive(Debug, Clone, Default)]
 pub struct Node {
+    pub id: i32,
     pub content: NodeContent,
     pub position: Pos2,
     pub style: NodeStyle
@@ -35,23 +36,42 @@ pub struct Node {
 
 impl Node {
 
-    pub fn new(Node { content, position, style }: Node) -> Self {
-        Self { content, position, style }
-    }
-
-    pub fn new_with_text(text: String, position: Pos2) -> Self {
+    pub fn new() -> Self {
         Self {
-            content: NodeContent {
-                text,
-                ..NodeContent::default()
-            },
-            position,
-            style: NodeStyle::default()
+            content: NodeContent::default(),
+            position: Pos2::new(0.0, 0.0),
+            style: NodeStyle::default(),
+            id: rand::random::<i32>()
         }
     }
+
+    pub fn with_id(&mut self, id: i32) -> Self {
+        self.id = id;
+        self.clone()
+    }
+
+    pub fn with_text(&mut self, text: String) -> Self {
+        self.content.text = text;
+        self.clone()
+    }
+
+    pub fn with_content(&mut self, content: NodeContent) -> Self {
+        self.content = content;
+        self.clone()
+    }
+
+    pub fn with_position(&mut self, position: Pos2) -> Self {
+        self.position = position;
+        self.clone()
+    }
+    pub fn with_style(&mut self, style: NodeStyle) -> Self {
+        self.style = style;
+        self.clone()
+    }
+
     pub fn get_rect(ctx: &Context, node: Node) -> Rect {
 
-        let Node { content, position, style } = node.clone();
+        let Node { content, position, style, .. } = node.clone();
         let NodeContent { text, font_id, color } = content.clone();
         let text_size = calculate_text_size(ctx, text.as_str(), font_id.to_owned(), color);
 

@@ -20,65 +20,47 @@ fn main() {
 
         CentralPanel::default().show(ctx, |ui| {
 
-            let node_1 = Node::new_with_text(
-                "Hello, world!".to_string(),
-                Pos2::new(140.0, 120.0)
-            );
+            let nodes = [
+                ("Hello, world!", Pos2::new(140.0, 120.0)),
+                ("Hello, world 2!", Pos2::new(360.0, 150.0)),
+                ("Hello, world back!", Pos2::new(340.0, 250.0)),
+                ("Hello, world back back!", Pos2::new(160.0, 480.0)),
+                ("Hello, world back!", Pos2::new(80.0, 550.0)),
+                ("Hello, world back back!", Pos2::new(350.0, 680.0))
+            ];
 
-            let node_2 = Node::new_with_text(
-                "Hello, world 2!".to_string(),
-                Pos2::new(360.0, 150.0)
-            );
+            let node_rec_list = nodes.into_iter().enumerate().map(|(index, (text, pos))| {
+                Node::new()
+                    .with_text(index.to_string() + " - " + text.to_string().as_str())
+                    .with_position(pos)
+                    .with_id(index as i32)
+            }).collect::<Vec<_>>();
 
-            let node_rec_1 = Node::get_rect(ctx, node_1.clone());
-            let node_rec_2 = Node::get_rect(ctx, node_2.clone());
-            let link_1 = Link::new_from_nodes(node_rec_1, node_rec_2);
+            let links = [
+                // (0, 1),
+                // (2, 3),
+                // (4, 5),
+                // (0, 5),
+                // (1, 4),
+                // (3,5)
+                (3, 0),
+                (3, 1),
+                (3, 2),
+                (3, 4),
+                (3, 5),
+            ];
+            let link_list = links.into_iter().map(|(source, target)| {
+                let node_rec_source = Node::get_rect(ctx, node_rec_list[source].clone());
+                let node_rec_target = Node::get_rect(ctx, node_rec_list[target].clone());
+                Link::new_from_nodes(node_rec_source, node_rec_target)
+            }).collect::<Vec<_>>();
 
-
-            let node_3 = Node::new_with_text(
-                "Hello, world back!".to_string(),
-                Pos2::new(340.0, 250.0)
-            );
-
-            let node_4 = Node::new_with_text(
-                "Hello, world back back!".to_string(),
-                Pos2::new(160.0, 480.0)
-            );
-
-            let node_rec_3 = Node::get_rect(ctx, node_3.clone());
-            let node_rec_4 = Node::get_rect(ctx, node_4.clone());
-            let link_2 = Link::new_from_nodes(node_rec_3, node_rec_4);
-
-
-
-            let node_5 = Node::new_with_text(
-                "Hello, world back!".to_string(),
-                Pos2::new(80.0, 550.0)
-            );
-
-            let node_6 = Node::new_with_text(
-                "Hello, world back back!".to_string(),
-                Pos2::new(350.0, 680.0)
-            );
-
-            let node_rec_5 = Node::get_rect(ctx, node_5.clone());
-            let node_rec_6 = Node::get_rect(ctx, node_6.clone());
-            let link_2 = Link::new_from_nodes(node_rec_5, node_rec_6);
-            let link_3 = Link::new_from_nodes(node_rec_1, node_rec_6);
-            let link_4 = Link::new_from_nodes(node_rec_2, node_rec_5);
-
-
-            link_2.draw_bezier(ui);
-            link_3.draw_bezier(ui);
-            link_2.draw_bezier(ui);
-            link_4.draw_bezier(ui);
-            link_1.draw_bezier(ui);
-            node_1.draw(ui);
-            node_2.draw(ui);
-            node_3.draw(ui);
-            node_4.draw(ui);
-            node_5.draw(ui);
-            node_6.draw(ui);
+            for link in link_list {
+                link.draw_bezier(ui);
+            }
+            for node in node_rec_list {
+                node.draw(ui);
+            }
 
         });
     }).expect("TODO: panic message");

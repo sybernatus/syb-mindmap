@@ -1,0 +1,11 @@
+[package]
+name = "mindy-engine"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+palette = "0.7.6"
+
+[lib]
+name = "mindy_engine"
+path = "src/lib.rs"

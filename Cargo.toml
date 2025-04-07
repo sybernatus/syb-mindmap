@@ -1,9 +1,17 @@
-[package]
-name = "mindy-gen"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = [
+    "mindy-html",
+    "mindy-engine",
+]
 
-[dependencies]
-eframe = "0.31.1"
-egui = "0.31.1"
-rand = "0.9.0"
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"

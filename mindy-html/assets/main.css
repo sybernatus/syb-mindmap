@@ -1,0 +1,29 @@
+/* App-wide styling */
+body {
+    background-color: #0f1116;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 20px;
+}
+
+#header {
+    max-width: 1200px;
+}
+
+.node {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 15px;
+    cursor: pointer;
+    position: absolute;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(250, 253, 255, 0.5);
+}
+
+
+

@@ -1,11 +1,14 @@
 use palette::rgb::Rgb;
 
 #[derive(Debug, Clone, Default, PartialEq)]
-pub struct Pos2 (pub f32, pub f32);
+pub struct Pos2 {
+    pub x: f32,
+    pub y: f32,
+}
 
 impl Pos2 {
     pub fn new(x: f32, y: f32) -> Self {
-        Self(x, y)
+        Self { x, y }
     }
 }
 
@@ -24,7 +27,7 @@ pub struct NodeStyleCustom {
 impl Default for NodeStyleCustom {
     fn default() -> Self {
         Self {
-            color: Rgb::new(0.0, 0.0, 0.0),
+            color: Rgb::new(122.0, 10.0, 0.0),
             hidden: false,
         }
     }
@@ -32,18 +35,22 @@ impl Default for NodeStyleCustom {
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct Node {
+    pub id: i32,
     pub content: NodeContent,
     pub position: Pos2,
     pub style_custom: NodeStyleCustom,
+    pub parent_id: Option<i32>,
 }
 
 impl Node {
 
     pub fn new() -> Self {
         Self {
+            id: 0,
             content: NodeContent::default(),
             position: Pos2::new(0.0, 0.0),
             style_custom: NodeStyleCustom::default(),
+            parent_id: None,
         }
     }
 
@@ -69,6 +76,16 @@ impl Node {
 
     pub fn with_color(&mut self, r: f32, g: f32, b: f32) -> Self {
         self.style_custom.color = Rgb::new(r, g, b);
+        self.clone()
+    }
+
+    pub fn with_id(&mut self, id: i32) -> Self {
+        self.id = id;
+        self.clone()
+    }
+
+    pub fn set_parent(&mut self, parent_id: i32) -> Self {
+        self.parent_id = Some(parent_id);
         self.clone()
     }
 }

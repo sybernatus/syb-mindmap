@@ -1,13 +1,37 @@
 /* App-wide styling */
 body {
-    background-color: #0f1116;
+    background-color: #83899a;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 20px;
+    overflow: auto;
+    height: 100%;
 }
 
 #header {
     max-width: 1200px;
+}
+
+.mindmap {
+    width: 800px;
+    height: 800px;
+    overflow: auto;
+    position: relative;
+    border: 1px solid #ccc;
+    background-color: #0f1116;
+    cursor: all-scroll;
+}
+
+svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.node-renderer {
+    position: absolute;
+    width: inherit;
+    height: inherit;
 }
 
 .node {
@@ -17,7 +41,10 @@ body {
     border-radius: 15px;
     cursor: pointer;
     position: absolute;
+    box-sizing: border-box;
+    z-index: 1;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transform: translate(-50%, -50%);
 }
 
 .node:hover {
@@ -25,5 +52,16 @@ body {
     box-shadow: 0 0 8px rgba(250, 253, 255, 0.5);
 }
 
+.link-renderer {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+}
+
+.link {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+}
 
 

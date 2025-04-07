@@ -1,4 +1,4 @@
-use dioxus::html::a::background_color;
+use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
 
@@ -13,13 +13,13 @@ pub struct NodeProps {
 pub fn Node(props: NodeProps) -> Element {
     let text = props.node.content.text.unwrap_or_else(|| "".to_string());
     let bg_color = props.node.style_custom.color;
-
+    tracing::debug!("Node position x: {:?} - y: {:?}", props.node.position.x, props.node.position.y);
     rsx! {
         div {
+            class: "node",
             "style": "background-color: rgb({bg_color.red}, {bg_color.green}, {bg_color.blue})",
-            position: "absolute",
-            top: "{props.node.position.0}px",
-            left: "{props.node.position.1}px",
+            top: "{props.node.position.y}px",
+            left: "{props.node.position.x}px",
             class: "node",
             id: "test",
             "{text}"

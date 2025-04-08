@@ -21,14 +21,14 @@ pub struct NodeContent {
 #[derive(Debug, Clone, PartialEq)]
 pub struct NodeStyleCustom {
     pub color: Rgb,
-    pub hidden: bool,
+    pub children_hidden: bool,
 }
 
 impl Default for NodeStyleCustom {
     fn default() -> Self {
         Self {
             color: Rgb::new(122.0, 10.0, 0.0),
-            hidden: false,
+            children_hidden: false,
         }
     }
 }
@@ -70,7 +70,7 @@ impl Node {
     }
 
     pub fn hidden(&mut self, hidden: bool) -> Self {
-        self.style_custom.hidden = hidden;
+        self.style_custom.children_hidden = hidden;
         self.clone()
     }
 

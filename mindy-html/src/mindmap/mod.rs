@@ -1,6 +1,6 @@
 use crate::link_renderer::LinkRenderer;
 use crate::node_renderer::NodeRenderer;
-use crate::POSITION;
+use crate::SHEET_POSITION;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
@@ -19,13 +19,9 @@ pub fn Mindmap(props: MindmapProps) -> Element {
         div {
             class: "mindmap",
             id: "mindmap",
-            style: "transform: translate({POSITION().0}px, {POSITION().1}px);",
-            LinkRenderer {
-                node_list: props.node_list.clone(),
-            }
-            NodeRenderer {
-                node_list: props.node_list.clone(),
-            }
+            style: "transform: translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
+            LinkRenderer { }
+            NodeRenderer { }
         }
     }
 }

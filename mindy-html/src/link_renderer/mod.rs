@@ -1,5 +1,4 @@
 use dioxus::prelude::*;
-use palette::rgb::Rgb;
 use mindy_engine::node::{Node};
 use crate::link_beziers::{LinkBezier, LinkBezierProps};
 

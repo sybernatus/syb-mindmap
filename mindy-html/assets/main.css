@@ -1,6 +1,6 @@
 /* App-wide styling */
 body {
-    background-color: #83899a;
+    background-color: #171c2c;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 20px;
@@ -16,8 +16,9 @@ body {
     width: 100%;
     height: 100vh;
     display: flex;
-    border: 1px solid #ccc;
-    background-color: #0f1116;
+    border: 1px solid #7c7b7b;
+    border-radius: 10px;
+    background-color: #17263e;
     overflow: hidden;
     cursor: all-scroll;
 }

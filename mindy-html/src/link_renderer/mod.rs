@@ -1,9 +1,6 @@
-use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use palette::num::PartialCmp;
 use mindy_engine::node::{Node};
 use crate::link_beziers::{LinkBezier, LinkBezierProps};
-use crate::node::NodeProps;
 use crate::NODE_LIST;
 
 #[component]

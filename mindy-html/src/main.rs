@@ -4,14 +4,12 @@ mod link_beziers;
 mod link_renderer;
 mod node_renderer;
 
-use std::collections::HashSet;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Pos2;
 use mindy_engine::node::{Node as NodeCore};
 use crate::mindmap::Mindmap;
 
-const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
 const MINDMAP_BACKGROUND: Asset = asset!("/assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
@@ -23,7 +21,6 @@ fn main() {
 
 #[component]
 fn App() -> Element {
-    let position = use_context_provider(|| (0.0, 0.0));
     let mut is_dragging = use_signal(|| false);
     let mut last_mouse = use_signal(|| (0.0, 0.0));
 
@@ -70,7 +67,6 @@ fn App() -> Element {
     }
 
     rsx! {
-        document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }
         button {
             onclick: move |_| {
@@ -88,9 +84,7 @@ fn App() -> Element {
             onmouseup: disable_dragging,
             onmousemove: position_update,
             onmouseout: disable_dragging,
-            Mindmap {
-                node_list
-            }
+            Mindmap { }
         }
     }
 }

@@ -1,8 +1,5 @@
-use std::collections::HashSet;
-use std::iter::Map;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use palette::bool_mask::BoolMask;
 use mindy_engine::node::Node;
 use crate::NODE_LIST;
 
@@ -13,12 +10,8 @@ pub struct NodeProps {
     pub node: Node,
 }
 
-pub struct NodeState {
-    pub hidden: bool,
-}
-
 #[component]
-pub fn Node(mut props: NodeProps) -> Element {
+pub fn Node(props: NodeProps) -> Element {
     let text = props.node.content.text.unwrap_or_else(|| "".to_string());
     let bg_color = props.node.style_custom.color;
     tracing::trace!("Node position x: {:?} - y: {:?}", props.node.position.x, props.node.position.y);

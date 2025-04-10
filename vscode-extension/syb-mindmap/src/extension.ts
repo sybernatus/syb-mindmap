@@ -1,6 +1,56 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+
+
+export async function loadWebview(context: vscode.ExtensionContext) {
+	const panel = vscode.window.createWebviewPanel(
+		'sybMindmap',
+		'Sybernatus Mindmap as code',
+		vscode.ViewColumn.One,
+		{
+			enableScripts: true,
+			localResourceRoots: [
+				vscode.Uri.joinPath(context.extensionUri),
+				vscode.Uri.joinPath(context.extensionUri, 'media'),
+				vscode.Uri.joinPath(context.extensionUri, 'assets'),
+				vscode.Uri.joinPath(context.extensionUri, 'media', 'assets')
+			]
+		}
+	)
+
+	const htmlUri = vscode.Uri.joinPath(
+		context.extensionUri,
+		'media',
+		'index.html'
+	);
+	
+	const htmlContent = await fs.promises.readFile(htmlUri.fsPath, 'utf-8');
+	const fixedHtml = fixLinksForWebview(htmlContent, panel, context);
+
+	console.log("Webview ouverte !", fixedHtml);
+	vscode.window.showInformationMessage('Hello World from syb-mindmap!', fixedHtml);
+	panel.webview.html = fixedHtml;
+}
+
+function fixLinksForWebview(html: string, panel: vscode.WebviewPanel, context: vscode.ExtensionContext): string {
+	return html
+	.replace(/(src|href)="([^"]+)"/g, (_, attr, path) => {
+	  const webviewUri = panel.webview.asWebviewUri(
+		vscode.Uri.joinPath(context.extensionUri, 'media', path)
+	  );
+	  return `${attr}="${webviewUri}"`;
+	})
+	.replace(/(import|init)\("([^"]+)"/g, (_, attr, path) => {
+	  const webviewUri = panel.webview.asWebviewUri(
+		vscode.Uri.joinPath(context.extensionUri, 'media', path)
+	  );
+	  return `${attr}("${webviewUri}"`;
+	});
+  }
+  
+  
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -13,10 +63,13 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('syb-mindmap.helloWorld', () => {
+	const disposable = vscode.commands.registerCommand('syb-mindmap.openWebview', async () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from syb-mindmap!');
+		console.log("Webview ouverte !");
+		await loadWebview(context)
+
 	});
 
 	context.subscriptions.push(disposable);
@@ -24,3 +77,4 @@ export function activate(context: vscode.ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
+

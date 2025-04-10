@@ -1,6 +1,7 @@
 # syb-mindmap README
 
-This is the README for your extension "syb-mindmap". After writing up a brief description, we recommend including the following sections.
+This extension provides a way to visualize and edit mind maps as code and visualize diagrams directly in visual studio code.
+
 
 ## Features
 

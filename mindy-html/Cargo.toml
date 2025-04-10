@@ -11,6 +11,7 @@ dioxus = { version = "0.6.0", features = ["web"] }
 mindy-engine = { path = "../mindy-engine" }
 palette = "0.7.6"
 log = "0.4.27"
+base64 = "0.22.1"
 
 
 [features]

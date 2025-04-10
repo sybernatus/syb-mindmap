@@ -2591,6 +2591,7 @@ dependencies = [
 name = "mindy-html"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "dioxus",
  "log",
  "mindy-engine",

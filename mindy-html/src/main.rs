@@ -4,14 +4,17 @@ mod link_beziers;
 mod link_renderer;
 mod node_renderer;
 
+use std::string::ToString;
+use base64::Engine;
+use base64::engine::general_purpose::STANDARD;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Pos2;
 use mindy_engine::node::{Node as NodeCore};
 use crate::mindmap::Mindmap;
 
-const MAIN_CSS: Asset = asset!("/assets/main.css");
-const MINDMAP_BACKGROUND: Asset = asset!("/assets/background.svg");
+const CSS_DATA: &str = include_str!("../assets/main.css");
+const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
 static NODE_LIST: GlobalSignal<Vec<NodeCore>> = GlobalSignal::new(|| vec![]);
 
@@ -67,7 +70,8 @@ fn App() -> Element {
     }
 
     rsx! {
-        document::Link { rel: "stylesheet", href: MAIN_CSS }
+        // document::Link { rel: "stylesheet", href: MAIN_CSS }
+        document::Style { "{CSS_DATA}" }
         button {
             onclick: move |_| {
                 *SHEET_POSITION.write() = (0.0, 0.0);
@@ -78,7 +82,7 @@ fn App() -> Element {
             class: "app",
             id: "app",
             style: "\
-            background-image: url({MINDMAP_BACKGROUND}); \
+            background-image: url(data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_BACKGROUND_DATA.to_string())}); \
             background-repeat: repeat;",
             onmousedown: update_mouse_data,
             onmouseup: disable_dragging,

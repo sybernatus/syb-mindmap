@@ -16,7 +16,7 @@ pub fn mouse_data_update(mut is_dragging: Signal<bool>, mut last_mouse: Signal<(
     }
 }
 
-pub fn mouse_position_update(mut is_dragging: Signal<bool>, mut last_mouse: Signal<(f64, f64)>) -> impl Fn(Event<MouseData>) {
+pub fn mouse_position_update(is_dragging: Signal<bool>, mut last_mouse: Signal<(f64, f64)>) -> impl Fn(Event<MouseData>) {
     move |event: Event<MouseData>| {
         use_future(move || {
             let value = event.clone();
@@ -35,7 +35,7 @@ pub fn mouse_position_update(mut is_dragging: Signal<bool>, mut last_mouse: Sign
 }
 
 pub fn mouse_dragging_disable(mut is_dragging: Signal<bool>) -> impl Fn(Event<MouseData>) {
-    move |event: Event<MouseData>| {
+    move |_event: Event<MouseData>| {
         use_future(move || {
             async move {
                 is_dragging.set(false);

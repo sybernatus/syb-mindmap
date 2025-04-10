@@ -44,26 +44,27 @@ impl NodeInput {
 
         // Calculate vertical position based on index and total brothers
         let vertical_offset = if total_brother > 1 {
-            (index as f32) * (100.0 / (total_brother as f32))
+            (index as f32) * (300.0 / (total_brother as f32))
         } else {
             0.0
         };
 
+        // total child = 5
+        // index = 0 1 2 3 4
+        // vertical_offset = 0.0 20.0 40.0 60.0 80.0
+
         let position = Pos2::new(
-            parent_position.x + 100.0 * (id_counter.borrow().rem_euclid(10) as f32),
-            parent_position.y + vertical_offset * (id_counter.borrow().rem_euclid(10) as f32),
+            parent_position.x + 200.0,
+            parent_position.y + vertical_offset,
         );
 
-        let node = Node {
-            id: current_id,
-            content: NodeContent {
-                text: self.text.clone(),
-                image: None,
-            },
-            position: position.clone(),
-            style_custom: NodeStyleCustom::default(),
-            parent_id,
-        };
+        // create node with new
+        let node = Node::new()
+            .with_text(self.text.clone().unwrap())
+            .with_position(position.clone())
+            .with_id(current_id)
+            .set_parent(parent_id.unwrap_or(0))
+            .with_graphical_size();
 
         out.push(node);
 

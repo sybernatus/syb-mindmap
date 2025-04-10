@@ -10,19 +10,11 @@ use std::cell::RefCell;
 use crate::mindmap::Mindmap;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
-use dioxus::html::a::widows;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Pos2;
 use mindy_engine::node::Node as NodeCore;
 use std::string::ToString;
-use ::web_sys::window;
-use dioxus::html::completions::CompleteWithBraces::data;
-use serde_json::Value;
-use web_sys::MessageEvent;
-use web_sys::wasm_bindgen::closure::Closure;
-use web_sys::wasm_bindgen::{JsCast, JsValue};
-use serde::Deserialize;
 use mindy_engine::node_input::NodeInput;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
 use crate::listeners::webview::activate_message_listener;
@@ -31,11 +23,6 @@ const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
 static NODE_LIST: GlobalSignal<Vec<NodeCore>> = GlobalSignal::new(|| vec![]);
-
-#[derive(Deserialize, Debug)]
-struct TestData {
-    data: String,
-}
 
 fn main() {
     launch(App);
@@ -69,7 +56,7 @@ fn App() -> Element {
 fn load_json_data() {
     let data_json = r#"
         {
-            "text": "Node 1",
+            "text": "Node 1Node 1Node 1Node 1",
             "children": [
                 {
                     "text": "Node 2",
@@ -77,7 +64,20 @@ fn load_json_data() {
                 },
                 {
                     "text": "Node 3",
-                    "children": []
+                    "children": [
+                        {
+                            "text": "Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
+                            "children": []
+                        },
+                        {
+                            "text": "Node 345",
+                            "children": []
+                        },
+                        {
+                            "text": "Node 789",
+                            "children": []
+                        }
+                    ]
                 },
                 {
                     "text": "Node 3",
@@ -109,7 +109,13 @@ fn load_json_data() {
 
 
     if ! json.text.is_none() {
-        let node_list = json.to_node_vec(None, &RefCell::new(0), Pos2::new(300.0, 300.0), 0, 0, &mut vec![]);
+        let node_list = json.to_node_vec(
+            None, &RefCell::new(0),
+            Pos2::new(100.0, 100.0),
+            0,
+            0,
+            &mut vec![]
+        );
         NODE_LIST.write().clear();
         for node in node_list.iter() {
             NODE_LIST.write().push(node.clone());

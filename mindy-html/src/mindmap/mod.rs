@@ -11,6 +11,8 @@ pub fn Mindmap() -> Element {
             class: "mindmap",
             id: "mindmap",
             style: "transform: translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
+            style: "width: 8000px;",
+            style: "height: inherit;",
             LinkRenderer { }
             NodeRenderer { }
         }

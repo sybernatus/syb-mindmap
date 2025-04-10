@@ -24,8 +24,6 @@ body {
 }
 
 .mindmap {
-    width: inherit;
-    height: inherit;
     position: relative;
 }
 

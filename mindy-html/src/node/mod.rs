@@ -17,12 +17,12 @@ pub fn Node(props: NodeProps) -> Element {
     tracing::trace!("Node position x: {:?} - y: {:?}", props.node.position.x, props.node.position.y);
 
     let on_click = move |_| {
-        NODE_LIST.write().iter_mut().for_each(|node| {
-            if node.id == props.node.id {
-                tracing::debug!("Node clicked, hide children: {:?}", props.node.style_custom.children_hidden);
-                node.style_custom.children_hidden = !node.style_custom.children_hidden;
-            }
-        });
+        // NODE_LIST.write().iter_mut().for_each(|node| {
+        //     if node.id == props.node.id {
+        //         tracing::debug!("Node clicked, hide children: {:?}", props.node.style_custom.children_hidden);
+        //         node.style_custom.children_hidden = !node.style_custom.children_hidden;
+        //     }
+        // });
     };
 
     rsx! {

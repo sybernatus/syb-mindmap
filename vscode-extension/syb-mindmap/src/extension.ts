@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import {listenOpenFile} from "./wasm";
 
 
 export async function loadWebview(context: vscode.ExtensionContext) {
@@ -20,6 +21,8 @@ export async function loadWebview(context: vscode.ExtensionContext) {
 		}
 	)
 
+	const _ = await listenOpenFile(panel);
+
 	const htmlUri = vscode.Uri.joinPath(
 		context.extensionUri,
 		'media',
@@ -29,8 +32,6 @@ export async function loadWebview(context: vscode.ExtensionContext) {
 	const htmlContent = await fs.promises.readFile(htmlUri.fsPath, 'utf-8');
 	const fixedHtml = fixLinksForWebview(htmlContent, panel, context);
 
-	console.log("Webview ouverte !", fixedHtml);
-	vscode.window.showInformationMessage('Hello World from syb-mindmap!', fixedHtml);
 	panel.webview.html = fixedHtml;
 }
 

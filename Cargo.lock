@@ -2585,6 +2585,7 @@ name = "mindy-engine"
 version = "0.1.0"
 dependencies = [
  "palette",
+ "serde",
 ]
 
 [[package]]
@@ -2596,6 +2597,9 @@ dependencies = [
  "log",
  "mindy-engine",
  "palette",
+ "serde",
+ "serde_json",
+ "web-sys",
 ]
 
 [[package]]

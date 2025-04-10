@@ -39,52 +39,10 @@ fn main() {
 
 #[component]
 fn App() -> Element {
-    let mut is_dragging = use_signal(|| false);
-    let mut last_mouse = use_signal(|| (0.0, 0.0));
+    let is_dragging = use_signal(|| false);
+    let last_mouse = use_signal(|| (0.0, 0.0));
     load_json_data();
-
-    let window = window().expect("Cannot get window");
-    let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
-        // Lecture des données du message
-        let data = event.data().as_string().or(Some("null".to_string()));
-
-        let json: NodeInput = match serde_json::from_str::<NodeInput>(&data.unwrap()) {
-            Ok(json) => json,
-            Err(e) => {
-                return;
-            }
-        };
-
-        tracing::debug!("CLOSURE ACTIVATION !!!!!!!!!!!!!!!!!!!!!!!! {:?}", event.data());
-        load_json_data();
-
-    });
-    window.add_event_listener_with_callback("message", closure.as_ref().unchecked_ref()).expect("Failed to add event listener");
-
-    closure.forget();
-
-
-    let update_mouse_data = move |event: Event<MouseData>| {
-        tracing::trace!("Mouse down event: {:?}", event);
-        is_dragging.set(true);
-        last_mouse.set((event.data().coordinates().client().x, event.data().coordinates().client().y));
-        tracing::trace!("Mouse down position: {:?}", last_mouse);
-    };
-
-    let disable_dragging = move |_event: Event<MouseData>| {
-        is_dragging.set(false);
-    };
-
-    let position_update = move |event: Event<MouseData>| {
-        if is_dragging() {
-            let current_mouse = (event.data.coordinates().client().x, event.data.coordinates().client().y);
-            *SHEET_POSITION.write() = (
-                SHEET_POSITION().0 + current_mouse.0 - last_mouse().0,
-                SHEET_POSITION().1 + current_mouse.1 - last_mouse().1,
-            );
-            last_mouse.set(current_mouse);
-        }
-    };
+    activate_message_listener();
 
     // let node_list = vec![
     //     NodeCore::new()
@@ -121,12 +79,54 @@ fn App() -> Element {
             style: "\
             background-image: url(data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_BACKGROUND_DATA.to_string())}); \
             background-repeat: repeat;",
-            onmousedown: update_mouse_data,
-            onmouseup: disable_dragging,
-            onmousemove: position_update,
-            onmouseout: disable_dragging,
+            onmousedown: mouse_data_update(is_dragging, last_mouse),
+            onmouseup: mouse_dragging_disable(is_dragging),
+            onmousemove: mouse_position_update(is_dragging, last_mouse),
+            onmouseout: mouse_dragging_disable(is_dragging),
             Mindmap { }
         }
+    }
+}
+
+fn mouse_data_update(mut is_dragging: Signal<bool>, mut last_mouse: Signal<(f64, f64)>) -> impl Fn(Event<MouseData>) {
+    move |event: Event<MouseData>| {
+        use_future(move || {
+            let value = event.clone();
+            async move {
+                tracing::trace!("Mouse down event: {:?}", value);
+                is_dragging.set(true);
+                last_mouse.set((value.data().coordinates().client().x, value.data().coordinates().client().y));
+                tracing::trace!("Mouse down position: {:?}", last_mouse);
+            }
+        });
+    }
+}
+
+fn mouse_position_update(mut is_dragging: Signal<bool>, mut last_mouse: Signal<(f64, f64)>) -> impl Fn(Event<MouseData>) {
+    move |event: Event<MouseData>| {
+        use_future(move || {
+            let value = event.clone();
+            async move {
+                if is_dragging() {
+                    let current_mouse = (value.data.coordinates().client().x, value.data.coordinates().client().y);
+                    *SHEET_POSITION.write() = (
+                        SHEET_POSITION().0 + current_mouse.0 - last_mouse().0,
+                        SHEET_POSITION().1 + current_mouse.1 - last_mouse().1,
+                    );
+                    last_mouse.set(current_mouse);
+                }
+            }
+        });
+    }
+}
+
+fn mouse_dragging_disable(mut is_dragging: Signal<bool>) -> impl Fn(Event<MouseData>) {
+    move |event: Event<MouseData>| {
+        use_future(move || {
+            async move {
+                is_dragging.set(false);
+            }
+        });
     }
 }
 
@@ -179,4 +179,26 @@ fn load_json_data() {
             NODE_LIST.write().push(node.clone());
         }
     }
+}
+
+fn activate_message_listener() {
+    let window = window().expect("Cannot get window");
+    let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
+        // Lecture des données du message
+        let data = event.data().as_string().or(Some("null".to_string()));
+
+        let json: NodeInput = match serde_json::from_str::<NodeInput>(&data.unwrap()) {
+            Ok(json) => json,
+            Err(e) => {
+                return;
+            }
+        };
+
+        tracing::debug!("CLOSURE ACTIVATION !!!!!!!!!!!!!!!!!!!!!!!! {:?}", event.data());
+        load_json_data();
+
+    });
+    window.add_event_listener_with_callback("message", closure.as_ref().unchecked_ref()).expect("Failed to add event listener");
+
+    closure.forget();
 }

@@ -23,6 +23,17 @@ body {
     cursor: all-scroll;
 }
 
+.floating-menu {
+    position: absolute;
+    top: 0.5rem;     /* ou 0 pour coller au bord */
+    right: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    z-index: 1000; /* pour passer au-dessus du reste */
+    min-width: 10px;
+}
+
 .mindmap {
     position: relative;
 }

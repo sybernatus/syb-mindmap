@@ -1,0 +1,13 @@
+{
+    "text": "Node 1",
+    "children": [
+        {
+            "text": "Node 2",
+            "children": []
+        },
+        {
+            "text": "Node 3",
+            "children": []
+        }
+    ]
+}

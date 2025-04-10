@@ -4,21 +4,28 @@ import * as vscode from "vscode";
 export async function listenOpenFile(panel: vscode.WebviewPanel) {
     // Listen for json files
     vscode.workspace.onDidOpenTextDocument(document => {
-        log('aaaaaaaaaa', document.languageId)
+        let textDocument = document;
         if (document.languageId === 'json') {
             panel.webview.postMessage({
+                event: 'json-open-file',
                 type: 'json-data',
-                content: document.getText()
+                name: textDocument.fileName,
+                content: {
+                    text: textDocument.getText()
+                }
             });
         }
     });
-    // Listen for json files
     vscode.workspace.onDidChangeTextDocument(document => {
-        log('aaaaaaaaaa', document.document.languageId)
-        if (document.document.languageId === 'json') {
+        let textDocument = document.document;
+        if (textDocument.languageId === 'json') {
             panel.webview.postMessage({
+                event: 'json-change-file',
                 type: 'json-data',
-                content: document.document.getText()
+                name: textDocument.fileName,
+                content: {
+                    text: textDocument.getText()
+                }
             });
         }
     });

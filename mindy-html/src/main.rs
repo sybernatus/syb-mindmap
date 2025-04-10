@@ -3,6 +3,8 @@ mod mindmap;
 mod link_beziers;
 mod link_renderer;
 mod node_renderer;
+mod events;
+mod listeners;
 
 use std::cell::RefCell;
 use crate::mindmap::Mindmap;
@@ -22,6 +24,8 @@ use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
 use serde::Deserialize;
 use mindy_engine::node_input::NodeInput;
+use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
+use crate::listeners::webview::activate_message_listener;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
@@ -44,35 +48,9 @@ fn App() -> Element {
     load_json_data();
     activate_message_listener();
 
-    // let node_list = vec![
-    //     NodeCore::new()
-    //         .with_text("Hello, World!".to_string())
-    //         .with_position(Pos2::new(100.0, 100.0)),
-    //     NodeCore::new()
-    //         .with_text("Hello, World!".to_string())
-    //         .with_position(Pos2::new(300.0, 300.0))
-    //         .with_id(1)
-    //         .set_parent(0),
-    //     NodeCore::new()
-    //         .with_text("Hello, World!".to_string())
-    //         .with_position(Pos2::new(360.0, 150.0))
-    //         .with_id(2)
-    //         .set_parent(0),
-    // ];
-
-    // for node in node_list.iter() {
-    //     NODE_LIST.write().push(node.clone());
-    // }
-
     rsx! {
         // document::Link { rel: "stylesheet", href: MAIN_CSS }
         document::Style { "{CSS_DATA}" }
-        button {
-            onclick: move |_| {
-                *SHEET_POSITION.write() = (0.0, 0.0);
-            },
-            "Centered"
-        }
         div {
             class: "app",
             id: "app",
@@ -85,48 +63,6 @@ fn App() -> Element {
             onmouseout: mouse_dragging_disable(is_dragging),
             Mindmap { }
         }
-    }
-}
-
-fn mouse_data_update(mut is_dragging: Signal<bool>, mut last_mouse: Signal<(f64, f64)>) -> impl Fn(Event<MouseData>) {
-    move |event: Event<MouseData>| {
-        use_future(move || {
-            let value = event.clone();
-            async move {
-                tracing::trace!("Mouse down event: {:?}", value);
-                is_dragging.set(true);
-                last_mouse.set((value.data().coordinates().client().x, value.data().coordinates().client().y));
-                tracing::trace!("Mouse down position: {:?}", last_mouse);
-            }
-        });
-    }
-}
-
-fn mouse_position_update(mut is_dragging: Signal<bool>, mut last_mouse: Signal<(f64, f64)>) -> impl Fn(Event<MouseData>) {
-    move |event: Event<MouseData>| {
-        use_future(move || {
-            let value = event.clone();
-            async move {
-                if is_dragging() {
-                    let current_mouse = (value.data.coordinates().client().x, value.data.coordinates().client().y);
-                    *SHEET_POSITION.write() = (
-                        SHEET_POSITION().0 + current_mouse.0 - last_mouse().0,
-                        SHEET_POSITION().1 + current_mouse.1 - last_mouse().1,
-                    );
-                    last_mouse.set(current_mouse);
-                }
-            }
-        });
-    }
-}
-
-fn mouse_dragging_disable(mut is_dragging: Signal<bool>) -> impl Fn(Event<MouseData>) {
-    move |event: Event<MouseData>| {
-        use_future(move || {
-            async move {
-                is_dragging.set(false);
-            }
-        });
     }
 }
 
@@ -179,26 +115,4 @@ fn load_json_data() {
             NODE_LIST.write().push(node.clone());
         }
     }
-}
-
-fn activate_message_listener() {
-    let window = window().expect("Cannot get window");
-    let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
-        // Lecture des données du message
-        let data = event.data().as_string().or(Some("null".to_string()));
-
-        let json: NodeInput = match serde_json::from_str::<NodeInput>(&data.unwrap()) {
-            Ok(json) => json,
-            Err(e) => {
-                return;
-            }
-        };
-
-        tracing::debug!("CLOSURE ACTIVATION !!!!!!!!!!!!!!!!!!!!!!!! {:?}", event.data());
-        load_json_data();
-
-    });
-    window.add_event_listener_with_callback("message", closure.as_ref().unchecked_ref()).expect("Failed to add event listener");
-
-    closure.forget();
 }

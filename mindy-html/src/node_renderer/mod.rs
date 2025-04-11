@@ -2,14 +2,14 @@ use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
 use crate::node::{Node, NodeProps};
-use crate::{NODE_LIST_NEW};
+use crate::{MINDMAP_DATA};
 
 #[component]
 pub fn NodeRenderer() -> Element {
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 
     let _ = use_effect(move || {
-        let ns = NODE_LIST_NEW();
+        let ns = MINDMAP_DATA();
         elements.clear();
         tracing::debug!("NodeRenderer: {:?}", ns);
         elements.set(calculate_elements(ns, vec![]));

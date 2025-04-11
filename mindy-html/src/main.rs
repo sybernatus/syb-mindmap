@@ -7,20 +7,23 @@ mod events;
 mod listeners;
 
 use std::cell::RefCell;
-use crate::mindmap::Mindmap;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use std::string::ToString;
+use mindy_engine::mindmap::metadata::MindmapMetadata;
 use mindy_engine::node::Node;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
 use crate::listeners::webview::activate_message_listener;
+use crate::mindmap::Mindmap;
+use mindy_engine::mindmap::{MindMap as MindmapCore};
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
-static NODE_LIST_NEW: GlobalSignal<Option<Node>> = GlobalSignal::new(|| None);
+static MINDMAP_METADATA: GlobalSignal<Option<MindmapMetadata>> = GlobalSignal::new(|| None);
+static MINDMAP_DATA: GlobalSignal<Option<Node>> = GlobalSignal::new(|| None);
 
 fn main() {
     launch(App);
@@ -53,60 +56,72 @@ fn App() -> Element {
 
 fn load_json_data() {
     let data_json = r#"
-        {
-            "text": "Node 0",
-            "children": [
-                {
-                    "text": "Node 1",
-                    "position_direction": "Left",
-                    "children": [
-                        {
-                            "text": "Node 1.1",
-                            "children": []
-                        }
-                    ]
+            {
+                "metadata": {
+                    "diagram_type": "Standard",
+                    "style": {
+                        "padding_horizontal": 10.0,
+                        "padding_vertical": 10.0
+                    }
                 },
-                {
-                    "text": "Node 2",
+                "data": {
+                    "text": "Node 0",
                     "children": [
                         {
-                            "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
+                            "text": "Node 1",
+                            "position_direction": "Left",
+                            "children": [
+                                {
+                                    "text": "Node 1.1",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "text": "Node 2",
+                            "children": [
+                                {
+                                    "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
+                                    "children": []
+                                },
+                                {
+                                    "text": "Node 2.2",
+                                    "children": []
+                                },
+                                {
+                                    "text": "Node 2.3",
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "text": "Node 3",
                             "children": []
                         },
                         {
-                            "text": "Node 2.2",
+                            "text": "Node 4",
                             "children": []
                         },
                         {
-                            "text": "Node 2.3",
+                            "text": "Node 5",
+                            "children": []
+                        },
+                        {
+                            "text": "Node 6",
                             "children": []
                         }
                     ]
-                },
-                {
-                    "text": "Node 3",
-                    "children": []
-                },
-                {
-                    "text": "Node 4",
-                    "children": []
-                },
-                {
-                    "text": "Node 5",
-                    "children": []
-                },
-                {
-                    "text": "Node 6",
-                    "children": []
                 }
-            ]
-        }
+            }
         "#;
-    let mut node_input: Node = match serde_json::from_str::<Node>(data_json) {
-        Ok(mut json) => {
-            json.layout_mindmap_center();
-            // tracing::debug!("node: {:?}", json);
-            json
+    let mindmap_json = match serde_json::from_str::<MindmapCore>(data_json) {
+        Ok(mut mindmap_json) => {
+            let metadata = mindmap_json.metadata.unwrap_or_else(|| MindmapMetadata::default());
+            let json = mindmap_json.data.unwrap_or_else(|| Node::default()).layout_mindmap_center();
+            MindmapCore {
+                metadata: Some(metadata),
+                data: Some(json),
+            }
         },
         Err(e) => {
             tracing::error!("Error decoding json: {:?}", e);
@@ -114,20 +129,7 @@ fn load_json_data() {
         }
     };
 
-    *NODE_LIST_NEW.write() = Some(node_input.clone());
-
-
-    // if ! json.text.is_none() {
-    //     let node_list = json.to_node_vec(
-    //         None, &RefCell::new(0),
-    //         Pos2::new(100.0, 100.0),
-    //         0,
-    //         0,
-    //         &mut vec![]
-    //     );
-    //     NODE_LIST.write().clear();
-    //     for node in node_list.iter() {
-    //         NODE_LIST.write().push(node.clone());
-    //     }
-    // }
+    tracing::info!("{:?}", mindmap_json);
+    *MINDMAP_DATA.write() = mindmap_json.data;
+    *MINDMAP_METADATA.write() = mindmap_json.metadata;
 }

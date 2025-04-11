@@ -1,7 +1,7 @@
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::{Node};
-use mindy_engine::node::style::NodeStyleCustom;
+use mindy_engine::node::style::NodeStyle;
 use mindy_engine::utils::pos2::Pos2;
 
 #[derive(Props, PartialEq, Clone)]
@@ -21,7 +21,7 @@ pub fn Node(props: NodeProps) -> Element {
         // });
     };
 
-    let NodeStyleCustom {
+    let NodeStyle {
         background_color,
         text_wrapping,
         children_hidden,
@@ -31,7 +31,7 @@ pub fn Node(props: NodeProps) -> Element {
         max_width,
         min_width,
         ..
-    } = props.node.clone().style_custom.clone().unwrap_or(NodeStyleCustom::default());
+    } = props.node.clone().style_custom.clone().unwrap_or(NodeStyle::default());
 
     let Pos2 {
         x,

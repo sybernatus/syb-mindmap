@@ -3,14 +3,14 @@ use dioxus::prelude::*;
 use mindy_engine::node::{Node};
 use mindy_engine::utils::pos2::Pos2;
 use crate::link_beziers::{LinkBezier, LinkBezierProps};
-use crate::{NODE_LIST_NEW};
+use crate::{MINDMAP_DATA};
 
 #[component]
 pub fn LinkRenderer() -> Element {
     let mut elements: Signal<Vec<LinkBezierProps>> = use_signal(|| vec![]);
 
     use_effect(move || {
-        let ns = NODE_LIST_NEW();
+        let ns = MINDMAP_DATA();
         tracing::debug!("LinkRenderer: {:?}", ns);
         let ns = match ns {
             Some(node) => node,

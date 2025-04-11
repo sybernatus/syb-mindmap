@@ -1,7 +1,8 @@
 pub mod style;
+
 use serde::Deserialize;
 use std::cell::RefCell;
-use crate::node::style::NodeStyleCustom;
+use crate::node::style::NodeStyle;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 
@@ -12,22 +13,11 @@ pub enum Direction  {
     Left,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
-pub enum DiagramType  {
-    #[default]
-    Standard,
-}
-
-#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
-pub struct NodeMetadata {
-    pub id: String,
-}
-
 
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
 pub struct Node {
     pub text: Option<String>,
-    pub style_custom: Option<NodeStyleCustom>,
+    pub style_custom: Option<NodeStyle>,
     pub position_direction: Option<Direction>,
     pub children: Option<Vec<Node>>,
     pub position: Option<Pos2>,
@@ -39,7 +29,7 @@ impl Node {
             text: None,
             children: None,
             position_direction: Option::from(Direction::default()),
-            style_custom: Option::from(NodeStyleCustom::default()),
+            style_custom: Option::from(NodeStyle::default()),
             position: None,
         }
     }
@@ -66,12 +56,12 @@ impl Node {
 
     pub fn get_graphical_text_size(&self) -> Size {
 
-        let NodeStyleCustom {
+        let NodeStyle {
             max_width,
             text_wrapping,
             font_size,
             ..
-        } = self.style_custom.clone().unwrap_or_else(|| NodeStyleCustom::default());
+        } = self.style_custom.clone().unwrap_or_else(|| NodeStyle::default());
 
         let font_char_width = font_size - 4.0;
         let font_char_height = font_size - 2.0;
@@ -97,13 +87,13 @@ impl Node {
         // Calculate the size of the node based on its content
 
 
-        let NodeStyleCustom {
+        let NodeStyle {
             min_width,
             max_width,
             min_height,
             text_wrapping,
             padding, ..
-        } = self.style_custom.clone().unwrap_or_else(|| NodeStyleCustom::default());
+        } = self.style_custom.clone().unwrap_or_else(|| NodeStyle::default());
 
         let Size {
             height: text_height,
@@ -129,7 +119,7 @@ impl Node {
         new_size
     }
 
-    pub fn layout_mindmap_center(&mut self) {
+    pub fn layout_mindmap_center(&mut self) -> Node {
         const H_PADDING: f32 = 150.0; // Horizontal padding between levels
         const V_PADDING: f32 = 20.0;
 
@@ -166,6 +156,7 @@ impl Node {
         let _right_children = layout_children(right_children, right_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
 
         self.layout_parent_position(self.position.clone().unwrap().x);
+        self.to_owned()
     }
 
     fn layout_subtree(

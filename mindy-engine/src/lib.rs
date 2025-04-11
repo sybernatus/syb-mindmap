@@ -1,6 +1,7 @@
 pub mod link;
 pub mod node;
 pub mod utils;
+pub mod mindmap;
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right

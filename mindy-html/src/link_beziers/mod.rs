@@ -2,7 +2,7 @@ use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::link::{bezier_svg_path};
 use palette::rgb::Rgb;
-use mindy_engine::node_input::Pos2;
+use mindy_engine::utils::pos2::Pos2;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct LinkBezierProps {

@@ -1,65 +1,9 @@
+pub mod style;
 use serde::Deserialize;
 use std::cell::RefCell;
-
-#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
-pub struct Pos2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-impl Pos2 {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct Rgb {
-    pub red: f32,
-    pub green: f32,
-    pub blue: f32,
-}
-
-impl Rgb {
-    pub fn new(red: f32, green: f32, blue: f32) -> Self {
-        Self { red, green, blue }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct NodeStyleCustom {
-    pub background_color: Rgb,
-    pub children_hidden: bool,
-    pub font_size: f32,
-    pub font_family: String,
-    pub max_width: f32,
-    pub min_width: f32,
-    pub min_height: f32,
-    pub padding: f32,
-    pub text_wrapping: bool,
-}
-
-impl Default for NodeStyleCustom {
-    fn default() -> Self {
-        Self {
-            background_color: Rgb::new(122.0, 10.0, 0.0),
-            children_hidden: false,
-            text_wrapping: true,
-            font_size: 12.0,
-            padding: 10.0,
-            font_family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif".to_string(),
-            max_width: 200.0,
-            min_width: 0.0,
-            min_height: 0.0,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Default, PartialEq)]
-pub struct Size {
-    pub width: f32,
-    pub height: f32,
-}
+use crate::node::style::NodeStyleCustom;
+use crate::utils::pos2::Pos2;
+use crate::utils::size::Size;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub enum Direction  {
@@ -68,17 +12,28 @@ pub enum Direction  {
     Left,
 }
 
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
+pub enum DiagramType  {
+    #[default]
+    Standard,
+}
 
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
-pub struct NodeInput {
+pub struct NodeMetadata {
+    pub id: String,
+}
+
+
+#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+pub struct Node {
     pub text: Option<String>,
     pub style_custom: Option<NodeStyleCustom>,
     pub position_direction: Option<Direction>,
-    pub children: Option<Vec<NodeInput>>,
+    pub children: Option<Vec<Node>>,
     pub position: Option<Pos2>,
 }
 
-impl NodeInput {
+impl Node {
     pub fn new() -> Self {
         Self {
             text: None,
@@ -94,7 +49,7 @@ impl NodeInput {
         self.clone()
     }
 
-    pub fn with_children(&mut self, children: Vec<NodeInput>) -> Self {
+    pub fn with_children(&mut self, children: Vec<Node>) -> Self {
         self.children = Some(children);
         self.clone()
     }
@@ -104,7 +59,7 @@ impl NodeInput {
         self.clone()
     }
 
-    pub fn get_children(&self) -> Option<Vec<NodeInput>> {
+    pub fn get_children(&self) -> Option<Vec<Node>> {
         self.children.clone()
     }
 
@@ -175,14 +130,14 @@ impl NodeInput {
     }
 
     pub fn layout_mindmap_center(&mut self) {
-        const H_PADDING: f32 = 50.0; // Horizontal padding between levels
+        const H_PADDING: f32 = 150.0; // Horizontal padding between levels
         const V_PADDING: f32 = 20.0;
 
         self.position = Some(Pos2::new(200.0, 200.0));
 
         // Divide children into left and right based on their position direction
-        let mut left = vec![];
-        let mut right = vec![];
+        let mut left_children = vec![];
+        let mut right_children = vec![];
 
         let Size {
             width,
@@ -191,24 +146,24 @@ impl NodeInput {
 
         for mut child in self.children.as_mut().unwrap() {
             match child.position_direction {
-                Some(Direction::Left) => left.push(child),
-                _ => right.push(child),
+                Some(Direction::Left) => left_children.push(child),
+                _ => right_children.push(child),
             }
         }
 
-        fn layout_children(mut children: Vec<&mut NodeInput>, x_offset: f32, parent_node_position: Pos2, parent_node_size: Size) -> Vec<&mut NodeInput> {
+        fn layout_children(mut side_children: Vec<&mut Node>, x_offset: f32, parent_node_position: Pos2, parent_node_size: Size) -> Vec<&mut Node> {
             let mut y_cursor = 0.0;
-            for child in children.iter_mut() {
-                let subtree_height = NodeInput::layout_subtree(child, x_offset, y_cursor, parent_node_position.clone(), parent_node_size.clone());
+            for child in side_children.iter_mut() {
+                let subtree_height = Node::layout_subtree(child, x_offset, y_cursor, parent_node_position.clone(), parent_node_size.clone());
                 y_cursor += subtree_height + V_PADDING;
             }
-            children
+            side_children
         };
 
-        let left_offset = -width - H_PADDING;
-        let right_offset = width + H_PADDING;
-        let _left_children = layout_children(left, left_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
-        let _right_children = layout_children(right, right_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
+        let left_offset = H_PADDING;
+        let right_offset = H_PADDING;
+        let _left_children = layout_children(left_children, left_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
+        let _right_children = layout_children(right_children, right_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
 
         self.layout_parent_position(self.position.clone().unwrap().x);
     }
@@ -217,7 +172,7 @@ impl NodeInput {
         &mut self,
         offset_x: f32,
         offset_y: f32,
-        initial_position: Pos2,
+        parent_position: Pos2,
         parent_size: Size,
     ) -> f32 {
         const H_PADDING: f32 = 50.0;
@@ -230,11 +185,15 @@ impl NodeInput {
 
         let node_half_width = width / 2.0;
         let parent_half_width = parent_size.width / 2.0;
-        let node_offset_x = offset_x + node_half_width + parent_half_width + initial_position.x;
 
         let node_half_height = height / 2.0;
         let parent_half_height = parent_size.height / 2.0;
-        let node_offset_y = offset_y + node_half_height + parent_half_height + initial_position.y;
+        let node_offset_y = offset_y + node_half_height + parent_half_height + parent_position.y;
+
+        let node_offset_x = match self.position_direction {
+            Some(Direction::Left) => parent_position.x - H_PADDING - node_half_width - parent_half_width,
+            _ => parent_position.x + H_PADDING + node_half_width + parent_half_width,
+        };
 
         if self.children.as_mut().unwrap().is_empty() {
             self.position = Some(Pos2::new(node_offset_x, node_offset_y));
@@ -245,15 +204,18 @@ impl NodeInput {
         let mut total_height = 0.0;
 
         for child in self.children.as_mut().unwrap() {
-            let new_x = offset_x + match self.position_direction.as_mut() {
-                Some(Direction::Left) => -width - H_PADDING + initial_position.x,
-                _ => width + H_PADDING + initial_position.x,
-            };
+            child.position_direction = Some(self.position_direction.clone().unwrap_or_default());
+            tracing::debug!("child: {:?}, - node_offset_x: {:?}, y_cursor: {:?}, parent_position: {:?}, parent_size: {:?}",
+                child,
+                node_offset_x,
+                y_cursor,
+                Pos2::new(node_offset_x, node_offset_y),
+                Size::from(Size { width, height }));
             let subtree_height = Self::layout_subtree(
                 child,
-                new_x,
+                node_offset_x,
                 y_cursor,
-                initial_position.clone(),
+                Pos2::new(node_offset_x, node_offset_y),
                 Size::from(Size { width, height }),
             );
             y_cursor += subtree_height + V_PADDING;

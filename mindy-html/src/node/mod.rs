@@ -1,10 +1,12 @@
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::node_input::{NodeInput, NodeStyleCustom, Pos2};
+use mindy_engine::node::{Node};
+use mindy_engine::node::style::NodeStyleCustom;
+use mindy_engine::utils::pos2::Pos2;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct NodeProps {
-    pub node: NodeInput,
+    pub node: Node,
 }
 
 #[component]

@@ -13,14 +13,14 @@ use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use std::string::ToString;
-use mindy_engine::node_input::NodeInput;
+use mindy_engine::node::Node;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
 use crate::listeners::webview::activate_message_listener;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
-static NODE_LIST_NEW: GlobalSignal<Option<NodeInput>> = GlobalSignal::new(|| None);
+static NODE_LIST_NEW: GlobalSignal<Option<Node>> = GlobalSignal::new(|| None);
 
 fn main() {
     launch(App);
@@ -58,6 +58,7 @@ fn load_json_data() {
             "children": [
                 {
                     "text": "Node 1",
+                    "position_direction": "Left",
                     "children": [
                         {
                             "text": "Node 1.1",
@@ -101,10 +102,10 @@ fn load_json_data() {
             ]
         }
         "#;
-    let mut node_input: NodeInput = match serde_json::from_str::<NodeInput>(data_json) {
+    let mut node_input: Node = match serde_json::from_str::<Node>(data_json) {
         Ok(mut json) => {
             json.layout_mindmap_center();
-            // tracing::debug!("node_input: {:?}", json);
+            // tracing::debug!("node: {:?}", json);
             json
         },
         Err(e) => {

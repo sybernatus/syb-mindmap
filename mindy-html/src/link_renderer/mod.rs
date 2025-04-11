@@ -1,6 +1,7 @@
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::node_input::{NodeInput, Pos2};
+use mindy_engine::node::{Node};
+use mindy_engine::utils::pos2::Pos2;
 use crate::link_beziers::{LinkBezier, LinkBezierProps};
 use crate::{NODE_LIST_NEW};
 
@@ -37,7 +38,7 @@ pub fn LinkRenderer() -> Element {
 }
 
 fn calculate_elements(
-    node_input: &NodeInput,
+    node_input: &Node,
     parent_position: Option<Pos2>,
     mut elements: Vec<LinkBezierProps>
 ) -> Vec<LinkBezierProps> {

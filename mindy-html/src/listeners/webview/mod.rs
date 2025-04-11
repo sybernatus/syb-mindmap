@@ -1,6 +1,6 @@
 use crate::load_json_data;
 use dioxus::logger::tracing;
-use mindy_engine::node_input::NodeInput;
+use mindy_engine::node::Node;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast};
 use ::web_sys::window;
@@ -12,7 +12,7 @@ pub fn activate_message_listener() {
         // Lecture des données du message
         let data = event.data().as_string().or(Some("null".to_string()));
 
-        let _json: NodeInput = match serde_json::from_str::<NodeInput>(&data.unwrap()) {
+        let _json: Node = match serde_json::from_str::<Node>(&data.unwrap()) {
             Ok(json) => json,
             Err(_e) => {
                 return;

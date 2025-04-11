@@ -1,6 +1,6 @@
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::node_input::NodeInput;
+use mindy_engine::node::Node;
 use crate::node::{Node, NodeProps};
 use crate::{NODE_LIST_NEW};
 
@@ -30,7 +30,7 @@ pub fn NodeRenderer() -> Element {
 }
 
 fn calculate_elements(
-    node_input: Option<NodeInput>,
+    node_input: Option<Node>,
     mut elements: Vec<NodeProps>,
 ) -> Vec<NodeProps> {
 

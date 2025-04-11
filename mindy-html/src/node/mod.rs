@@ -37,7 +37,7 @@ pub fn Node(props: NodeProps) -> Element {
         x,
         y,
         ..
-    } = props.node.clone().position.unwrap();
+    } = props.node.clone().position.unwrap_or_else(|| Pos2::new(0.0, 0.0));
     let text_size = props.node.get_graphical_size();
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping {

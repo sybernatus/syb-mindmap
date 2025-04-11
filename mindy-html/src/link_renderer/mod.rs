@@ -11,7 +11,6 @@ pub fn LinkRenderer() -> Element {
 
     use_effect(move || {
         let ns = MINDMAP_DATA();
-        tracing::debug!("LinkRenderer: {:?}", ns);
         let ns = match ns {
             Some(node) => node,
             None => return
@@ -51,13 +50,13 @@ fn calculate_elements(
         elements = calculate_elements(child, Some(parent_position), elements);
     }
 
-    tracing::debug!("parent_position: {:?}", parent_position);
+    tracing::trace!("parent_position: {:?}", parent_position);
     let actual_position = match node_input.position.clone() {
         None => return elements,
         Some(pos) => pos
     };
 
-    tracing::debug!("actual_position: {:?}", actual_position);
+    tracing::trace!("actual_position: {:?}", actual_position);
 
     let parent_position = match parent_position {
         None => return elements,
@@ -71,7 +70,6 @@ fn calculate_elements(
         color: None,
         stroke_width: None,
     });
-    tracing::debug!("elementsssssssssssssssssss: {:?}", elements.len());
 
     elements
 

@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use crate::utils::rgb::Rgb;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]

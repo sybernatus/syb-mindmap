@@ -1,37 +1,39 @@
 use serde::Deserialize;
 use crate::mindmap::r#type::MindmapType;
 use crate::mindmap::style::MindmapStyle;
+use crate::utils::pos2::Pos2;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct MindmapMetadata {
-    pub diagram_type: MindmapType,
-    pub style: MindmapStyle,
+    pub diagram_type: Option<MindmapType>,
+    pub style: Option<MindmapStyle>,
+    pub position_starting: Option<Pos2>
 }
 
 impl MindmapMetadata {
-    pub fn new(diagram_type: MindmapType, style: MindmapStyle) -> Self {
-        Self { diagram_type, style }
+    pub fn new() -> Self {
+        Self::default()
     }
 
-    pub fn with_style(&self, style: MindmapStyle) -> Self {
+    pub fn with_style(&self, style: Option<MindmapStyle>) -> Self {
         Self { style, ..self.clone() }
     }
 
-    pub fn with_diagram_type(&self, diagram_type: MindmapType) -> Self {
+    pub fn with_diagram_type(&self, diagram_type: Option<MindmapType>) -> Self {
         Self { diagram_type, ..self.clone() }
     }
 
-    // pub fn layout_mindmap_standard(&mut self) -> Self {
-    //
-    //     self
-    // }
+    pub fn get_style(&self) -> MindmapStyle {
+        self.clone().style.unwrap_or_else(|| MindmapStyle::default())
+    }
 }
 
 impl Default for MindmapMetadata {
     fn default() -> Self {
         Self {
-            diagram_type: MindmapType::default(),
-            style: MindmapStyle::default(),
+            diagram_type: Some(MindmapType::default()),
+            style: Some(MindmapStyle::default()),
+            position_starting: Some(Pos2::new(300.0, 300.0)),
         }
     }
 }

@@ -1,12 +1,12 @@
 pub mod style;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use crate::node::style::NodeStyle;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
 pub enum Direction  {
     #[default]
     Right,
@@ -85,8 +85,6 @@ impl Node {
     pub fn get_graphical_size(&self) -> Size {
 
         // Calculate the size of the node based on its content
-
-
         let NodeStyle {
             min_width,
             max_width,

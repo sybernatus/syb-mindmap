@@ -6,6 +6,15 @@ pub struct MindmapStyle {
     pub padding_vertical: f32,
 }
 
+impl Default for MindmapStyle {
+    fn default() -> Self {
+        Self {
+            padding_horizontal: 40.0,
+            padding_vertical: 20.0,
+        }
+    }
+}
+
 impl MindmapStyle {
     pub fn new(padding_horizontal: f32, padding_vertical: f32) -> Self {
         Self {
@@ -13,13 +22,8 @@ impl MindmapStyle {
             padding_vertical,
         }
     }
-}
 
-impl Default for MindmapStyle {
-    fn default() -> Self {
-        Self {
-            padding_horizontal: 10.0,
-            padding_vertical: 10.0,
-        }
+    pub fn get_padding_horizontal(&self) -> f32 {
+        self.padding_horizontal
     }
 }

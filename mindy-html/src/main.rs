@@ -12,6 +12,7 @@ use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use std::string::ToString;
+use dioxus::html::completions::CompleteWithBraces::mi;
 use mindy_engine::mindmap::metadata::MindmapMetadata;
 use mindy_engine::node::Node;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
@@ -58,11 +59,7 @@ fn load_json_data() {
     let data_json = r#"
             {
                 "metadata": {
-                    "diagram_type": "Standard",
-                    "style": {
-                        "padding_horizontal": 10.0,
-                        "padding_vertical": 10.0
-                    }
+                    "diagram_type": "Standard"
                 },
                 "data": {
                     "text": "Node 0",
@@ -116,8 +113,9 @@ fn load_json_data() {
         "#;
     let mindmap_json = match serde_json::from_str::<MindmapCore>(data_json) {
         Ok(mut mindmap_json) => {
+            mindmap_json.layout_mindmap();
             let metadata = mindmap_json.metadata.unwrap_or_else(|| MindmapMetadata::default());
-            let json = mindmap_json.data.unwrap_or_else(|| Node::default()).layout_mindmap_center();
+            let json = mindmap_json.data.unwrap_or_else(|| Node::default());
             MindmapCore {
                 metadata: Some(metadata),
                 data: Some(json),
@@ -129,7 +127,7 @@ fn load_json_data() {
         }
     };
 
-    tracing::info!("{:?}", mindmap_json);
+    tracing::trace!("{:?}", mindmap_json);
     *MINDMAP_DATA.write() = mindmap_json.data;
     *MINDMAP_METADATA.write() = mindmap_json.metadata;
 }

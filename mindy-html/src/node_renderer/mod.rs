@@ -11,7 +11,7 @@ pub fn NodeRenderer() -> Element {
     let _ = use_effect(move || {
         let ns = MINDMAP_DATA();
         elements.clear();
-        tracing::debug!("NodeRenderer: {:?}", ns);
+        tracing::trace!("NodeRenderer: {:?}", ns);
         elements.set(calculate_elements(ns, vec![]));
     });
 

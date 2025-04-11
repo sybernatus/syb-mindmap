@@ -1,3 +1,4 @@
+use palette::num::Round;
 use palette::rgb::Rgb;
 
 #[derive(Debug, Clone, Default, PartialEq)]
@@ -20,27 +21,35 @@ pub struct NodeContent {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NodeStyleCustom {
-    pub color: Rgb,
+    pub background_color: Rgb,
     pub children_hidden: bool,
-    pub text_wrapping: bool,
     pub font_size: f32,
+    pub font_family: String,
+    pub max_width: f32,
+    pub min_width: f32,
+    pub min_height: f32,
     pub padding: f32,
+    pub text_wrapping: bool,
 }
 
 impl Default for NodeStyleCustom {
     fn default() -> Self {
         Self {
-            color: Rgb::new(122.0, 10.0, 0.0),
+            background_color: Rgb::new(122.0, 10.0, 0.0),
             children_hidden: false,
             text_wrapping: false,
             font_size: 12.0,
             padding: 10.0,
+            font_family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif".to_string(),
+            max_width: 200.0,
+            min_width: 0.0,
+            min_height: 0.0,
         }
     }
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]
-pub struct NodeSize {
+pub struct Size {
     pub width: f32,
     pub height: f32,
 }
@@ -51,7 +60,6 @@ pub struct Node {
     pub content: NodeContent,
     pub position: Pos2,
     pub style_custom: NodeStyleCustom,
-    pub size: Option<NodeSize>,
     pub parent_id: Option<i32>,
 }
 
@@ -63,7 +71,6 @@ impl Node {
             content: NodeContent::default(),
             position: Pos2::new(0.0, 0.0),
             style_custom: NodeStyleCustom::default(),
-            size: None,
             parent_id: None,
         }
     }
@@ -89,7 +96,7 @@ impl Node {
     }
 
     pub fn with_color(&mut self, r: f32, g: f32, b: f32) -> Self {
-        self.style_custom.color = Rgb::new(r, g, b);
+        self.style_custom.background_color = Rgb::new(r, g, b);
         self.clone()
     }
 
@@ -103,10 +110,6 @@ impl Node {
         self.clone()
     }
 
-    pub fn get_size(&self) -> Option<NodeSize> {
-        self.size.clone()
-    }
-
     pub fn with_font_size(&mut self, font_size: f32) -> Self {
         self.style_custom.font_size = font_size;
         self.clone()
@@ -117,49 +120,71 @@ impl Node {
         self.clone()
     }
 
-    pub fn with_graphical_size(&mut self) -> Self {
+    pub fn with_style_custom(&mut self, style_custom: NodeStyleCustom) -> Self {
+        self.style_custom = style_custom;
+        self.clone()
+    }
 
-        // Calculate the size of the node based on its content
-        let _font_type = "Arial";
-        let font_size = self.style_custom.font_size;
-        let text_wrapping = self.style_custom.text_wrapping;
-        let padding = self.style_custom.padding;
-        let min_width = 200.0;
-        let min_height = 0.0;
-        let max_width = 300.0;
+    pub fn get_graphical_text_size(&self) -> Size {
+
+        let NodeStyleCustom {
+            max_width,
+            text_wrapping,
+            font_size,
+            ..
+        } = self.style_custom;
+
+        let font_char_width = font_size - 4.0;
+        let font_char_height = font_size - 2.0;
+        let font_interline = 4.0;
 
         let text_length = self.content.text.as_ref().map_or(0, |text| text.len()) as f32;
-        let text_size = text_length * font_size;
-        let new_width = match text_size {
+        let text_width = text_length * font_char_width;
+        let text_height = if text_wrapping {
+            let lines_count = (text_width / max_width).ceil();
+            lines_count * font_char_height + (font_interline * lines_count)
+        } else {
+            font_char_height + font_interline
+        };
+
+        Size {
+            width: text_width,
+            height: text_height,
+        }
+    }
+
+    pub fn get_graphical_size(&self) -> Size {
+
+        // Calculate the size of the node based on its content
+        let NodeStyleCustom {
+            min_width,
+            max_width,
+            min_height,
+            text_wrapping,
+            padding, ..
+        } = self.style_custom;
+
+        let Size {
+            height: text_height,
+            width: text_width
+        } = self.get_graphical_text_size();
+
+        let new_width = match text_width + (padding * 2.0) {
             size if size < min_width => min_width,
             size if size > max_width && text_wrapping  => max_width,
-            size => size,
+            _ => text_width + (padding * 2.0),
         };
 
-        let new_height = if text_wrapping {
-            // Calculate the number of lines needed for the text
-            let lines = (text_size / max_width).ceil() + 1.0;
-            let new_height = if lines * font_size > min_height {
-                lines * font_size
-            } else {
-                min_height
-            };
-            new_height
-        } else {
-            if font_size < min_height {
-                min_height
-            } else {
-                font_size
-            }
+        let new_height = match text_height + (padding * 2.0) {
+            size if size < min_height => min_height,
+            _ => text_height + (padding * 2.0),
         };
 
-        tracing::debug!("Node size: {:?} - {:?}", new_width, new_height);
-        let new_size = NodeSize {
-            width: new_width + padding * 2.0,
-            height: new_height + padding * 2.0,
+        let new_size = Size {
+            width: new_width,
+            height: new_height,
         };
 
-        self.size = Some(new_size);
-        self.clone()
+        new_size
     }
 }

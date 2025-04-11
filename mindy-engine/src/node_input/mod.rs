@@ -64,7 +64,10 @@ impl NodeInput {
             .with_position(position.clone())
             .with_id(current_id)
             .set_parent(parent_id.unwrap_or(0))
-            .with_graphical_size();
+            .with_style_custom(NodeStyleCustom {
+                text_wrapping: true,
+                ..NodeStyleCustom::default()
+            });
 
         out.push(node);
 

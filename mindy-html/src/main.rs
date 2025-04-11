@@ -12,8 +12,6 @@ use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::node::Pos2;
-use mindy_engine::node::Node as NodeCore;
 use std::string::ToString;
 use mindy_engine::node_input::NodeInput;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
@@ -22,7 +20,7 @@ use crate::listeners::webview::activate_message_listener;
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
-static NODE_LIST: GlobalSignal<Vec<NodeCore>> = GlobalSignal::new(|| vec![]);
+static NODE_LIST_NEW: GlobalSignal<Option<NodeInput>> = GlobalSignal::new(|| None);
 
 fn main() {
     launch(App);
@@ -56,25 +54,30 @@ fn App() -> Element {
 fn load_json_data() {
     let data_json = r#"
         {
-            "text": "Node 1Node 1Node 1Node 1",
+            "text": "Node 0",
             "children": [
                 {
-                    "text": "Node 2",
-                    "children": []
-                },
-                {
-                    "text": "Node 3",
+                    "text": "Node 1",
                     "children": [
                         {
-                            "text": "Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
+                            "text": "Node 1.1",
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "text": "Node 2",
+                    "children": [
+                        {
+                            "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
                             "children": []
                         },
                         {
-                            "text": "Node 345",
+                            "text": "Node 2.2",
                             "children": []
                         },
                         {
-                            "text": "Node 789",
+                            "text": "Node 2.3",
                             "children": []
                         }
                     ]
@@ -84,41 +87,46 @@ fn load_json_data() {
                     "children": []
                 },
                 {
-                    "text": "Node 3",
+                    "text": "Node 4",
                     "children": []
                 },
                 {
-                    "text": "Node 3",
+                    "text": "Node 5",
                     "children": []
                 },
                 {
-                    "text": "Node 3",
+                    "text": "Node 6",
                     "children": []
                 }
             ]
         }
         "#;
-    let json: NodeInput = match serde_json::from_str::<NodeInput>(data_json) {
-        Ok(json) => json,
+    let mut node_input: NodeInput = match serde_json::from_str::<NodeInput>(data_json) {
+        Ok(mut json) => {
+            json.layout_mindmap_center();
+            // tracing::debug!("node_input: {:?}", json);
+            json
+        },
         Err(e) => {
             tracing::error!("Error decoding json: {:?}", e);
             return;
         }
     };
 
+    *NODE_LIST_NEW.write() = Some(node_input.clone());
 
 
-    if ! json.text.is_none() {
-        let node_list = json.to_node_vec(
-            None, &RefCell::new(0),
-            Pos2::new(100.0, 100.0),
-            0,
-            0,
-            &mut vec![]
-        );
-        NODE_LIST.write().clear();
-        for node in node_list.iter() {
-            NODE_LIST.write().push(node.clone());
-        }
-    }
+    // if ! json.text.is_none() {
+    //     let node_list = json.to_node_vec(
+    //         None, &RefCell::new(0),
+    //         Pos2::new(100.0, 100.0),
+    //         0,
+    //         0,
+    //         &mut vec![]
+    //     );
+    //     NODE_LIST.write().clear();
+    //     for node in node_list.iter() {
+    //         NODE_LIST.write().push(node.clone());
+    //     }
+    // }
 }

@@ -1,4 +1,4 @@
-use crate::node::Pos2;
+use crate::node_input::Pos2;
 
 pub fn get_link_metadata(
     start: Pos2,

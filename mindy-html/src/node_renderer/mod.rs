@@ -1,17 +1,18 @@
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::node::{Node};
+use mindy_engine::node_input::NodeInput;
 use crate::node::{Node, NodeProps};
-use crate::NODE_LIST;
+use crate::{NODE_LIST_NEW};
 
 #[component]
 pub fn NodeRenderer() -> Element {
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 
     let _ = use_effect(move || {
-        let ns = NODE_LIST();
+        let ns = NODE_LIST_NEW();
         elements.clear();
-        elements.set(calculate_elements(ns));
+        tracing::debug!("NodeRenderer: {:?}", ns);
+        elements.set(calculate_elements(ns, vec![]));
     });
 
     rsx! {
@@ -20,8 +21,6 @@ pub fn NodeRenderer() -> Element {
             id: "node-renderer",
             for element in elements.iter() {
                 Node {
-                    id: element.id.clone(),
-                    class: element.class.clone(),
                     node: element.node.clone(),
                 }
             }
@@ -31,35 +30,24 @@ pub fn NodeRenderer() -> Element {
 }
 
 fn calculate_elements(
-    node_list: Vec<Node>,
+    node_input: Option<NodeInput>,
+    mut elements: Vec<NodeProps>,
 ) -> Vec<NodeProps> {
-    let mut elements: Vec<NodeProps> = vec![];
-    for node in node_list.iter() {
-        // tracing::trace!("Node ID: {:?}", node.id);
-        let parent_id = node.parent_id;
-        // tracing::trace!("Node parent_id: {:?}", parent_id);
-        let parent_node = node_list.iter().find(|n| Some(n.id) == parent_id);
 
-        // tracing::trace!("Node: {:?}", parent_node);
-        let parent_hidden_children = match parent_node {
-            Some(parent) => parent.style_custom.children_hidden,
-            None => false,
-        };
-        // tracing::trace!("Parent hidden children: {:?}", parent_hidden_children);
+    let node_input = match node_input {
+        Some(node) => node,
+        None => return elements,
+    };
 
-        if parent_hidden_children {
-            continue;
-        }
-
-        elements.push(
-            NodeProps {
-                id: "node".to_string(),
-                class: "node".to_string(),
-                node: node.clone(),
-            }
-        );
+    for child in node_input.clone().children.unwrap() {
+        elements = calculate_elements(Some(child), elements);
     }
 
-    tracing::trace!("Elements: {:?}", elements.len());
+    elements.push(
+        NodeProps {
+            node: node_input.clone(),
+        }
+    );
+
     elements
 }

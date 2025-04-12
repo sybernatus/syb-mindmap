@@ -53,3 +53,16 @@ git commit --message "chore: release tag ${version}"
 git push --follow-tags
 '''
 category = "Release"
+
+[tasks.deploy_main]
+script_runner = "bash"
+script = '''
+#!/bin/bash
+set -e
+
+most_recent_tag="$( git describe --tags --abbrev=0 )"
+git checkout main
+git reset --hard "${most_recent_tag}"
+git push --force-with-lease
+'''
+category = "Release"

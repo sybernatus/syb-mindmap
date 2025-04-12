@@ -1,0 +1,55 @@
+[tasks.html_build]
+script_runner = "bash"
+cwd = "mindy-html"
+command = "dx"
+args = ["build", "--platform", "web"]
+category = "Build"
+
+[tasks.html_serve]
+script_runner = "bash"
+cwd = "mindy-html"
+command = "dx"
+args = ["serve"]
+category = "Run"
+
+[tasks.vscode_build]
+script_runner = "bash"
+cwd = "vscode-extension/syb-mindmap"
+script = '''
+#!/bin/bash
+set -e
+rm -rf media/*
+cp --recursive --force ../../target/dx/mindy-html/debug/web/public/* media
+'''
+category = "Build"
+dependencies = ["html_build"]
+
+[tasks.vscode_deploy]
+script_runner = "bash"
+cwd = "vscode-extension/syb-mindmap"
+script = '''
+#!/bin/bash
+set -e
+code --uninstall-extension syb-mindmap-0.0.1.vsix || true
+code --update-extensions && yarn run vsce package --allow-missing-repository
+code --install-extension syb-mindmap-0.0.1.vsix
+'''
+category = "Deploy"
+dependencies = ["vscode_build"]
+
+
+[tasks.release]
+script_runner = "bash"
+script = '''
+#!/bin/bash
+set -e
+git cliff --unreleased --bump > .github/CHANGELOG.md
+git add .github/CHANGELOG.md
+
+version="$(git cliff --bumped-version 2> /dev/null)"
+
+git tag "${version}"
+git commit "chore: release tag ${version}"
+git push --follow-tags
+'''
+category = "Release"

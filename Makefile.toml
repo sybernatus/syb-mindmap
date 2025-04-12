@@ -1,0 +1,3 @@
+extend = "Makefile.tasks.toml"
+[config]
+default_to_workspace = false

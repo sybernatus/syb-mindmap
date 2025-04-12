@@ -1,7 +1,7 @@
 pub mod link;
+pub mod mindmap;
 pub mod node;
 pub mod utils;
-pub mod mindmap;
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
@@ -17,4 +17,3 @@ mod tests {
         assert_eq!(result, 4);
     }
 }
-

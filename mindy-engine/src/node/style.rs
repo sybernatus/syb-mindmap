@@ -1,5 +1,5 @@
-use serde::{Deserialize};
 use crate::utils::rgb::Rgb;
+use serde::Deserialize;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct NodeStyle {

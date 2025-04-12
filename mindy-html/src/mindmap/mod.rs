@@ -5,7 +5,6 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn Mindmap() -> Element {
-
     rsx! {
         div {
             class: "mindmap",

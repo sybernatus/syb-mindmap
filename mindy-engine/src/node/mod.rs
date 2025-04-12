@@ -1,17 +1,16 @@
 pub mod style;
 
-use serde::{Deserialize, Serialize};
 use crate::node::style::NodeStyle;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
-pub enum Direction  {
+pub enum Direction {
     #[default]
     Right,
     Left,
 }
-
 
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
 pub struct Node {
@@ -52,15 +51,16 @@ impl Node {
         self.children.clone()
     }
 
-
     pub fn get_graphical_text_size(&self) -> Size {
-
         let NodeStyle {
             max_width,
             text_wrapping,
             font_size,
             ..
-        } = self.style_custom.clone().unwrap_or_else(|| NodeStyle::default());
+        } = self
+            .style_custom
+            .clone()
+            .unwrap_or_else(|| NodeStyle::default());
 
         let font_char_width = font_size - 4.0;
         let font_char_height = font_size - 2.0;
@@ -82,24 +82,27 @@ impl Node {
     }
 
     pub fn get_graphical_size(&self) -> Size {
-
         // Calculate the size of the node based on its content
         let NodeStyle {
             min_width,
             max_width,
             min_height,
             text_wrapping,
-            padding, ..
-        } = self.style_custom.clone().unwrap_or_else(|| NodeStyle::default());
+            padding,
+            ..
+        } = self
+            .style_custom
+            .clone()
+            .unwrap_or_else(|| NodeStyle::default());
 
         let Size {
             height: text_height,
-            width: text_width
+            width: text_width,
         } = self.get_graphical_text_size();
 
         let new_width = match text_width + (padding * 2.0) {
             size if size < min_width => min_width,
-            size if size > max_width && text_wrapping  => max_width,
+            size if size > max_width && text_wrapping => max_width,
             _ => text_width + (padding * 2.0),
         };
 
@@ -126,10 +129,7 @@ impl Node {
         let mut left_children = vec![];
         let mut right_children = vec![];
 
-        let Size {
-            width,
-            height
-        } = self.get_graphical_size();
+        let Size { width, height } = self.get_graphical_size();
 
         for child in self.children.as_mut().unwrap() {
             match child.position_direction {
@@ -138,10 +138,21 @@ impl Node {
             }
         }
 
-        fn layout_children(mut side_children: Vec<&mut Node>, x_offset: f32, parent_node_position: Pos2, parent_node_size: Size) -> Vec<&mut Node> {
+        fn layout_children(
+            mut side_children: Vec<&mut Node>,
+            x_offset: f32,
+            parent_node_position: Pos2,
+            parent_node_size: Size,
+        ) -> Vec<&mut Node> {
             let mut y_cursor = 0.0;
             for child in side_children.iter_mut() {
-                let subtree_height = Node::layout_subtree(child, x_offset, y_cursor, parent_node_position.clone(), parent_node_size.clone());
+                let subtree_height = Node::layout_subtree(
+                    child,
+                    x_offset,
+                    y_cursor,
+                    parent_node_position.clone(),
+                    parent_node_size.clone(),
+                );
                 y_cursor += subtree_height + V_PADDING;
             }
             side_children
@@ -149,8 +160,18 @@ impl Node {
 
         let left_offset = H_PADDING;
         let right_offset = H_PADDING;
-        let _left_children = layout_children(left_children, left_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
-        let _right_children = layout_children(right_children, right_offset, self.position.clone().unwrap(), Size::from(Size { width, height }));
+        let _left_children = layout_children(
+            left_children,
+            left_offset,
+            self.position.clone().unwrap(),
+            Size::from(Size { width, height }),
+        );
+        let _right_children = layout_children(
+            right_children,
+            right_offset,
+            self.position.clone().unwrap(),
+            Size::from(Size { width, height }),
+        );
 
         self.layout_parent_position(self.position.clone().unwrap().x);
         self.to_owned()
@@ -166,10 +187,7 @@ impl Node {
         const H_PADDING: f32 = 50.0;
         const V_PADDING: f32 = 20.0;
 
-        let Size {
-            width,
-            height
-        } = self.get_graphical_size();
+        let Size { width, height } = self.get_graphical_size();
 
         let node_half_width = width / 2.0;
         let parent_half_width = parent_size.width / 2.0;
@@ -179,7 +197,9 @@ impl Node {
         let node_offset_y = offset_y + node_half_height + parent_half_height + parent_position.y;
 
         let node_offset_x = match self.position_direction {
-            Some(Direction::Left) => parent_position.x - H_PADDING - node_half_width - parent_half_width,
+            Some(Direction::Left) => {
+                parent_position.x - H_PADDING - node_half_width - parent_half_width
+            }
             _ => parent_position.x + H_PADDING + node_half_width + parent_half_width,
         };
 
@@ -193,12 +213,14 @@ impl Node {
 
         for child in self.children.as_mut().unwrap() {
             child.position_direction = Some(self.position_direction.clone().unwrap_or_default());
-            tracing::debug!("child: {:?}, - node_offset_x: {:?}, y_cursor: {:?}, parent_position: {:?}, parent_size: {:?}",
+            tracing::debug!(
+                "child: {:?}, - node_offset_x: {:?}, y_cursor: {:?}, parent_position: {:?}, parent_size: {:?}",
                 child,
                 node_offset_x,
                 y_cursor,
                 Pos2::new(node_offset_x, node_offset_y),
-                Size::from(Size { width, height }));
+                Size::from(Size { width, height })
+            );
             let subtree_height = Self::layout_subtree(
                 child,
                 node_offset_x,
@@ -211,15 +233,17 @@ impl Node {
         }
 
         self.layout_parent_position(node_offset_x);
-        tracing::debug!("text: {:?} - self.position.x: {:?} - self.position.y: {:?}", self.text, self.position.clone().unwrap().x, self.position.clone().unwrap().y);
+        tracing::debug!(
+            "text: {:?} - self.position.x: {:?} - self.position.y: {:?}",
+            self.text,
+            self.position.clone().unwrap().x,
+            self.position.clone().unwrap().y
+        );
 
         total_height.max(height)
     }
 
-    fn layout_parent_position(
-        &mut self,
-        parent_position_x: f32,
-    ) {
+    fn layout_parent_position(&mut self, parent_position_x: f32) {
         let children = self.children.as_mut().unwrap();
         let fist_child = children.first().unwrap();
         let last_child = children.last().unwrap();
@@ -228,8 +252,16 @@ impl Node {
 
         let first_y = fist_child.clone().position.unwrap().y;
         let last_y = last_child.clone().position.unwrap().y;
-        tracing::debug!("text: {:?} - first_y: {:?} - last_y: {:?}", self.text, first_y, last_y);
+        tracing::debug!(
+            "text: {:?} - first_y: {:?} - last_y: {:?}",
+            self.text,
+            first_y,
+            last_y
+        );
 
-        self.position = Some(Pos2::new(parent_position_x, children[children_middle].clone().position.unwrap().y));
+        self.position = Some(Pos2::new(
+            parent_position_x,
+            children[children_middle].clone().position.unwrap().y,
+        ));
     }
 }

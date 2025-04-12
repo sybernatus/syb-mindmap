@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default)]
-pub enum MindmapType  {
+pub enum MindmapType {
     #[default]
     Standard,
 }

@@ -1,26 +1,26 @@
-mod node;
-mod mindmap;
+mod events;
 mod link_beziers;
 mod link_renderer;
-mod node_renderer;
-mod events;
 mod listeners;
+mod mindmap;
+mod node;
+mod node_renderer;
 
+use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
+use crate::listeners::webview::activate_message_listener;
+use crate::mindmap::Mindmap;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use std::string::ToString;
 use mindy_engine::mindmap::metadata::MindmapMetadata;
+use mindy_engine::mindmap::MindMap as MindmapCore;
 use mindy_engine::node::Node;
-use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
-use crate::listeners::webview::activate_message_listener;
-use crate::mindmap::Mindmap;
-use mindy_engine::mindmap::{MindMap as MindmapCore};
+use std::string::ToString;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
-static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(||(0.0, 0.0));
+static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));
 static MINDMAP_METADATA: GlobalSignal<Option<MindmapMetadata>> = GlobalSignal::new(|| None);
 static MINDMAP_DATA: GlobalSignal<Option<Node>> = GlobalSignal::new(|| None);
 
@@ -32,7 +32,6 @@ fn main() {
 fn App() -> Element {
     let is_dragging = use_signal(|| false);
     let last_mouse = use_signal(|| (0.0, 0.0));
-    load_json_data();
     activate_message_listener();
 
     rsx! {
@@ -53,72 +52,20 @@ fn App() -> Element {
     }
 }
 
-fn load_json_data() {
-    let data_json = r#"
-            {
-                "metadata": {
-                    "diagram_type": "Standard"
-                },
-                "data": {
-                    "text": "Node 0",
-                    "children": [
-                        {
-                            "text": "Node 1",
-                            "position_direction": "Left",
-                            "children": [
-                                {
-                                    "text": "Node 1.1",
-                                    "children": []
-                                }
-                            ]
-                        },
-                        {
-                            "text": "Node 2",
-                            "children": [
-                                {
-                                    "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
-                                    "children": []
-                                },
-                                {
-                                    "text": "Node 2.2",
-                                    "children": []
-                                },
-                                {
-                                    "text": "Node 2.3",
-                                    "children": []
-                                }
-                            ]
-                        },
-                        {
-                            "text": "Node 3",
-                            "children": []
-                        },
-                        {
-                            "text": "Node 4",
-                            "children": []
-                        },
-                        {
-                            "text": "Node 5",
-                            "children": []
-                        },
-                        {
-                            "text": "Node 6",
-                            "children": []
-                        }
-                    ]
-                }
-            }
-        "#;
+fn load_json_data(data_json: &str) {
+
     let mindmap_json = match serde_json::from_str::<MindmapCore>(data_json) {
         Ok(mut mindmap_json) => {
             mindmap_json.layout_mindmap();
-            let metadata = mindmap_json.metadata.unwrap_or_else(|| MindmapMetadata::default());
+            let metadata = mindmap_json
+                .metadata
+                .unwrap_or_else(|| MindmapMetadata::default());
             let json = mindmap_json.data.unwrap_or_else(|| Node::default());
             MindmapCore {
                 metadata: Some(metadata),
                 data: Some(json),
             }
-        },
+        }
         Err(e) => {
             tracing::error!("Error decoding json: {:?}", e);
             return;

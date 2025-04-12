@@ -1,8 +1,8 @@
+use crate::node::{Node, NodeProps};
+use crate::MINDMAP_DATA;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
-use crate::node::{Node, NodeProps};
-use crate::{MINDMAP_DATA};
 
 #[component]
 pub fn NodeRenderer() -> Element {
@@ -26,14 +26,9 @@ pub fn NodeRenderer() -> Element {
             }
         }
     }
-
 }
 
-fn calculate_elements(
-    node_input: Option<Node>,
-    mut elements: Vec<NodeProps>,
-) -> Vec<NodeProps> {
-
+fn calculate_elements(node_input: Option<Node>, mut elements: Vec<NodeProps>) -> Vec<NodeProps> {
     let node_input = match node_input {
         Some(node) => node,
         None => return elements,
@@ -43,11 +38,9 @@ fn calculate_elements(
         elements = calculate_elements(Some(child), elements);
     }
 
-    elements.push(
-        NodeProps {
-            node: node_input.clone(),
-        }
-    );
+    elements.push(NodeProps {
+        node: node_input.clone(),
+    });
 
     elements
 }

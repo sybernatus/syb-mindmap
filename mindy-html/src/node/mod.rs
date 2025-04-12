@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
-use mindy_engine::node::{Node};
 use mindy_engine::node::style::NodeStyle;
+use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 
 #[derive(Props, PartialEq, Clone)]
@@ -10,7 +10,6 @@ pub struct NodeProps {
 
 #[component]
 pub fn Node(props: NodeProps) -> Element {
-
     let on_click = move |_| {
         // NODE_LIST.write().iter_mut().for_each(|node| {
         //     if node.id == props.node.id {
@@ -29,20 +28,21 @@ pub fn Node(props: NodeProps) -> Element {
         max_width,
         min_width,
         ..
-    } = props.node.clone().style_custom.clone().unwrap_or(NodeStyle::default());
+    } = props
+        .node
+        .clone()
+        .style_custom
+        .clone()
+        .unwrap_or(NodeStyle::default());
 
-    let Pos2 {
-        x,
-        y,
-        ..
-    } = props.node.clone().position.unwrap_or_else(|| Pos2::new(0.0, 0.0));
+    let Pos2 { x, y, .. } = props
+        .node
+        .clone()
+        .position
+        .unwrap_or_else(|| Pos2::new(0.0, 0.0));
     let text_size = props.node.get_graphical_size();
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
-    let text_wrap = if text_wrapping {
-        "wrap"
-    } else {
-        "nowrap"
-    };
+    let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
 
     rsx! {
         div {

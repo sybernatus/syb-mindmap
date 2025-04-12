@@ -1,13 +1,13 @@
-use serde::Deserialize;
-use crate::mindmap::r#type::MindmapType;
 use crate::mindmap::style::MindmapStyle;
+use crate::mindmap::r#type::MindmapType;
 use crate::utils::pos2::Pos2;
+use serde::Deserialize;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct MindmapMetadata {
     pub diagram_type: Option<MindmapType>,
     pub style: Option<MindmapStyle>,
-    pub position_starting: Option<Pos2>
+    pub position_starting: Option<Pos2>,
 }
 
 impl MindmapMetadata {
@@ -16,15 +16,23 @@ impl MindmapMetadata {
     }
 
     pub fn with_style(&self, style: Option<MindmapStyle>) -> Self {
-        Self { style, ..self.clone() }
+        Self {
+            style,
+            ..self.clone()
+        }
     }
 
     pub fn with_diagram_type(&self, diagram_type: Option<MindmapType>) -> Self {
-        Self { diagram_type, ..self.clone() }
+        Self {
+            diagram_type,
+            ..self.clone()
+        }
     }
 
     pub fn get_style(&self) -> MindmapStyle {
-        self.clone().style.unwrap_or_else(|| MindmapStyle::default())
+        self.clone()
+            .style
+            .unwrap_or_else(|| MindmapStyle::default())
     }
 }
 

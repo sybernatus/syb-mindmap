@@ -1,9 +1,9 @@
+use crate::link_beziers::{LinkBezier, LinkBezierProps};
+use crate::MINDMAP_DATA;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::node::{Node};
+use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
-use crate::link_beziers::{LinkBezier, LinkBezierProps};
-use crate::{MINDMAP_DATA};
 
 #[component]
 pub fn LinkRenderer() -> Element {
@@ -13,7 +13,7 @@ pub fn LinkRenderer() -> Element {
         let ns = MINDMAP_DATA();
         let ns = match ns {
             Some(node) => node,
-            None => return
+            None => return,
         };
         elements.clear();
         elements.set(calculate_elements(&ns, None, vec![]));
@@ -39,13 +39,12 @@ pub fn LinkRenderer() -> Element {
 fn calculate_elements(
     node_input: &Node,
     parent_position: Option<Pos2>,
-    mut elements: Vec<LinkBezierProps>
+    mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
-
     for child in &node_input.clone().children.unwrap() {
         let parent_position = match node_input.position.clone() {
             None => return elements,
-            Some(pos) => pos
+            Some(pos) => pos,
         };
         elements = calculate_elements(child, Some(parent_position), elements);
     }
@@ -53,14 +52,14 @@ fn calculate_elements(
     tracing::trace!("parent_position: {:?}", parent_position);
     let actual_position = match node_input.position.clone() {
         None => return elements,
-        Some(pos) => pos
+        Some(pos) => pos,
     };
 
     tracing::trace!("actual_position: {:?}", actual_position);
 
     let parent_position = match parent_position {
         None => return elements,
-        Some(pos) => pos
+        Some(pos) => pos,
     };
 
     elements.push(LinkBezierProps {
@@ -72,5 +71,4 @@ fn calculate_elements(
     });
 
     elements
-
 }

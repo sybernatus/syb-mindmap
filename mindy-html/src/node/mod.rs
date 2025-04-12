@@ -1,4 +1,3 @@
-use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::{Node};
 use mindy_engine::node::style::NodeStyle;
@@ -24,7 +23,6 @@ pub fn Node(props: NodeProps) -> Element {
     let NodeStyle {
         background_color,
         text_wrapping,
-        children_hidden,
         font_size,
         font_family,
         padding,

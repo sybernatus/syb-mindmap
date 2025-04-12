@@ -6,13 +6,11 @@ mod node_renderer;
 mod events;
 mod listeners;
 
-use std::cell::RefCell;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use std::string::ToString;
-use dioxus::html::completions::CompleteWithBraces::mi;
 use mindy_engine::mindmap::metadata::MindmapMetadata;
 use mindy_engine::node::Node;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};

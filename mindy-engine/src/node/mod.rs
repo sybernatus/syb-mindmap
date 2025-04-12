@@ -1,7 +1,6 @@
 pub mod style;
 
 use serde::{Deserialize, Serialize};
-use std::cell::RefCell;
 use crate::node::style::NodeStyle;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
@@ -132,7 +131,7 @@ impl Node {
             height
         } = self.get_graphical_size();
 
-        for mut child in self.children.as_mut().unwrap() {
+        for child in self.children.as_mut().unwrap() {
             match child.position_direction {
                 Some(Direction::Left) => left_children.push(child),
                 _ => right_children.push(child),
@@ -146,7 +145,7 @@ impl Node {
                 y_cursor += subtree_height + V_PADDING;
             }
             side_children
-        };
+        }
 
         let left_offset = H_PADDING;
         let right_offset = H_PADDING;
@@ -159,7 +158,7 @@ impl Node {
 
     fn layout_subtree(
         &mut self,
-        offset_x: f32,
+        _offset_x: f32,
         offset_y: f32,
         parent_position: Pos2,
         parent_size: Size,

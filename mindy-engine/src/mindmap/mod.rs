@@ -84,7 +84,7 @@ impl MindMap {
         };
 
         fn layout_mindmap_standard_children(
-            mut current_tree: Vec<&mut Node>,
+            current_tree: Vec<&mut Node>,
             parent_position: Pos2,
             parent_size: Size,
             side: f32, // +1.0 (droite), -1.0 (gauche)
@@ -110,7 +110,7 @@ impl MindMap {
                 // Layout récursif des enfants du node
                 if let Some(children) = node.children.as_mut() {
                     if !children.is_empty() {
-                        let mut subtree = children.iter_mut().collect::<Vec<&mut Node>>();
+                        let subtree = children.iter_mut().collect::<Vec<&mut Node>>();
                         layout_mindmap_standard_children(
                             subtree,
                             node.position.clone().unwrap(),

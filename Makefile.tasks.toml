@@ -49,7 +49,7 @@ git add .github/CHANGELOG.md
 version="$(git cliff --bumped-version 2> /dev/null)"
 
 git tag "${version}"
-git commit "chore: release tag ${version}"
+git commit --message "chore: release tag ${version}"
 git push --follow-tags
 '''
 category = "Release"

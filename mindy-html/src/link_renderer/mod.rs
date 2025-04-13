@@ -41,7 +41,13 @@ fn calculate_elements(
     parent_position: Option<Pos2>,
     mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
-    for child in &node_input.clone().children.unwrap() {
+
+    let children = match node_input.children.clone() {
+        Some(children) => children,
+        None => return elements,
+    };
+
+    for child in &children {
         let parent_position = match node_input.position.clone() {
             None => return elements,
             Some(pos) => pos,

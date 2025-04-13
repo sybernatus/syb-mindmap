@@ -11,10 +11,8 @@ use crate::listeners::webview::{activate_message_listener, init_message};
 use crate::mindmap::MindmapComp;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
-use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::mindmap::metadata::MindmapMetadata;
-use mindy_engine::mindmap::{Mindmap as MindmapCore};
 use mindy_engine::node::Node;
 use std::string::ToString;
 
@@ -53,19 +51,3 @@ fn App() -> Element {
     }
 }
 
-fn load_json_data(data_json: String) {
-    let input_data = match serde_json::from_str::<MindmapCore>(data_json.as_str()) {
-        Ok(mut input_data) => {
-            tracing::trace!("load_json_data - {:?}", input_data);
-            input_data.layout_mindmap();
-            input_data
-        }
-        Err(e) => {
-            tracing::error!("Error decoding json: {:?}", e);
-            return;
-        }
-    };
-
-    *MINDMAP_DATA.write() = input_data.data;
-    *MINDMAP_METADATA.write() = input_data.metadata;
-}

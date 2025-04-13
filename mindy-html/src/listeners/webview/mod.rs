@@ -1,12 +1,13 @@
-use crate::load_json_data;
-use ::web_sys::window;
+use crate::{MINDMAP_DATA, MINDMAP_METADATA};
 use dioxus::logger::tracing;
+use mindy_engine::mindmap::Mindmap;
 use serde::{Deserialize, Serialize};
+use serde_wasm_bindgen::from_value;
+use web_sys::js_sys::Reflect;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
+use ::web_sys::window;
 use web_sys::MessageEvent;
-use serde_wasm_bindgen::from_value;
-use web_sys::js_sys::{Reflect};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct InputData {
@@ -31,6 +32,26 @@ pub fn init_message() {
         .post_message(JsValue::from_str(init_message).as_ref(), "*").unwrap();
     tracing::debug!("init_message - {:?}", init_message);
 }
+
+fn load_json_data(data_json: String) {
+
+    let input_data = match Mindmap::from_json_string(data_json) {
+        Ok(mut input_data) => {
+            tracing::trace!("load_json_data - {:?}", input_data);
+            input_data.layout_mindmap();
+            input_data
+        }
+        Err(e) => {
+            tracing::error!("Error decoding json: {:?}", e);
+            return;
+        }
+    };
+
+
+    *MINDMAP_DATA.write() = input_data.data;
+    *MINDMAP_METADATA.write() = input_data.metadata;
+}
+
 
 pub fn activate_message_listener() {
     fn has_field(obj: JsValue, key: &str) -> bool {

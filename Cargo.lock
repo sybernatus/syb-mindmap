@@ -2584,8 +2584,8 @@ dependencies = [
 name = "mindy-engine"
 version = "0.1.0"
 dependencies = [
- "palette",
  "serde",
+ "serde_json",
  "tracing",
 ]
 

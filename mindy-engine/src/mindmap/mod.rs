@@ -1,3 +1,4 @@
+use std::error::Error;
 use crate::mindmap::metadata::MindmapMetadata;
 use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
@@ -164,6 +165,16 @@ impl Mindmap {
             x: position_starting.x,
             y: position_starting.y + total_height / 2.0 - graphical_size.height / 2.0,
         });
+    }
+
+    pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
+        match serde_json::from_str(json_string.as_str()) {
+            Ok(mindmap) => Ok(mindmap),
+            Err(e) => {
+                tracing::error!("Error deserializing Mindmap: {:?}", e);
+                Err(e)
+            }
+        }
     }
 }
 

@@ -2,7 +2,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MindmapStyle {
+    #[serde(default)]
     pub padding_horizontal: f32,
+    #[serde(default)]
     pub padding_vertical: f32,
 }
 

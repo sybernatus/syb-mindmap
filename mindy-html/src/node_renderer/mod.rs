@@ -8,11 +8,10 @@ use mindy_engine::node::Node;
 pub fn NodeRendererComp() -> Element {
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 
-    let _ = use_effect(move || {
-        let ns = MINDMAP_DATA();
-        elements.clear();
-        tracing::trace!("NodeRenderer: {:?}", ns);
-        elements.set(calculate_elements(ns, vec![]));
+    use_effect(move || {
+        let mindmap_data = MINDMAP_DATA();
+        tracing::trace!("NodeRenderer: {:?}", mindmap_data);
+        elements.set(calculate_elements(mindmap_data, vec![]));
     });
 
     rsx! {
@@ -28,8 +27,8 @@ pub fn NodeRendererComp() -> Element {
     }
 }
 
-fn calculate_elements(node_input: Option<Node>, mut elements: Vec<NodeProps>) -> Vec<NodeProps> {
-    let node_input = match node_input {
+fn calculate_elements(mindmap_data: Option<Node>, mut elements: Vec<NodeProps>) -> Vec<NodeProps> {
+    let node_input = match mindmap_data {
         Some(node) => node,
         None => return elements,
     };

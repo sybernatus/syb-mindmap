@@ -12,18 +12,19 @@ pub mod r#type;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Mindmap {
-    pub metadata: Option<MindmapMetadata>,
+    #[serde(default)]
+    pub metadata: MindmapMetadata,
     pub data: Option<Node>,
 }
 
 impl Mindmap {
-    pub fn new(metadata: Option<MindmapMetadata>, data: Option<Node>) -> Self {
+    pub fn new(metadata: MindmapMetadata, data: Option<Node>) -> Self {
         Self { metadata, data }
     }
 
     pub fn with_metadata(&self, metadata: MindmapMetadata) -> Self {
         Self {
-            metadata: Some(metadata),
+            metadata,
             ..self.clone()
         }
     }
@@ -37,13 +38,9 @@ impl Mindmap {
 
     pub fn layout_mindmap(&mut self) {
         // Launch the layout process based on the diagram type
-        match self.metadata.clone() {
-            Some(metadata) => match metadata.diagram_type {
-                Some(MindmapType::Standard) => self.layout_mindmap_standard(),
-                None => self.layout_mindmap_standard(),
-            },
-            None => return,
-        };
+            match self.metadata.diagram_type {
+                MindmapType::Standard => self.layout_mindmap_standard(),
+            };
     }
 
     pub fn layout_mindmap_standard(&mut self) {
@@ -65,10 +62,7 @@ impl Mindmap {
         let MindmapStyle {
             padding_horizontal,
             padding_vertical,
-        } = match self.metadata.clone() {
-            Some(metadata) => metadata.style.unwrap_or_else(|| MindmapStyle::default()),
-            None => MindmapStyle::default(),
-        };
+        } = self.metadata.style;
 
         tracing::trace!(
             "Mindmap layout: padding_horizontal: {}, padding_vertical: {}",
@@ -86,12 +80,7 @@ impl Mindmap {
             }
         }
 
-        let position_starting = match self.metadata.clone() {
-            Some(metadata) => metadata
-                .position_starting
-                .unwrap_or_else(|| Pos2::new(500.0, 500.0)),
-            None => Pos2::new(500.0, 500.0),
-        };
+        let position_starting = self.metadata.position_starting.clone();
 
         fn layout_mindmap_standard_children(
             current_tree: Vec<&mut Node>,
@@ -181,7 +170,7 @@ impl Mindmap {
 impl Default for Mindmap {
     fn default() -> Self {
         Self {
-            metadata: Some(MindmapMetadata::default()),
+            metadata: MindmapMetadata::default(),
             data: Some(Node::default()),
         }
     }

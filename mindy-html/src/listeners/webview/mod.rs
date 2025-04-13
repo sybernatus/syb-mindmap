@@ -3,9 +3,10 @@ use ::web_sys::window;
 use dioxus::logger::tracing;
 use serde::{Deserialize, Serialize};
 use web_sys::wasm_bindgen::closure::Closure;
-use web_sys::wasm_bindgen::{JsCast};
+use web_sys::wasm_bindgen::{JsCast, JsValue};
 use web_sys::MessageEvent;
 use serde_wasm_bindgen::from_value;
+use web_sys::js_sys::{Reflect};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct InputData {
@@ -18,20 +19,53 @@ pub enum InputDataType {
     JSON,
 }
 
+pub fn init_message() {
+    let init_message = r#"
+    {
+        "type": "init",
+        "content": "init_message"
+    }"#;
+    tracing::debug!("init_message - {:?}", init_message);
+    window()
+        .unwrap()
+        .post_message(JsValue::from_str(init_message).as_ref(), "*").unwrap();
+    tracing::debug!("init_message - {:?}", init_message);
+}
+
 pub fn activate_message_listener() {
+    fn has_field(obj: JsValue, key: &str) -> bool {
+        Reflect::get(&obj, &JsValue::from_str(key))
+            .map(|v| !v.is_undefined())
+            .unwrap_or(false)
+    }
+
     let window = window().expect("Cannot get window");
     let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 
-        tracing::debug!("Received message from webview {:?}", event.data());
-        let _data = match event.origin().as_str() {
-            origin if origin.contains("http://") => load_json_data(DATA_JSON.to_string()),
-            _ => {}
-        };
+        match event.data().dyn_into() {
+            Ok(obj) => {
+                let o: JsValue = obj;
+                if has_field(o.clone(), "source") || has_field(o.clone(), "isAngularDevTools") {
+                    tracing::trace!("Skipping message from source");
+                    return;
+                } else {
+                    tracing::trace!("Received message from source - {:?}", event.data());
+                    load_json_data(DATA_JSON.to_string());
+                }
+            },
+            Err(_) => {
+                tracing::error!("Error parsing message from source");
+            }
+        }
+        if event.origin().as_str().contains("http://") {
+
+
+        }
 
         match from_value::<InputData>(event.data()) {
             Ok(data) => match data.r#type {
-                    InputDataType::JSON => load_json_data(data.content)
-                },
+                InputDataType::JSON => load_json_data(data.content)
+            },
             Err(_) => {}
         }
     });
@@ -45,9 +79,6 @@ pub fn activate_message_listener() {
 
 const DATA_JSON: &str = r#"
 {
-    "metadata": {
-        "diagram_type": "Standard"
-    },
     "data": {
         "text": "Node 0",
         "children": [

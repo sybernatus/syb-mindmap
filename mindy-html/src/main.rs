@@ -7,7 +7,7 @@ mod node;
 mod node_renderer;
 
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
-use crate::listeners::webview::{activate_message_listener};
+use crate::listeners::webview::{activate_message_listener, init_message};
 use crate::mindmap::MindmapComp;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
@@ -21,7 +21,7 @@ use std::string::ToString;
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));
-static MINDMAP_METADATA: GlobalSignal<Option<MindmapMetadata>> = GlobalSignal::new(|| None);
+static MINDMAP_METADATA: GlobalSignal<MindmapMetadata> = GlobalSignal::new(|| MindmapMetadata::default());
 static MINDMAP_DATA: GlobalSignal<Option<Node>> = GlobalSignal::new(|| None);
 
 fn main() {
@@ -33,6 +33,7 @@ fn App() -> Element {
     let is_dragging = use_signal(|| false);
     let last_mouse = use_signal(|| (0.0, 0.0));
     activate_message_listener();
+    init_message();
 
     rsx! {
         // document::Link { rel: "stylesheet", href: MAIN_CSS }
@@ -53,20 +54,11 @@ fn App() -> Element {
 }
 
 fn load_json_data(data_json: String) {
-    tracing::debug!("load_json_data - {:?}", data_json);
     let input_data = match serde_json::from_str::<MindmapCore>(data_json.as_str()) {
         Ok(mut input_data) => {
-            tracing::debug!("load_json_data - {:?}", input_data);
-            let metadata = input_data
-                .clone()
-                .metadata
-                .unwrap_or_else(|| MindmapMetadata::default());
+            tracing::trace!("load_json_data - {:?}", input_data);
             input_data.layout_mindmap();
-            let json = input_data.data.unwrap_or_else(|| Node::default());
-            MindmapCore {
-                metadata: Some(metadata),
-                data: Some(json),
-            }
+            input_data
         }
         Err(e) => {
             tracing::error!("Error decoding json: {:?}", e);
@@ -74,7 +66,6 @@ fn load_json_data(data_json: String) {
         }
     };
 
-    tracing::trace!("load_json_data - {:?}", input_data);
     *MINDMAP_DATA.write() = input_data.data;
     *MINDMAP_METADATA.write() = input_data.metadata;
 }

@@ -57,11 +57,12 @@ fn load_json_data(data_json: String) {
     let input_data = match serde_json::from_str::<MindmapCore>(data_json.as_str()) {
         Ok(mut input_data) => {
             tracing::debug!("load_json_data - {:?}", input_data);
-            let metadata = input_data.clone()
+            let metadata = input_data
+                .clone()
                 .metadata
                 .unwrap_or_else(|| MindmapMetadata::default());
-            let json = input_data.clone().data.unwrap_or_else(|| Node::default());
             input_data.layout_mindmap();
+            let json = input_data.data.unwrap_or_else(|| Node::default());
             MindmapCore {
                 metadata: Some(metadata),
                 data: Some(json),

@@ -1,20 +1,36 @@
 {
     "metadata": {
-        "diagram_type": "Standard",
-        "style": {
-            "padding_horizontal": 10.0,
-            "padding_vertical": 10.0
-        }
+        "diagram_type": "Standard"
     },
     "data": {
-        "text": "Node 0",
+        "text": "Test",
         "children": [
             {
                 "text": "Node 1",
-                "position_direction": "Left",
                 "children": [
                     {
                         "text": "Node 1.1",
+                        "children": [
+                            {
+                                "text": "Node 1.1.1",
+                                "children": []
+                            },
+                            {
+                                "text": "Node 1.1.2",
+                                "children": []
+                            },
+                            {
+                                "text": "Node 1.1.3",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "text": "Node 1.2",
+                        "children": []
+                    },
+                    {
+                        "text": "Node 1.3",
                         "children": []
                     }
                 ]
@@ -23,15 +39,11 @@
                 "text": "Node 2",
                 "children": [
                     {
-                        "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
+                        "text": "Node 2.1",
                         "children": []
                     },
                     {
                         "text": "Node 2.2",
-                        "children": []
-                    },
-                    {
-                        "text": "Node 2.3",
                         "children": []
                     }
                 ]
@@ -39,19 +51,7 @@
             {
                 "text": "Node 3",
                 "children": []
-            },
-            {
-                "text": "Node 4",
-                "children": []
-            },
-            {
-                "text": "Node 5",
-                "children": []
-            },
-            {
-                "text": "Node 6",
-                "children": []
             }
-        ]
+         ]
     }
 }

@@ -1,7 +1,7 @@
 use crate::utils::rgb::Rgb;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct NodeStyle {
     pub background_color: Rgb,
     pub children_hidden: bool,

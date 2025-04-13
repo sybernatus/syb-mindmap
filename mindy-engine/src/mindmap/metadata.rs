@@ -1,9 +1,9 @@
 use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
 use crate::utils::pos2::Pos2;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MindmapMetadata {
     pub diagram_type: Option<MindmapType>,
     pub style: Option<MindmapStyle>,

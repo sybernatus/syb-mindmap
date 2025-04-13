@@ -12,7 +12,7 @@ pub enum Direction {
     Left,
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 pub struct Node {
     pub text: Option<String>,
     pub style_custom: Option<NodeStyle>,

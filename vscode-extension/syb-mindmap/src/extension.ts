@@ -9,7 +9,7 @@ export async function loadWebview(context: vscode.ExtensionContext) {
 	const panel = vscode.window.createWebviewPanel(
 		'sybMindmap',
 		'Sybernatus Mindmap as code',
-		vscode.ViewColumn.One,
+		vscode.ViewColumn.Beside,
 		{
 			enableScripts: true,
 			localResourceRoots: [

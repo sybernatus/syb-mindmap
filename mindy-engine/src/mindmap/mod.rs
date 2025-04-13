@@ -4,13 +4,13 @@ use crate::mindmap::r#type::MindmapType;
 use crate::node::Node;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 pub mod metadata;
 pub mod style;
 pub mod r#type;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MindMap {
     pub metadata: Option<MindmapMetadata>,
     pub data: Option<Node>,

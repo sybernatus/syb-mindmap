@@ -11,12 +11,12 @@ pub mod style;
 pub mod r#type;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
-pub struct MindMap {
+pub struct Mindmap {
     pub metadata: Option<MindmapMetadata>,
     pub data: Option<Node>,
 }
 
-impl MindMap {
+impl Mindmap {
     pub fn new(metadata: Option<MindmapMetadata>, data: Option<Node>) -> Self {
         Self { metadata, data }
     }
@@ -178,7 +178,7 @@ impl MindMap {
     }
 }
 
-impl Default for MindMap {
+impl Default for Mindmap {
     fn default() -> Self {
         Self {
             metadata: Some(MindmapMetadata::default()),

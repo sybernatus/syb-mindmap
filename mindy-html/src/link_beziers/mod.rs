@@ -14,7 +14,7 @@ pub struct LinkBezierProps {
 }
 
 #[component]
-pub fn LinkBezier(props: LinkBezierProps) -> Element {
+pub fn LinkBezierComp(props: LinkBezierProps) -> Element {
     let path_data = bezier_svg_path(props.pos_start, props.pos_end, 0.15);
     let color = props.color.unwrap_or(Rgb::new(255.0, 255.0, 255.0));
     let stroke_width = props.stroke_width.unwrap_or(2.0);

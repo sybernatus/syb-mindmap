@@ -1,11 +1,11 @@
-use crate::node::{Node, NodeProps};
+use crate::node::{NodeComp, NodeProps};
 use crate::MINDMAP_DATA;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
 
 #[component]
-pub fn NodeRenderer() -> Element {
+pub fn NodeRendererComp() -> Element {
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 
     let _ = use_effect(move || {
@@ -20,7 +20,7 @@ pub fn NodeRenderer() -> Element {
             class: "node-renderer",
             id: "node-renderer",
             for element in elements.iter() {
-                Node {
+                NodeComp {
                     node: element.node.clone(),
                 }
             }

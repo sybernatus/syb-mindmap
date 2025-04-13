@@ -1,4 +1,4 @@
-use crate::link_beziers::{LinkBezier, LinkBezierProps};
+use crate::link_beziers::{LinkBezierComp, LinkBezierProps};
 use crate::MINDMAP_DATA;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
@@ -6,7 +6,7 @@ use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 
 #[component]
-pub fn LinkRenderer() -> Element {
+pub fn LinkRendererComp() -> Element {
     let mut elements: Signal<Vec<LinkBezierProps>> = use_signal(|| vec![]);
 
     use_effect(move || {
@@ -24,7 +24,7 @@ pub fn LinkRenderer() -> Element {
             class: "link-renderer",
             id: "link-renderer",
             for element in elements.iter() {
-                LinkBezier {
+                LinkBezierComp {
                     id: element.id.clone(),
                     pos_start: element.pos_start.clone(),
                     pos_end: element.pos_end.clone(),

@@ -1,7 +1,4 @@
 {
-    "metadata": {
-        "diagram_type": "Standard"
-    },
     "data": {
         "text": "Test",
         "children": [
@@ -50,6 +47,42 @@
             },
             {
                 "text": "Node 3",
+                "children": []
+            },
+            {
+                "text": "Node 7",
+                "children": []
+            },
+            {
+                "text": "Node 9",
+                "children": []
+            },
+            {
+                "text": "Node 10",
+                "children": []
+            },
+            {
+                "text": "Node 11",
+                "children": []
+            },
+            {
+                "text": "Node 12",
+                "children": []
+            },
+            {
+                "text": "Node 13",
+                "children": []
+            },
+            {
+                "text": "Node 14",
+                "children": []
+            },
+            {
+                "text": "Node 15",
+                "children": []
+            },
+            {
+                "text": "Node 16",
                 "children": []
             }
          ]

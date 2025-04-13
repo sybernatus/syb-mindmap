@@ -1,7 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub enum MindmapType {
-    #[default]
     Standard,
+}
+
+impl Default for MindmapType {
+    fn default() -> Self {
+        Self::Standard
+    }
 }

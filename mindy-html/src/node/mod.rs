@@ -9,7 +9,7 @@ pub struct NodeProps {
 }
 
 #[component]
-pub fn Node(props: NodeProps) -> Element {
+pub fn NodeComp(props: NodeProps) -> Element {
     let on_click = move |_| {
         // NODE_LIST.write().iter_mut().for_each(|node| {
         //     if node.id == props.node.id {

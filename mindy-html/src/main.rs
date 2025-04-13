@@ -8,13 +8,13 @@ mod node_renderer;
 
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
 use crate::listeners::webview::{activate_message_listener};
-use crate::mindmap::Mindmap;
+use crate::mindmap::MindmapComp;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::mindmap::metadata::MindmapMetadata;
-use mindy_engine::mindmap::{MindMap as MindmapCore, MindMap};
+use mindy_engine::mindmap::{Mindmap as MindmapCore};
 use mindy_engine::node::Node;
 use std::string::ToString;
 
@@ -47,21 +47,21 @@ fn App() -> Element {
             onmouseup: mouse_dragging_disable(is_dragging),
             onmousemove: mouse_position_update(is_dragging, last_mouse),
             onmouseout: mouse_dragging_disable(is_dragging),
-            Mindmap { }
+            MindmapComp { }
         }
     }
 }
 
 fn load_json_data(data_json: String) {
     tracing::debug!("load_json_data - {:?}", data_json);
-    let input_data = match serde_json::from_str::<MindMap>(data_json.as_str()) {
+    let input_data = match serde_json::from_str::<MindmapCore>(data_json.as_str()) {
         Ok(mut input_data) => {
             tracing::debug!("load_json_data - {:?}", input_data);
-            input_data.layout_mindmap();
-            let metadata = input_data
+            let metadata = input_data.clone()
                 .metadata
                 .unwrap_or_else(|| MindmapMetadata::default());
-            let json = input_data.data.unwrap_or_else(|| Node::default());
+            let json = input_data.clone().data.unwrap_or_else(|| Node::default());
+            input_data.layout_mindmap();
             MindmapCore {
                 metadata: Some(metadata),
                 data: Some(json),

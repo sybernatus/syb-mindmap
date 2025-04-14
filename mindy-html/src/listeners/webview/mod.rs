@@ -9,15 +9,27 @@ use web_sys::wasm_bindgen::{JsCast, JsValue};
 use ::web_sys::window;
 use web_sys::MessageEvent;
 
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+pub enum InputDataType {
+    JSON,
+}
+
+impl Default for InputDataType {
+    fn default() -> Self {
+        Self::JSON
+    }
+}
+
+
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct InputData {
     pub r#type: InputDataType,
     pub content: String
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
-pub enum InputDataType {
-    JSON,
+impl InputData {
+
 }
 
 pub fn init_message() {
@@ -33,24 +45,20 @@ pub fn init_message() {
     tracing::debug!("init_message - {:?}", init_message);
 }
 
-fn load_json_data(data_json: String) {
-
-    let input_data = match Mindmap::from_json_string(data_json) {
-        Ok(mut input_data) => {
-            tracing::trace!("load_json_data - {:?}", input_data);
-            input_data.layout_mindmap();
-            input_data
-        }
-        Err(e) => {
-            tracing::error!("Error decoding json: {:?}", e);
-            return;
-        }
-    };
-
-
-    *MINDMAP_DATA.write() = input_data.data;
-    *MINDMAP_METADATA.write() = input_data.metadata;
-}
+// fn load_json_data(data_json: String) {
+//
+//     let input_data = match Mindmap::from_json_string(data_json) {
+//         Ok(mut input_data) => {
+//             tracing::trace!("load_json_data - {:?}", input_data);
+//             input_data.layout_mindmap();
+//             input_data
+//         }
+//         Err(e) => {
+//             tracing::error!("Error decoding json: {:?}", e);
+//             return;
+//         }
+//     };
+// }
 
 
 pub fn activate_message_listener() {
@@ -63,32 +71,56 @@ pub fn activate_message_listener() {
     let window = window().expect("Cannot get window");
     let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 
-        match event.data().dyn_into() {
-            Ok(obj) => {
-                let o: JsValue = obj;
-                if has_field(o.clone(), "source") || has_field(o.clone(), "isAngularDevTools") {
-                    tracing::trace!("Skipping message from source");
-                    return;
-                } else {
-                    tracing::trace!("Received message from source - {:?}", event.data());
-                    load_json_data(DATA_JSON.to_string());
-                }
-            },
-            Err(_) => {
-                tracing::error!("Error parsing message from source");
-            }
-        }
         if event.origin().as_str().contains("http://") {
+            match event.data().dyn_into() {
+                Ok(obj) => {
+                    let o: JsValue = obj;
+                    if has_field(o.clone(), "source") || has_field(o.clone(), "isAngularDevTools") {
+                        tracing::trace!("Skipping message from source");
+                    } else {
+                        tracing::trace!("Received message from source - {:?}", event.data());
+                        match Mindmap::from_json_string(DATA_JSON.to_string()) {
+                            Ok(input_data) => {
+                                tracing::trace!("load_json_data - {:?}", input_data);
+                                input_data.to_owned().layout_mindmap();
+                                *MINDMAP_DATA.write() = input_data.data;
+                                *MINDMAP_METADATA.write() = input_data.metadata;
+                            }
+                            Err(e) => {
+                                tracing::error!("Error decoding json: {:?}", e);
+                                return;
+                            }
+                        };
+                    }
+                },
+                Err(e) => {
+                    tracing::error!("Error parsing message from source - {:?}", e);
+                }
+            };
+        } else {
+            match from_value::<InputData>(event.data()) {
+                Ok(data) => match data.r#type {
+                    InputDataType::JSON => {
+                        match Mindmap::from_json_string(data.content) {
+                            Ok(mut input_data) => {
+                                tracing::trace!("load_json_data - {:?}", input_data);
+                                let input_data = input_data.layout_mindmap();
+                                *MINDMAP_DATA.write() = input_data.data;
+                                *MINDMAP_METADATA.write() = input_data.metadata;
+                            }
+                            Err(e) => {
+                                tracing::error!("Error decoding json: {:?}", e);
+                                return;
+                            }
+                        }
+                    }
+                },
+                Err(err) => {
+                    tracing::error!("Error parsing message from source - {:?}", err);
+                }
+            };
+        };
 
-
-        }
-
-        match from_value::<InputData>(event.data()) {
-            Ok(data) => match data.r#type {
-                InputDataType::JSON => load_json_data(data.content)
-            },
-            Err(_) => {}
-        }
     });
 
     window

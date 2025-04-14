@@ -8,16 +8,13 @@
                     {
                         "text": "test",
                         "children": []
-                    },
-                    {
-                        "text": "test",
-                        "children": []
-                    },
-                    {
-                        "text": "popp"
                     }
                 ]
+            },
+            {
+                "text": "abt"
             }
         ]
     }
+
 }

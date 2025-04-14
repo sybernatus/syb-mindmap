@@ -37,14 +37,14 @@ impl Mindmap {
         }
     }
 
-    pub fn layout_mindmap(&mut self) {
+    pub fn layout_mindmap(&mut self) -> Self {
         // Launch the layout process based on the diagram type
             match self.metadata.diagram_type {
-                MindmapType::Standard => self.layout_mindmap_standard(),
-            };
+                MindmapType::Standard => self.layout_mindmap_standard().to_owned(),
+            }
     }
 
-    pub fn layout_mindmap_standard(&mut self) {
+    pub fn layout_mindmap_standard(&mut self) -> &mut Self {
         let graphical_size = match self.data.clone() {
             Some(data) => data.get_graphical_size(),
             None => Size::default(),
@@ -52,12 +52,12 @@ impl Mindmap {
 
         let data = match self.data.as_mut() {
             Some(data) => data,
-            None => return,
+            None => return self,
         };
 
         let children = match data.children.as_mut() {
             Some(children) => children,
-            None => return,
+            None => &mut vec![],
         };
 
         let MindmapStyle {
@@ -165,13 +165,18 @@ impl Mindmap {
             x: position_starting.x,
             y: position_starting.y + total_height / 2.0 - graphical_size.height / 2.0,
         });
+
+        self
     }
 
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
         match serde_json::from_str(json_string.as_str()) {
-            Ok(mindmap) => Ok(mindmap),
+            Ok(mindmap) => {
+                tracing::trace!("Mindmap from_json_string - {:?}", mindmap);
+                Ok(mindmap)
+            }
             Err(e) => {
-                tracing::error!("Error deserializing Mindmap: {:?}", e);
+                tracing::error!("Error decoding json: {:?}", e);
                 Err(e)
             }
         }

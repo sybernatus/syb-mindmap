@@ -123,7 +123,7 @@ const DATA_JSON: &str = r#"
                         "children": []
                     },
                     {
-                        "text": "Node 2.2",
+                        "text": "Node 2.2\natata",
                         "children": []
                     },
                     {
@@ -132,7 +132,7 @@ const DATA_JSON: &str = r#"
                 ]
             },
             {
-                "text": "Node 3",
+                "text": "<p>Test</p>",
                 "children": []
             },
             {

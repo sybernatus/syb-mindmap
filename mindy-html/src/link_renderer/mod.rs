@@ -42,6 +42,10 @@ fn calculate_elements(
     mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
 
+    if  node_input.text.is_none() || node_input.clone().text.unwrap().is_empty() {
+        return elements;
+    }
+
     let children = match node_input.children.clone() {
         Some(children) => children,
         None => vec![],

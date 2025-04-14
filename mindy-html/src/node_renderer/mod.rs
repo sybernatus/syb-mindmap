@@ -33,6 +33,10 @@ fn calculate_elements(mindmap_data: Option<Node>, mut elements: Vec<NodeProps>) 
         None => return elements,
     };
 
+    if node_input.text.is_none() || node_input.clone().text.unwrap().is_empty() {
+        return elements;
+    }
+
     let children = match node_input.to_owned().children {
         Some(children) => children,
         None => vec![]

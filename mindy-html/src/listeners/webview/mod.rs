@@ -1,21 +1,20 @@
-use crate::{MINDMAP_DATA, MINDMAP_METADATA};
+use crate::events::webview::WebviewEvent;
+use crate::{update_mindmap, MINDMAP_DATA, MINDMAP_METADATA};
 use dioxus::logger::tracing;
 use mindy_engine::mindmap::Mindmap;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::from_value;
-use web_sys::js_sys::Reflect;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
 use ::web_sys::window;
 use web_sys::MessageEvent;
 
-
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
-pub enum InputDataType {
+pub enum WebviewMessageType {
     JSON,
 }
 
-impl Default for InputDataType {
+impl Default for WebviewMessageType {
     fn default() -> Self {
         Self::JSON
     }
@@ -23,13 +22,69 @@ impl Default for InputDataType {
 
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
-pub struct InputData {
-    pub r#type: InputDataType,
+pub struct WebviewListener {
+    pub r#type: WebviewMessageType,
     pub content: String
 }
 
-impl InputData {
+impl WebviewListener {
 
+    pub fn new() -> Self {
+        Self {
+            r#type: Default::default(),
+            content: "".to_string(),
+        }
+    }
+
+    pub fn add_message_listener(&self) {
+
+        let window = window().expect("Cannot get window");
+        let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
+
+            let webview_event = WebviewEvent::new(event);
+
+            if webview_event.is_origin_http() {
+                match webview_event.get_data().dyn_into() {
+                    Ok(dynamic_object) => {
+                        let js_value_object: JsValue = dynamic_object;
+                        if webview_event.data_has_one_of_fields(js_value_object, vec!["isAngularDevTools", "source"]) {
+                            tracing::trace!("Skipping message from source");
+                        } else {
+                            tracing::trace!("Received message from source - {:?}", webview_event.get_data());
+                            match Mindmap::from_json_string(DATA_JSON.to_string()) {
+                                Ok(mindmap) => update_mindmap(mindmap),
+                                Err(_) => { return; }
+                            };
+                        }
+                    }
+                    Err(e) => {
+                        tracing::error!("Error parsing message from source - {:?}", e);
+                    }
+                };
+            } else {
+                match from_value::<WebviewListener>(webview_event.get_data()) {
+                    Ok(webview_listener) => match webview_listener.r#type {
+                        WebviewMessageType::JSON => {
+                            match Mindmap::from_json_string(webview_listener.content) {
+                                Ok(mindmap) => update_mindmap(mindmap),
+                                Err(_) => { return; }
+                            }
+                        }
+                    },
+                    Err(err) => {
+                        tracing::error!("Error parsing message from source - {:?}", err);
+                    }
+                };
+            };
+
+        });
+
+        window
+            .add_event_listener_with_callback("message", closure.as_ref().unchecked_ref())
+            .expect("Failed to add event listener");
+
+        closure.forget();
+    }
 }
 
 pub fn init_message() {
@@ -43,91 +98,6 @@ pub fn init_message() {
         .unwrap()
         .post_message(JsValue::from_str(init_message).as_ref(), "*").unwrap();
     tracing::debug!("init_message - {:?}", init_message);
-}
-
-// fn load_json_data(data_json: String) {
-//
-//     let input_data = match Mindmap::from_json_string(data_json) {
-//         Ok(mut input_data) => {
-//             tracing::trace!("load_json_data - {:?}", input_data);
-//             input_data.layout_mindmap();
-//             input_data
-//         }
-//         Err(e) => {
-//             tracing::error!("Error decoding json: {:?}", e);
-//             return;
-//         }
-//     };
-// }
-
-
-pub fn activate_message_listener() {
-    fn has_field(obj: JsValue, key: &str) -> bool {
-        Reflect::get(&obj, &JsValue::from_str(key))
-            .map(|v| !v.is_undefined())
-            .unwrap_or(false)
-    }
-
-    let window = window().expect("Cannot get window");
-    let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
-
-        if event.origin().as_str().contains("http://") {
-            match event.data().dyn_into() {
-                Ok(obj) => {
-                    let o: JsValue = obj;
-                    if has_field(o.clone(), "source") || has_field(o.clone(), "isAngularDevTools") {
-                        tracing::trace!("Skipping message from source");
-                    } else {
-                        tracing::trace!("Received message from source - {:?}", event.data());
-                        match Mindmap::from_json_string(DATA_JSON.to_string()) {
-                            Ok(input_data) => {
-                                tracing::trace!("load_json_data - {:?}", input_data);
-                                input_data.to_owned().layout_mindmap();
-                                *MINDMAP_DATA.write() = input_data.data;
-                                *MINDMAP_METADATA.write() = input_data.metadata;
-                            }
-                            Err(e) => {
-                                tracing::error!("Error decoding json: {:?}", e);
-                                return;
-                            }
-                        };
-                    }
-                },
-                Err(e) => {
-                    tracing::error!("Error parsing message from source - {:?}", e);
-                }
-            };
-        } else {
-            match from_value::<InputData>(event.data()) {
-                Ok(data) => match data.r#type {
-                    InputDataType::JSON => {
-                        match Mindmap::from_json_string(data.content) {
-                            Ok(mut input_data) => {
-                                tracing::trace!("load_json_data - {:?}", input_data);
-                                let input_data = input_data.layout_mindmap();
-                                *MINDMAP_DATA.write() = input_data.data;
-                                *MINDMAP_METADATA.write() = input_data.metadata;
-                            }
-                            Err(e) => {
-                                tracing::error!("Error decoding json: {:?}", e);
-                                return;
-                            }
-                        }
-                    }
-                },
-                Err(err) => {
-                    tracing::error!("Error parsing message from source - {:?}", err);
-                }
-            };
-        };
-
-    });
-
-    window
-        .add_event_listener_with_callback("message", closure.as_ref().unchecked_ref())
-        .expect("Failed to add event listener");
-
-    closure.forget();
 }
 
 const DATA_JSON: &str = r#"

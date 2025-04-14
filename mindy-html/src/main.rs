@@ -7,7 +7,7 @@ mod node;
 mod node_renderer;
 
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
-use crate::listeners::webview::{activate_message_listener, init_message};
+use crate::listeners::webview::{init_message, WebviewListener};
 use crate::mindmap::MindmapComp;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
@@ -15,6 +15,7 @@ use dioxus::prelude::*;
 use mindy_engine::mindmap::metadata::MindmapMetadata;
 use mindy_engine::node::Node;
 use std::string::ToString;
+use mindy_engine::mindmap::Mindmap;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
@@ -30,7 +31,7 @@ fn main() {
 fn App() -> Element {
     let is_dragging = use_signal(|| false);
     let last_mouse = use_signal(|| (0.0, 0.0));
-    activate_message_listener();
+    WebviewListener::new().add_message_listener();
     init_message();
 
     rsx! {
@@ -49,5 +50,11 @@ fn App() -> Element {
             MindmapComp { }
         }
     }
+}
+
+pub fn update_mindmap(mindmap: Mindmap) {
+
+    *MINDMAP_DATA.write() = mindmap.data;
+    *MINDMAP_METADATA.write() = mindmap.metadata;
 }
 

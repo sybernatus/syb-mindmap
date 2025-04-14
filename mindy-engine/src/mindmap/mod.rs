@@ -170,9 +170,11 @@ impl Mindmap {
     }
 
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
-        match serde_json::from_str(json_string.as_str()) {
+        match serde_json::from_str::<Self>(json_string.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_json_string - {:?}", mindmap);
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data)
+                    .layout_mindmap();
                 Ok(mindmap)
             }
             Err(e) => {

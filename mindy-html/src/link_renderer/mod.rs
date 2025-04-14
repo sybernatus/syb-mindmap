@@ -44,7 +44,7 @@ fn calculate_elements(
 
     let children = match node_input.children.clone() {
         Some(children) => children,
-        None => return elements,
+        None => vec![],
     };
 
     for child in &children {

@@ -1,5 +1,5 @@
 use crate::events::webview::WebviewEvent;
-use crate::{update_mindmap, MINDMAP_DATA, MINDMAP_METADATA};
+use crate::{update_mindmap};
 use dioxus::logger::tracing;
 use mindy_engine::mindmap::Mindmap;
 use serde::{Deserialize, Serialize};
@@ -127,8 +127,7 @@ const DATA_JSON: &str = r#"
                         "children": []
                     },
                     {
-                        "text": "Node 2.3",
-                        "children": []
+                        "text": "Node 2.3"
                     }
                 ]
             },

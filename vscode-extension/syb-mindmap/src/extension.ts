@@ -30,9 +30,7 @@ export async function loadWebview(context: vscode.ExtensionContext) {
 	);
 	
 	const htmlContent = await fs.promises.readFile(htmlUri.fsPath, 'utf-8');
-	const fixedHtml = fixLinksForWebview(htmlContent, panel, context);
-
-	panel.webview.html = fixedHtml;
+	panel.webview.html = fixLinksForWebview(htmlContent, panel, context);
 }
 
 function fixLinksForWebview(html: string, panel: vscode.WebviewPanel, context: vscode.ExtensionContext): string {

@@ -61,10 +61,11 @@ script_runner = "bash"
 script = '''
 #!/bin/bash
 set -e
-git cliff --unreleased --bump > .github/CHANGELOG.md
+git cliff --bump --config .cliff.toml > .github/CHANGELOG.md
+git cliff --unreleased --bump --config .cliff.toml > vscode-extension/syb-mindmap/CHANGELOG.md
 git add .github/CHANGELOG.md
 
-version="$(git cliff --bumped-version 2> /dev/null)"
+version="$(git cliff --config .cliff.toml --bumped-version 2> /dev/null)"
 
 (
     cd vscode-extension/syb-mindmap

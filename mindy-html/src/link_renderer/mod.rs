@@ -41,8 +41,7 @@ fn calculate_elements(
     parent_position: Option<Pos2>,
     mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
-
-    if  node_input.text.is_none() || node_input.clone().text.unwrap().is_empty() {
+    if node_input.text.is_none() || node_input.clone().text.unwrap().is_empty() {
         return elements;
     }
 

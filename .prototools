@@ -1,0 +1,2 @@
+[plugins]
+jq = "https://raw.githubusercontent.com/appthrust/proto-toml-plugins/main/jq/plugin.toml"

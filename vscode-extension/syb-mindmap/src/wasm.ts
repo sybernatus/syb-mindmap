@@ -7,10 +7,10 @@ export async function listenOpenFile(panel: vscode.WebviewPanel) {
         let textDocument = document;
         switch (textDocument.languageId) {
             case 'json':
-                panel.webview.postMessage({type: 'JSON',content: textDocument.getText().trim()});
+                panel.webview.postMessage({type: 'JSON', content: textDocument.getText().trim()});
                 break;
             case 'yaml':
-                panel.webview.postMessage({type: 'YAML',content: textDocument.getText().trim()});
+                panel.webview.postMessage({type: 'YAML', content: textDocument.getText().trim()});
                 break;
             default:
                 break;
@@ -20,10 +20,10 @@ export async function listenOpenFile(panel: vscode.WebviewPanel) {
         let textDocument = document.document;
         switch (textDocument.languageId) {
             case 'json':
-                panel.webview.postMessage({type: 'JSON',content: textDocument.getText().trim()});
+                panel.webview.postMessage({type: 'JSON', content: textDocument.getText().trim()});
                 break;
             case 'yaml':
-                panel.webview.postMessage({type: 'YAML',content: textDocument.getText().trim()});
+                panel.webview.postMessage({type: 'YAML', content: textDocument.getText().trim()});
                 break;
             default:
                 break;

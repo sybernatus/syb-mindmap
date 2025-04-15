@@ -1,4 +1,3 @@
-use std::error::Error;
 use crate::mindmap::metadata::MindmapMetadata;
 use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
@@ -6,6 +5,7 @@ use crate::node::Node;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 pub mod metadata;
 pub mod style;
@@ -39,9 +39,9 @@ impl Mindmap {
 
     pub fn layout_mindmap(&mut self) -> Self {
         // Launch the layout process based on the diagram type
-            match self.metadata.diagram_type {
-                MindmapType::Standard => self.layout_mindmap_standard().to_owned(),
-            }
+        match self.metadata.diagram_type {
+            MindmapType::Standard => self.layout_mindmap_standard().to_owned(),
+        }
     }
 
     pub fn layout_mindmap_standard(&mut self) -> &mut Self {
@@ -173,12 +173,25 @@ impl Mindmap {
         match serde_json::from_str::<Self>(json_string.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_json_string - {:?}", mindmap);
-                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data)
-                    .layout_mindmap();
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data).layout_mindmap();
                 Ok(mindmap)
             }
             Err(e) => {
                 tracing::error!("Error decoding json: {:?}", e);
+                Err(e)
+            }
+        }
+    }
+
+    pub fn from_yaml_string(yaml_str: String) -> Result<Self, impl Error> {
+        match serde_yaml::from_str::<Self>(yaml_str.as_str()) {
+            Ok(mindmap) => {
+                tracing::trace!("Mindmap from_yaml_str - {:?}", mindmap);
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data).layout_mindmap();
+                Ok(mindmap)
+            }
+            Err(e) => {
+                tracing::error!("Error decoding yaml: {:?}", e);
                 Err(e)
             }
         }

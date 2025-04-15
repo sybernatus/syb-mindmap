@@ -55,8 +55,8 @@ version="$(git cliff --bumped-version 2> /dev/null)"
     git add package.json
 )
 
-git tag "${version}"
 git commit --message "chore: release tag ${version}"
+git tag "${version}"
 git push --tags
 '''
 category = "Release"

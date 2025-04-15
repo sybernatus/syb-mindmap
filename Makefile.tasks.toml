@@ -44,6 +44,17 @@ code --install-extension "syb-mindmap-${version}.vsix"
 category = "Deploy"
 dependencies = ["vscode_build"]
 
+[tasks.vscode_publish]
+script_runner = "bash"
+cwd = "vscode-extension/syb-mindmap"
+script = '''
+#!/bin/bash
+set -e
+yarn run vsce publish
+'''
+category = "Publish"
+dependencies = ["vscode_deploy"]
+
 
 [tasks.release]
 script_runner = "bash"

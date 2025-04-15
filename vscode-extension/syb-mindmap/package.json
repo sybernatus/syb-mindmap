@@ -3,7 +3,8 @@
   "displayName": "syb-mindmap",
   "description": "mindmap as code",
   "version": "0.4.0",
-  "publisher": "Sybernatus",
+  "publisher": "sybernatus",
+  "repository": "https://github.com/sybernatus/mindy-gen",
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -17,6 +18,11 @@
       {
         "command": "syb-mindmap.openWebview",
         "title": "Syb Mindmap"
+      }
+    ],
+    "documentation": [
+      {
+        "changelog": "../../.github/CHANGELOG.md"
       }
     ]
   },

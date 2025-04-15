@@ -22,5 +22,5 @@ target/
 /tmp
 /node_modules
 /out
-/syb-mindmap-0.0.1.vsix
+/syb-mindmap*.vsix
 /yarn-error.log

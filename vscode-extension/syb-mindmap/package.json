@@ -2,7 +2,7 @@
   "name": "syb-mindmap",
   "displayName": "syb-mindmap",
   "description": "mindmap as code",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "publisher": "Sybernatus",
   "engines": {
     "vscode": "^1.99.0"

@@ -62,7 +62,9 @@ version="$(git cliff --bumped-version 2> /dev/null)"
 )
 cargo set-version --workspace "${version}" --offline
 
+git add --all
 git commit --message "chore: release tag '${version}'"
+
 git tag "${version}"
 git push --follow-tags
 '''

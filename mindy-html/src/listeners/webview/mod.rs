@@ -1,17 +1,18 @@
 use crate::events::webview::WebviewEvent;
-use crate::{update_mindmap};
+use crate::update_mindmap;
+use ::web_sys::window;
 use dioxus::logger::tracing;
 use mindy_engine::mindmap::Mindmap;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::from_value;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
-use ::web_sys::window;
 use web_sys::MessageEvent;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub enum WebviewMessageType {
     JSON,
+    YAML,
 }
 
 impl Default for WebviewMessageType {
@@ -20,15 +21,13 @@ impl Default for WebviewMessageType {
     }
 }
 
-
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct WebviewListener {
     pub r#type: WebviewMessageType,
-    pub content: String
+    pub content: String,
 }
 
 impl WebviewListener {
-
     pub fn new() -> Self {
         Self {
             r#type: Default::default(),
@@ -37,23 +36,29 @@ impl WebviewListener {
     }
 
     pub fn add_message_listener(&self) {
-
         let window = window().expect("Cannot get window");
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
-
             let webview_event = WebviewEvent::new(event);
 
             if webview_event.is_origin_http() {
                 match webview_event.get_data().dyn_into() {
                     Ok(dynamic_object) => {
                         let js_value_object: JsValue = dynamic_object;
-                        if webview_event.data_has_one_of_fields(js_value_object, vec!["isAngularDevTools", "source"]) {
+                        if webview_event.data_has_one_of_fields(
+                            js_value_object,
+                            vec!["isAngularDevTools", "source"],
+                        ) {
                             tracing::trace!("Skipping message from source");
                         } else {
-                            tracing::trace!("Received message from source - {:?}", webview_event.get_data());
+                            tracing::trace!(
+                                "Received message from source - {:?}",
+                                webview_event.get_data()
+                            );
                             match Mindmap::from_json_string(DATA_JSON.to_string()) {
                                 Ok(mindmap) => update_mindmap(mindmap),
-                                Err(_) => { return; }
+                                Err(_) => {
+                                    return;
+                                }
                             };
                         }
                     }
@@ -67,7 +72,17 @@ impl WebviewListener {
                         WebviewMessageType::JSON => {
                             match Mindmap::from_json_string(webview_listener.content) {
                                 Ok(mindmap) => update_mindmap(mindmap),
-                                Err(_) => { return; }
+                                Err(_) => {
+                                    return;
+                                }
+                            }
+                        }
+                        WebviewMessageType::YAML => {
+                            match Mindmap::from_yaml_string(webview_listener.content) {
+                                Ok(mindmap) => update_mindmap(mindmap),
+                                Err(_) => {
+                                    return;
+                                }
                             }
                         }
                     },
@@ -76,7 +91,6 @@ impl WebviewListener {
                     }
                 };
             };
-
         });
 
         window
@@ -96,7 +110,8 @@ pub fn init_message() {
     tracing::debug!("init_message - {:?}", init_message);
     window()
         .unwrap()
-        .post_message(JsValue::from_str(init_message).as_ref(), "*").unwrap();
+        .post_message(JsValue::from_str(init_message).as_ref(), "*")
+        .unwrap();
     tracing::debug!("init_message - {:?}", init_message);
 }
 

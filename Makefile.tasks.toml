@@ -1,3 +1,9 @@
+[tasks.setup]
+script = [
+    "cargo install cargo-make --version 0.37.24 || true",
+    "cargo install cargo-edit --version 0.13.2 || true",
+]
+
 [tasks.html_build]
 script_runner = "bash"
 cwd = "mindy-html"
@@ -30,7 +36,7 @@ cwd = "vscode-extension/syb-mindmap"
 script = '''
 #!/bin/bash
 set -e
-version="$( cat package.json | jq .version )"
+version="$( cat package.json | jq --raw-output --compact-output .version )"
 code --uninstall-extension "syb-mindmap-${version}.vsix" || true
 code --update-extensions && yarn run vsce package --allow-missing-repository
 code --install-extension "syb-mindmap-${version}.vsix"
@@ -51,11 +57,12 @@ version="$(git cliff --bumped-version 2> /dev/null)"
 
 (
     cd vscode-extension/syb-mindmap
-    yarn version --no-git-tag-version --no-commit-hooks --non-interactive --new-version ${version}
+    yarn version --no-git-tag-version --no-commit-hooks --non-interactive --new-version "${version}"
     git add package.json
 )
+cargo set-version --workspace "${version}" --offline
 
-git commit --message "chore: release tag ${version}"
+git commit --message "chore: release tag '${version}'"
 git tag "${version}"
 git push --follow-tags
 '''

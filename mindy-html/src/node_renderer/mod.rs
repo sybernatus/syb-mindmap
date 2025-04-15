@@ -39,7 +39,7 @@ fn calculate_elements(mindmap_data: Option<Node>, mut elements: Vec<NodeProps>) 
 
     let children = match node_input.to_owned().children {
         Some(children) => children,
-        None => vec![]
+        None => vec![],
     };
 
     for child in children {

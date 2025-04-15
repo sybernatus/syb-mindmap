@@ -25,13 +25,13 @@ impl WebviewEvent {
         self.event.source()
     }
 
-    pub fn data_has_field(&self, obj: JsValue , key: &str) -> bool {
+    pub fn data_has_field(&self, obj: JsValue, key: &str) -> bool {
         Reflect::get(&obj, &JsValue::from_str(key))
             .map(|v| !v.is_undefined())
             .unwrap_or(false)
     }
 
-    pub fn data_has_one_of_fields(&self, obj: JsValue , keys: Vec<&str>) -> bool {
+    pub fn data_has_one_of_fields(&self, obj: JsValue, keys: Vec<&str>) -> bool {
         for key in keys {
             if self.data_has_field(obj.clone(), key) {
                 return true;

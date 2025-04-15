@@ -33,8 +33,7 @@ impl MindmapMetadata {
     }
 
     pub fn get_style(&self) -> MindmapStyle {
-        self.clone()
-            .style
+        self.clone().style
     }
 }
 

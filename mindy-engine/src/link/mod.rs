@@ -11,6 +11,9 @@ pub fn get_link_metadata(start: Pos2, end: Pos2) -> (f32, f32, f32, f32, f32) {
     (direction_x, direction_y, distance, normal_x, normal_y)
 }
 
+/// Computes the control points for a cubic Bezier curve between two points.
+/// The control points are offset from the line connecting the two points
+/// by a specified ratio.
 pub fn compute_control_points_offset(start: Pos2, end: Pos2, offset_ratio: f32) -> (Pos2, Pos2) {
     let (direction_x, direction_y, distance, normal_x, normal_y) =
         get_link_metadata(start.clone(), end.clone());

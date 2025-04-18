@@ -5,16 +5,16 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8" />
-  <link rel="preload" as="script" href="./assets/mindy-html-465a195aff29b45c.js" crossorigin><link rel="preload" as="fetch" type="application/wasm" href="./assets/mindy-html_bg-7d4a922181dc40ed.wasm" crossorigin></head>
+  <link rel="preload" as="script" href="http://local.plugin/assets/mindy-html-465a195aff29b45c.js" crossorigin><link rel="preload" as="fetch" type="application/wasm" href="http://local.plugin/assets/mindy-html_bg-7d4a922181dc40ed.wasm" crossorigin></head>
   <body>
   TEEEEEEEEST
 
     <div id="main"></div>
   <script>
             // We can't use a module script here because we need to start the script immediately when streaming
-            import("./assets/mindy-html-465a195aff29b45c.js").then(
+            import("http://local.plugin/assets/mindy-html-465a195aff29b45c.js").then(
                 ({ default: init }) => {
-                init("./assets/mindy-html_bg-7d4a922181dc40ed.wasm").then((wasm) => {
+                init("http://local.plugin/assets/mindy-html_bg-7d4a922181dc40ed.wasm").then((wasm) => {
                     if (wasm.__wbindgen_start == undefined) {
                     wasm.main();
                     }

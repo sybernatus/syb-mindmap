@@ -7,8 +7,15 @@ import com.intellij.ui.content.ContentFactory
 
 class HtmlToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val htmlPanel = HtmlPanel()
-        val content = ContentFactory.getInstance().createContent(htmlPanel.component, "Syb Mindmap", false)
-        toolWindow.contentManager.addContent(content)
+        val contentManager = toolWindow.contentManager
+        contentManager.removeAllContents(true)
+
+        if (contentManager.contentCount == 0) {
+            val htmlPanel = HtmlPanel()
+            val content = ContentFactory.getInstance().createContent(htmlPanel.component, "My HTML", false)
+            contentManager.addContent(content)
+        } else {
+            println("[PLUGIN] ToolWindow déjà initialisé, aucun ajout répété.")
+        }
     }
 }

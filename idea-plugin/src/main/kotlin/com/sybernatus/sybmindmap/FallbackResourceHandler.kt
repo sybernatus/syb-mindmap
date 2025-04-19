@@ -9,7 +9,7 @@ import org.cef.network.CefResponse
 import java.io.ByteArrayInputStream
 
 class FallbackResourceHandler(
-    private val resourcePath: String,
+    resourcePath: String,
 ): CefResourceHandler {
     private val fallback = """<html><body><h2>Fichier manquant: $resourcePath</h2></body></html>"""
         .toByteArray()

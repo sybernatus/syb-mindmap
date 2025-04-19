@@ -1,10 +1,9 @@
-package com.sybernatus
+package com.sybernatus.sybmindmap
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.util.ui.HtmlPanel
-import com.sybernatus.sybmindmap.HtmlResourcesRequestHandler
 import java.awt.BorderLayout
 import javax.swing.JPanel
 

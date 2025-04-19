@@ -34,7 +34,6 @@ class StaticResourcesHandler(
         bytesRead: IntRef?,
         callback: CefCallback?
     ): Boolean {
-//        println("[PLUGIN] readResponse: $bytesToRead")
         if (dataOut == null || bytesRead == null || inputStream == null) return false
         val actualRead = inputStream!!.read(dataOut, 0, bytesToRead)
         if (actualRead == -1) return false // 🔁 plus de données

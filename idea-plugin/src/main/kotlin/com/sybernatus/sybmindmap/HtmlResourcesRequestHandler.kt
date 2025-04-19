@@ -1,5 +1,6 @@
 package com.sybernatus.sybmindmap
 
+import com.intellij.util.ui.HtmlPanel
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefRequestHandlerAdapter
@@ -8,7 +9,10 @@ import org.cef.handler.CefResourceRequestHandler
 import org.cef.handler.CefResourceRequestHandlerAdapter
 import org.cef.misc.BoolRef
 import org.cef.network.CefRequest
+import java.io.File
+import java.net.URL
 import java.net.URLConnection
+import java.nio.file.Files
 
 class HtmlResourcesRequestHandler : CefRequestHandlerAdapter() {
     override fun getResourceRequestHandler(
@@ -46,7 +50,25 @@ class HtmlResourcesRequestHandler : CefRequestHandlerAdapter() {
             val bytes = resourceStream.readBytes()
             val mimeType = guessMimeType(path)
 
-            return StaticResourcesHandler(bytes, mimeType)
+            val html = String(bytes, Charsets.UTF_8)
+            val htmlModified = formatUrl(html)
+
+            return if (path == "index.html") {
+                val html = String(bytes, Charsets.UTF_8)
+                    .replace(Regex("(src|href)=\"(?!https?://|data:|chrome:|chrome-extension:)([^\"]+)\"")) {
+                        val attr = it.groupValues[1]
+                        val value = it.groupValues[2]
+                        "$attr=\"http://local.plugin/$value\""
+                    }
+                    .replace(Regex("(import|init)\"(?!https?://|data:|chrome:|chrome-extension:)([^\"]+)\"")) {
+                        val keyword = it.groupValues[1]
+                        val pathVal = it.groupValues[2]
+                        "$keyword(\"http://local.plugin/$pathVal\""
+                    }
+                StaticResourcesHandler(html.toByteArray(Charsets.UTF_8), mimeType)
+            } else {
+                StaticResourcesHandler(bytes, mimeType)
+            }
         }
     }
 
@@ -64,7 +86,20 @@ class HtmlResourcesRequestHandler : CefRequestHandlerAdapter() {
         }
         return false
     }
-}
 
-private fun guessMimeType(fileName: String): String =
-    URLConnection.guessContentTypeFromName(fileName) ?: "application/octet-stream"
+    private fun guessMimeType(fileName: String): String =
+        URLConnection.guessContentTypeFromName(fileName) ?: "application/octet-stream"
+
+    private fun formatUrl(html: String): String {
+        return html.replace(Regex("(src|href)=\"(?!https?://|data:|chrome:|chrome-extension:)([^\"]+)\"")) {
+            val attr = it.groupValues[1]
+            val value = it.groupValues[2]
+            "$attr=\"http://local.plugin/$value\""
+        }.replace(Regex("(import|init)\"(?!https?://|data:|chrome:|chrome-extension:)([^\"]+)\"")) {
+            val keyword = it.groupValues[1]
+            val pathVal = it.groupValues[2]
+            "$keyword(\"http://local.plugin/$pathVal\""
+        }
+    }
+
+}

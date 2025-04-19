@@ -26,7 +26,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Syb Mindmap" factoryClass="com.sybernatus.HtmlToolWindowFactory"
+        <toolWindow id="Syb Mindmap" factoryClass="com.sybernatus.sybmindmap.HtmlToolWindowFactory"
                     anchor="right" canCloseContent="true"/>
     </extensions>
 

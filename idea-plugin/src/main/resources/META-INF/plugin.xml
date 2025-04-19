@@ -27,7 +27,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="Syb Mindmap" factoryClass="com.sybernatus.HtmlToolWindowFactory"
-                    anchor="right" canCloseContent="false"/>
+                    anchor="right" canCloseContent="true"/>
     </extensions>
 
 </idea-plugin>

@@ -9,22 +9,12 @@ rm --recursive --force src/main/resources/html/*
 cp --recursive --force ../target/dx/mindy-html/debug/web/public/* src/main/resources/html/
 cp --recursive --force ../assets/logo/logo.svg src/main/resources/META-INF/pluginIcon.svg
 cp --recursive --force ../assets/logo/logo_dark.svg src/main/resources/META-INF/pluginIcon_dark.svg
+
+version="$( cat build.gradle.kts | grep --extended-regexp "^version =" | cut --delimiter '"' --field 2 )"
+./gradlew buildPlugin -PpluginVersion="${version}"
 '''
 category = "Build"
 dependencies = ["html_build"]
-
-[tasks.idea_deploy]
-script_runner = "bash"
-cwd = "idea-plugin"
-script = '''
-#!/bin/bash
-set -e
-
-version="$( cat package.json | jq --raw-output --compact-output .version )"
-./gradlew buildPlugin -PpluginVersion="${version}"
-'''
-category = "Deploy"
-dependencies = ["idea_build"]
 
 [tasks.idea_publish]
 script_runner = "bash"
@@ -33,9 +23,10 @@ script = '''
 #!/bin/bash
 set -e
 
+./gradlew publishPlugin
 '''
 category = "Publish"
-dependencies = ["idea_deploy"]
+dependencies = ["idea_build"]
 
 [tasks.idea_serve]
 script_runner = "bash"

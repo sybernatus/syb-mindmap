@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream
 class FallbackResourceHandler(
     resourcePath: String,
 ): CefResourceHandler {
-    private val fallback = """<html><body><h2>Fichier manquant: $resourcePath</h2></body></html>"""
+    private val fallback = """<html><body><h2>File missing: $resourcePath</h2></body></html>"""
         .toByteArray()
     private val input = ByteArrayInputStream(fallback)
 

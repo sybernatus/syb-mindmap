@@ -40,7 +40,7 @@ impl WebviewListener {
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
             let webview_event = WebviewEvent::new(event);
 
-            if webview_event.is_origin_http() {
+            if webview_event.is_origin_http() && !webview_event.is_origin_intellij() {
                 match webview_event.get_data().dyn_into() {
                     Ok(dynamic_object) => {
                         let js_value_object: JsValue = dynamic_object;

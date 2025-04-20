@@ -121,6 +121,12 @@ version="$(git cliff --config .cliff.toml --bumped-version 2> /dev/null)"
     yarn version --no-git-tag-version --no-commit-hooks --non-interactive --new-version "${version}"
     git add package.json
 )
+
+(
+    cd idea-plugin
+    sed --in-place "s#version.set.*#version.set(\"${version}\")#" build.gradle.kts
+    git add build.gradle.kts
+)
 cargo set-version --workspace "${version}" --offline
 
 git add --all

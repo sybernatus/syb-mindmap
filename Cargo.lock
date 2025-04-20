@@ -2582,7 +2582,7 @@ dependencies = [
 
 [[package]]
 name = "mindy-engine"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -2592,7 +2592,7 @@ dependencies = [
 
 [[package]]
 name = "mindy-html"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "base64",
  "dioxus",

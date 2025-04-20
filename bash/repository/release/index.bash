@@ -17,7 +17,7 @@ version="$( git cliff --config .cliff.toml --bumped-version 2> /dev/null )"
 
 (
     cd idea-plugin
-    sed --in-place "s#version.set.*#version.set(\"${version}\")#" build.gradle.kts
+    sed --in-place --regexp-extended "s#^version = *#version = \"${version}\"#" build.gradle.kts
     git add build.gradle.kts
 )
 cargo set-version --workspace "${version}" --offline

@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$/mindy-html" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/vscode-extension" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/mindy-engine/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/mindy-html/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

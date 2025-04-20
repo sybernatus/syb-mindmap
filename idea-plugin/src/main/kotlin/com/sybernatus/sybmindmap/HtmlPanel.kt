@@ -1,11 +1,10 @@
 package com.sybernatus.sybmindmap
 
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.ui.jcef.JBCefApp
@@ -16,9 +15,10 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 
-class HtmlPanel : JPanel(BorderLayout()) {
+class HtmlPanel(private val listenerDisposable: Disposable) : JPanel(BorderLayout()) {
 
   private val LOG = Logger.getInstance(HtmlPanel::class.java)
+
   init {
     System.setProperty("ide.browser.jcef.debug.port", "9222")
     LOG.info("HtmlPanel initialized")
@@ -69,7 +69,7 @@ class HtmlPanel : JPanel(BorderLayout()) {
         }
       }
 
-    }, Disposer.newDisposable())
+    }, listenerDisposable)
   }
 
   private fun escapeForJavaScript(s: String): String {

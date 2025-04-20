@@ -69,8 +69,8 @@ class HtmlResourcesRequestHandler : CefRequestHandlerAdapter() {
         browser: CefBrowser?,
         frame: CefFrame?,
         request: CefRequest?,
-        user_gesture: Boolean,
-        is_redirect: Boolean
+        userGesture: Boolean,
+        isRedirect: Boolean
     ): Boolean {
         val url = request?.url ?: return false
         val isInternal = url.startsWith("http://local.plugin/")

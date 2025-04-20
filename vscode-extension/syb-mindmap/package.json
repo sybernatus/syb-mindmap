@@ -5,6 +5,7 @@
   "version": "0.5.0",
   "publisher": "sybernatus",
   "repository": "https://github.com/sybernatus/mindy-gen",
+  "icon": "icons/logo.png",
   "engines": {
     "vscode": "^1.99.0"
   },

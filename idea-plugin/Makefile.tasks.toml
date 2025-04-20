@@ -7,6 +7,8 @@ set -e
 
 rm --recursive --force src/main/resources/html/*
 cp --recursive --force ../target/dx/mindy-html/debug/web/public/* src/main/resources/html/
+cp --recursive --force ../assets/logo/logo.svg src/main/resources/META-INF/pluginIcon.svg
+cp --recursive --force ../assets/logo/logo_dark.svg src/main/resources/META-INF/pluginIcon_dark.svg
 '''
 category = "Build"
 dependencies = ["html_build"]

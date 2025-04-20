@@ -43,4 +43,8 @@ impl WebviewEvent {
     pub fn is_origin_http(&self) -> bool {
         self.get_origin().as_str().contains("http://")
     }
+
+    pub fn is_origin_intellij(&self) -> bool {
+        self.get_origin().as_str().contains("http://local.plugin")
+    }
 }

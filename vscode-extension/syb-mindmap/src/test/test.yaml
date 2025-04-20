@@ -9,4 +9,4 @@ data:
   - text: my-test5
     children:
     - text: my-test6
-    - text: my-test7
+    - text: my-test

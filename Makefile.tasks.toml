@@ -27,3 +27,8 @@ git reset --hard "${most_recent_tag}"
 git push --force-with-lease
 '''
 category = "Release"
+
+[tasks.plugins_publish]
+script_runner = "bash"
+category = "Publish"
+dependencies = [ "vscode_publish", "idea_publish" ]

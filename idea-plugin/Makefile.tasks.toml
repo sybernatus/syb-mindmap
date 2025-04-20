@@ -1,0 +1,48 @@
+[tasks.idea_build]
+script_runner = "bash"
+cwd = "idea-plugin"
+script = '''
+#!/bin/bash
+set -e
+
+rm --recursive --force src/main/resources/html/*
+cp --recursive --force ../target/dx/mindy-html/debug/web/public/* src/main/resources/html/
+'''
+category = "Build"
+dependencies = ["html_build"]
+
+[tasks.idea_deploy]
+script_runner = "bash"
+cwd = "idea-plugin"
+script = '''
+#!/bin/bash
+set -e
+
+version="$( cat package.json | jq --raw-output --compact-output .version )"
+./gradlew buildPlugin -PpluginVersion="${version}"
+'''
+category = "Deploy"
+dependencies = ["idea_build"]
+
+[tasks.idea_publish]
+script_runner = "bash"
+cwd = "idea-plugin"
+script = '''
+#!/bin/bash
+set -e
+
+'''
+category = "Publish"
+dependencies = ["idea_deploy"]
+
+[tasks.idea_serve]
+script_runner = "bash"
+cwd = "idea-plugin"
+script = '''
+#!/bin/bash
+set -e
+
+./gradlew runIde
+'''
+category = "Run"
+dependencies = ["idea_build"]

@@ -1,109 +1,13 @@
+extend = [
+    { path = "idea-plugin/Makefile.tasks.toml" },
+    { path = "mindy-html/Makefile.tasks.toml" },
+    { path = "vscode-extension/syb-mindmap/Makefile.tasks.toml" },
+]
 [tasks.setup]
 script = [
     "cargo install cargo-make --version 0.37.24 || true",
     "cargo install cargo-edit --version 0.13.2 || true",
 ]
-
-[tasks.html_build]
-script_runner = "bash"
-cwd = "mindy-html"
-command = "dx"
-args = ["build", "--platform", "web"]
-category = "Build"
-
-[tasks.html_serve]
-script_runner = "bash"
-cwd = "mindy-html"
-command = "dx"
-args = ["serve"]
-category = "Run"
-
-[tasks.vscode_build]
-script_runner = "bash"
-cwd = "vscode-extension/syb-mindmap"
-script = '''
-#!/bin/bash
-set -e
-rm -rf media/*
-cp --recursive --force ../../target/dx/mindy-html/debug/web/public/* media
-'''
-category = "Build"
-dependencies = ["html_build"]
-
-[tasks.vscode_deploy]
-script_runner = "bash"
-cwd = "vscode-extension/syb-mindmap"
-script = '''
-#!/bin/bash
-set -e
-version="$( cat package.json | jq --raw-output --compact-output .version )"
-code --uninstall-extension "syb-mindmap-${version}.vsix" || true
-code --update-extensions && yarn run vsce package --allow-missing-repository
-code --install-extension "syb-mindmap-${version}.vsix"
-'''
-category = "Deploy"
-dependencies = ["vscode_build"]
-
-[tasks.vscode_publish]
-script_runner = "bash"
-cwd = "vscode-extension/syb-mindmap"
-script = '''
-#!/bin/bash
-set -e
-yarn run vsce publish
-'''
-category = "Publish"
-dependencies = ["vscode_deploy"]
-
-[tasks.idea_build]
-script_runner = "bash"
-cwd = "idea-plugin"
-script = '''
-#!/bin/bash
-set -e
-
-rm --recursive --force src/main/resources/html/*
-cp --recursive --force ../target/dx/mindy-html/debug/web/public/* src/main/resources/html/
-'''
-category = "Build"
-dependencies = ["html_build"]
-
-[tasks.idea_deploy]
-script_runner = "bash"
-cwd = "idea-plugin"
-script = '''
-#!/bin/bash
-set -e
-
-version="$( cat package.json | jq --raw-output --compact-output .version )"
-./gradlew buildPlugin -PpluginVersion="${version}"
-'''
-category = "Deploy"
-dependencies = ["idea_build"]
-
-[tasks.idea_publish]
-script_runner = "bash"
-cwd = "idea-plugin"
-script = '''
-#!/bin/bash
-set -e
-
-'''
-category = "Publish"
-dependencies = ["idea_deploy"]
-
-[tasks.idea_serve]
-script_runner = "bash"
-cwd = "idea-plugin"
-script = '''
-#!/bin/bash
-set -e
-
-./gradlew runIde
-'''
-category = "Run"
-dependencies = ["idea_build"]
-
 
 [tasks.release]
 script_runner = "bash"

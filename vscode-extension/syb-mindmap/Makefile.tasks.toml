@@ -1,5 +1,3 @@
-
-
 [tasks.vscode_build]
 script_runner = "bash"
 cwd = "vscode-extension/syb-mindmap"
@@ -8,6 +6,8 @@ script = '''
 set -e
 rm -rf media/*
 cp --recursive --force ../../target/dx/mindy-html/debug/web/public/* media
+rm -rf icons/logo.png
+inkscape ../../assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
 '''
 category = "Build"
 dependencies = ["html_build"]

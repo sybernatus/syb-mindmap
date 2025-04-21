@@ -19,6 +19,7 @@ use std::string::ToString;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
+const MINDMAP_ICON: &str = include_str!("../assets/logo/logo.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));
 static MINDMAP_METADATA: GlobalSignal<MindmapMetadata> =
     GlobalSignal::new(|| MindmapMetadata::default());
@@ -38,12 +39,20 @@ fn App() -> Element {
     rsx! {
         // document::Link { rel: "stylesheet", href: MAIN_CSS }
         document::Style { "{CSS_DATA}" }
+        header {
+            class: "banner",
+            img {
+                class: "logo",
+                src: "data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_ICON.to_string())}",
+            }
+            h1 {
+                class: "title",
+                "Mindmap"
+            }
+        }
         div {
             class: "app",
             id: "app",
-            style: "\
-            background-image: url(data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_BACKGROUND_DATA.to_string())}); \
-            background-repeat: repeat;",
             onmousedown: mouse_data_update(is_dragging, last_mouse),
             onmouseup: mouse_dragging_disable(is_dragging),
             onmousemove: mouse_position_update(is_dragging, last_mouse),

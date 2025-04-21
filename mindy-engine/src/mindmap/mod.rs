@@ -81,7 +81,8 @@ impl Mindmap {
             }
         }
 
-        let position_starting = self.metadata.position_starting.clone();
+        let position_starting = Pos2::new(0.0, 0.0);
+        // let position_starting = self.metadata.position_starting.clone();
 
         fn layout_mindmap_standard_children(
             current_tree: Vec<&mut Node>,
@@ -169,6 +170,7 @@ impl Mindmap {
         self
     }
 
+
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
         match serde_json::from_str::<Self>(json_string.as_str()) {
             Ok(mindmap) => {
@@ -194,6 +196,23 @@ impl Mindmap {
                 tracing::error!("Error decoding yaml: {:?}", e);
                 Err(e)
             }
+        }
+    }
+
+    pub fn centered_position(&self) -> Pos2 {
+        let graphical_size = match self.data.clone() {
+            Some(data) => data.get_graphical_size(),
+            None => Size::default(),
+        };
+
+        let position_starting = match self.clone().metadata.position_starting {
+            None => return Pos2::default(),
+            Some(pos) => pos
+        };
+
+        Pos2 {
+            x: position_starting.x - graphical_size.width / 2.0,
+            y: position_starting.y - graphical_size.height / 2.0,
         }
     }
 }

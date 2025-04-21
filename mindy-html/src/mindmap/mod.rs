@@ -1,16 +1,38 @@
+use dioxus::logger::tracing;
 use crate::link_renderer::LinkRendererComp;
 use crate::node_renderer::NodeRendererComp;
-use crate::SHEET_POSITION;
+use base64::engine::general_purpose::STANDARD;
+use base64::Engine;
+use crate::{MINDMAP_DATA, SHEET_POSITION, MINDMAP_BACKGROUND_DATA};
 use dioxus::prelude::*;
+use mindy_engine::node::Node;
+use mindy_engine::utils::size::Size;
+use crate::node::NodeProps;
 
 #[component]
 pub fn MindmapComp() -> Element {
+    let mut mindmap_size: Signal<Size> = use_signal(|| Size::default());
+
+    use_effect(move || {
+        let mindmap_data = MINDMAP_DATA();
+
+        match mindmap_data {
+            Some(mindmap) => {
+                let size = mindmap.get_node_bounding_box();
+                mindmap_size.set(size.unwrap_or_default().1);
+            }
+            None => mindmap_size.set(Size::default()),
+        }
+    });
     rsx! {
         div {
             class: "mindmap",
             id: "mindmap",
             style: "width: inherit;",
             style: "height: inherit;",
+            style: "\
+                background-image: url(data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_BACKGROUND_DATA.to_string())}); \
+                background-repeat: repeat;",
             div {
                 class: "floating-menu",
                 button {
@@ -21,9 +43,10 @@ pub fn MindmapComp() -> Element {
                 }
             }
             div {
+                class: "mindmap-background",
                 style: "transform: translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
-                style: "width: 8000px;",
-                style: "height: inherit;",
+                style: "min-width: {mindmap_size().width}px;",
+                style: "min-height: {mindmap_size().height}px;",
                 LinkRendererComp { }
                 NodeRendererComp { }
             }

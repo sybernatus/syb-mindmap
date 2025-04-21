@@ -8,21 +8,37 @@ use mindy_engine::utils::pos2::Pos2;
 #[component]
 pub fn LinkRendererComp() -> Element {
     let mut elements: Signal<Vec<LinkBezierProps>> = use_signal(|| vec![]);
+    let mut mindmap_pos: Signal<Pos2> = use_signal(|| Pos2::default());
+
+    use_effect(move || {
+        let mindmap_data = MINDMAP_DATA();
+
+        match mindmap_data {
+            Some(mindmap) => {
+                let bounding_box = mindmap.get_node_bounding_box();
+                mindmap_pos.set(bounding_box.clone().unwrap_or_default().0);
+            }
+            None => mindmap_pos.set(Pos2::default())
+        }
+    });
 
     use_effect(move || {
         let ns = MINDMAP_DATA();
+        let offset = mindmap_pos();
         let ns = match ns {
             Some(node) => node,
             None => return,
         };
         elements.clear();
-        elements.set(calculate_elements(&ns, None, vec![]));
+        elements.set(calculate_elements(&ns, None, offset.clone(), vec![]));
     });
 
     rsx! {
         div {
             class: "link-renderer",
             id: "link-renderer",
+            style: "min-width: inherit;",
+            style: "min-height: inherit;",
             for element in elements.iter() {
                 LinkBezierComp {
                     id: element.id.clone(),
@@ -39,6 +55,7 @@ pub fn LinkRendererComp() -> Element {
 fn calculate_elements(
     node_input: &Node,
     parent_position: Option<Pos2>,
+    offset: Pos2,
     mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
     if node_input.text.is_none() || node_input.clone().text.unwrap().is_empty() {
@@ -55,7 +72,7 @@ fn calculate_elements(
             None => return elements,
             Some(pos) => pos,
         };
-        elements = calculate_elements(child, Some(parent_position), elements);
+        elements = calculate_elements(child, Some(parent_position), offset.clone(), elements);
     }
 
     tracing::trace!("parent_position: {:?}", parent_position);
@@ -73,8 +90,8 @@ fn calculate_elements(
 
     elements.push(LinkBezierProps {
         id: Option::from("link".to_string()),
-        pos_start: parent_position,
-        pos_end: actual_position,
+        pos_start: parent_position.subtract(&offset.clone()),
+        pos_end: actual_position.subtract(&offset.clone()),
         color: None,
         stroke_width: None,
     });

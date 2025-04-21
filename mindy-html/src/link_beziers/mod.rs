@@ -3,6 +3,7 @@ use dioxus::prelude::*;
 use mindy_engine::link::bezier_svg_path;
 use mindy_engine::utils::pos2::Pos2;
 use palette::rgb::Rgb;
+use crate::MINDMAP_DATA;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct LinkBezierProps {

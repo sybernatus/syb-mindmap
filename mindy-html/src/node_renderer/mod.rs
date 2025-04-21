@@ -18,6 +18,8 @@ pub fn NodeRendererComp() -> Element {
         div {
             class: "node-renderer",
             id: "node-renderer",
+            style: "min-width: inherit;",
+            style: "min-height: inherit;",
             for element in elements.iter() {
                 NodeComp {
                     node: element.node.clone(),

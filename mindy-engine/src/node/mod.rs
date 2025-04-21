@@ -123,7 +123,7 @@ impl Node {
         const H_PADDING: f32 = 150.0; // Horizontal padding between levels
         const V_PADDING: f32 = 20.0;
 
-        self.position = Some(Pos2::new(200.0, 200.0));
+        self.position = Some(Pos2::new(0.0, 0.0));
 
         // Divide children into left and right based on their position direction
         let mut left_children = vec![];
@@ -184,8 +184,6 @@ impl Node {
         parent_position: Pos2,
         parent_size: Size,
     ) -> f32 {
-        const H_PADDING: f32 = 50.0;
-        const V_PADDING: f32 = 20.0;
 
         let Size { width, height } = self.get_graphical_size();
 
@@ -198,9 +196,9 @@ impl Node {
 
         let node_offset_x = match self.position_direction {
             Some(Direction::Left) => {
-                parent_position.x - H_PADDING - node_half_width - parent_half_width
+                parent_position.x - _offset_x - node_half_width - parent_half_width
             }
-            _ => parent_position.x + H_PADDING + node_half_width + parent_half_width,
+            _ => parent_position.x + _offset_x + node_half_width + parent_half_width,
         };
 
         if self.children.as_mut().unwrap().is_empty() {
@@ -228,8 +226,8 @@ impl Node {
                 Pos2::new(node_offset_x, node_offset_y),
                 Size::from(Size { width, height }),
             );
-            y_cursor += subtree_height + V_PADDING;
-            total_height += subtree_height + V_PADDING;
+            y_cursor += subtree_height + offset_y;
+            total_height += subtree_height + offset_y;
         }
 
         self.layout_parent_position(node_offset_x);
@@ -263,5 +261,49 @@ impl Node {
             parent_position_x,
             children[children_middle].clone().position.unwrap().y,
         ));
+    }
+
+    pub fn get_node_bounding_box(&self) -> Option<(Pos2, Size)> {
+        let mut min_x = f32::MAX;
+        let mut min_y = f32::MAX;
+        let mut max_x = f32::MIN;
+        let mut max_y = f32::MIN;
+
+        fn traverse(node: &Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32) {
+            if let (Some(pos), Some(size)) = (node.clone().position, Some(node.get_graphical_size())) {
+                let half_w = size.width / 2.0;
+                let half_h = size.height / 2.0;
+
+                let left = pos.x - half_w;
+                let right = pos.x + half_w;
+                let top = pos.y - half_h;
+                let bottom = pos.y + half_h;
+
+                *min_x = min_x.min(left);
+                *max_x = max_x.max(right);
+                *min_y = min_y.min(top);
+                *max_y = max_y.max(bottom);
+            }
+
+            if let Some(children) = &node.children {
+                for child in children {
+                    traverse(child, min_x, min_y, max_x, max_y);
+                }
+            }
+        }
+
+        traverse(self, &mut min_x, &mut min_y, &mut max_x, &mut max_y);
+
+        if min_x == f32::MAX || min_y == f32::MAX {
+            return None;
+        }
+
+        let width = max_x - min_x;
+        let height = max_y - min_y;
+        tracing::debug!(
+            "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
+            min_x, min_y, width, height
+        );
+        Some((Pos2::new(min_x, min_y), Size { width, height }))
     }
 }

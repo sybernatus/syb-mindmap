@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
+use mindy_engine::utils::size::Size;
+use crate::MINDMAP_DATA;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct NodeProps {
@@ -10,6 +12,19 @@ pub struct NodeProps {
 
 #[component]
 pub fn NodeComp(props: NodeProps) -> Element {
+    let mut mindmap_pos: Signal<Pos2> = use_signal(|| Pos2::default());
+
+    use_effect(move || {
+        let mindmap_data = MINDMAP_DATA();
+
+        match mindmap_data {
+            Some(mindmap) => {
+                let bounding_box = mindmap.get_node_bounding_box();
+                mindmap_pos.set(bounding_box.clone().unwrap_or_default().0);
+            }
+            None => mindmap_pos.set(Pos2::default())
+        }
+    });
     let on_click = move |_| {
         // NODE_LIST.write().iter_mut().for_each(|node| {
         //     if node.id == props.node.id {
@@ -57,8 +72,8 @@ pub fn NodeComp(props: NodeProps) -> Element {
             style: "padding: {padding}px;",
             style: "font-family: {font_family};",
             style: "font-size: {font_size}px;",
-            top: "{y}px",
-            left: "{x}px",
+            top: "{y - mindmap_pos().y}px",
+            left: "{x - mindmap_pos().x}px",
             id: "test",
             "{text}"
         }

@@ -1,13 +1,10 @@
-use dioxus::logger::tracing;
 use crate::link_renderer::LinkRendererComp;
 use crate::node_renderer::NodeRendererComp;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use crate::{MINDMAP_DATA, SHEET_POSITION, MINDMAP_BACKGROUND_DATA};
 use dioxus::prelude::*;
-use mindy_engine::node::Node;
 use mindy_engine::utils::size::Size;
-use crate::node::NodeProps;
 
 #[component]
 pub fn MindmapComp() -> Element {

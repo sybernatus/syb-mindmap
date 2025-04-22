@@ -38,6 +38,7 @@ impl WebviewListener {
     pub fn add_message_listener(&self) {
         let window = window().expect("Cannot get window");
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
+
             let webview_event = WebviewEvent::new(event);
 
             if webview_event.is_origin_http() && !webview_event.is_origin_intellij() {
@@ -70,6 +71,7 @@ impl WebviewListener {
                 match from_value::<WebviewListener>(webview_event.get_data()) {
                     Ok(webview_listener) => match webview_listener.r#type {
                         WebviewMessageType::JSON => {
+                            tracing::debug!("MessageEvent JSON - {:?}", webview_listener.content);
                             match Mindmap::from_json_string(webview_listener.content) {
                                 Ok(mindmap) => update_mindmap(mindmap),
                                 Err(_) => {
@@ -78,6 +80,7 @@ impl WebviewListener {
                             }
                         }
                         WebviewMessageType::YAML => {
+                            tracing::debug!("MessageEvent YAML - {:?}", webview_listener.content);
                             match Mindmap::from_yaml_string(webview_listener.content) {
                                 Ok(mindmap) => update_mindmap(mindmap),
                                 Err(_) => {

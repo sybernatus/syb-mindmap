@@ -93,6 +93,8 @@ svg {
     z-index: 1;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     transform: translate(-50%, -50%);
+    text-wrap: balance;
+    word-break: break-all;
 }
 
 .node:hover {

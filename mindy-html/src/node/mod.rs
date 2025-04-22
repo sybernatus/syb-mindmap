@@ -2,7 +2,6 @@ use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
-use mindy_engine::utils::size::Size;
 use crate::MINDMAP_DATA;
 
 #[derive(Props, PartialEq, Clone)]

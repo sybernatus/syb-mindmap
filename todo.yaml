@@ -6,9 +6,5 @@ data:
     - text: node
       children:
       - text: take into account node style
-        style:
-          background_color:
-            red: 0
-            green: 0
-            blue: 0
-      - text: take int account node style
+      - text: ah bon ?
+  - text: aazezaeazrarzarazraeazezarzarzarrazrazraz rzar

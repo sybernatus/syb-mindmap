@@ -68,7 +68,7 @@ fn calculate_elements(
     };
 
     for child in &children {
-        let parent_position = match node_input.position.clone() {
+        let parent_position = match node_input.position_from_initial.clone() {
             None => return elements,
             Some(pos) => pos,
         };
@@ -76,7 +76,7 @@ fn calculate_elements(
     }
 
     tracing::trace!("parent_position: {:?}", parent_position);
-    let actual_position = match node_input.position.clone() {
+    let actual_position = match node_input.position_from_initial.clone() {
         None => return elements,
         Some(pos) => pos,
     };

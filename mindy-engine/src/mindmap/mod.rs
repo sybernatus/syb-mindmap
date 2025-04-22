@@ -107,7 +107,7 @@ impl Mindmap {
                 );
 
                 // move to the right or left of the parent node
-                node.position = Some(Pos2 {
+                node.position_from_initial = Some(Pos2 {
                     x: parent_position.x
                         + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
                     y: y_cursor,
@@ -119,7 +119,7 @@ impl Mindmap {
                         let subtree = children.iter_mut().collect::<Vec<&mut Node>>();
                         layout_mindmap_standard_children(
                             subtree,
-                            node.position.clone().unwrap(),
+                            node.position_from_initial.clone().unwrap(),
                             size.clone(),
                             side,
                             padding_horizontal,
@@ -162,7 +162,7 @@ impl Mindmap {
         let total_height = right_height.max(left_height);
 
         // Center parent node on children
-        self.data.as_mut().unwrap().position = Some(Pos2 {
+        self.data.as_mut().unwrap().position_from_initial = Some(Pos2 {
             x: position_starting.x,
             y: position_starting.y + total_height / 2.0 - graphical_size.height / 2.0,
         });

@@ -19,4 +19,11 @@ impl Pos2 {
             y: self.y - other.y,
         }
     }
+
+    pub fn add(&self, other: &Self) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
 }

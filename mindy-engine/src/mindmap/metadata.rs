@@ -10,7 +10,7 @@ pub struct MindmapMetadata {
     #[serde(default)]
     pub style: MindmapStyle,
     #[serde(default)]
-    pub position_starting: Pos2,
+    pub position_starting: Option<Pos2>,
 }
 
 impl MindmapMetadata {
@@ -42,7 +42,7 @@ impl Default for MindmapMetadata {
         Self {
             diagram_type: MindmapType::default(),
             style: MindmapStyle::default(),
-            position_starting: Pos2::new(300.0, 300.0),
+            position_starting: None,
         }
     }
 }

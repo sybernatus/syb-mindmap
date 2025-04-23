@@ -81,7 +81,8 @@ impl Mindmap {
             }
         }
 
-        let position_starting = self.metadata.position_starting.clone();
+        let position_starting = Pos2::new(0.0, 0.0);
+        // let position_starting = self.metadata.position_starting.clone();
 
         fn layout_mindmap_standard_children(
             current_tree: Vec<&mut Node>,
@@ -106,7 +107,7 @@ impl Mindmap {
                 );
 
                 // move to the right or left of the parent node
-                node.position = Some(Pos2 {
+                node.position_from_initial = Some(Pos2 {
                     x: parent_position.x
                         + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
                     y: y_cursor,
@@ -118,7 +119,7 @@ impl Mindmap {
                         let subtree = children.iter_mut().collect::<Vec<&mut Node>>();
                         layout_mindmap_standard_children(
                             subtree,
-                            node.position.clone().unwrap(),
+                            node.position_from_initial.clone().unwrap(),
                             size.clone(),
                             side,
                             padding_horizontal,
@@ -161,13 +162,14 @@ impl Mindmap {
         let total_height = right_height.max(left_height);
 
         // Center parent node on children
-        self.data.as_mut().unwrap().position = Some(Pos2 {
+        self.data.as_mut().unwrap().position_from_initial = Some(Pos2 {
             x: position_starting.x,
             y: position_starting.y + total_height / 2.0 - graphical_size.height / 2.0,
         });
 
         self
     }
+
 
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
         match serde_json::from_str::<Self>(json_string.as_str()) {
@@ -194,6 +196,23 @@ impl Mindmap {
                 tracing::error!("Error decoding yaml: {:?}", e);
                 Err(e)
             }
+        }
+    }
+
+    pub fn centered_position(&self) -> Pos2 {
+        let graphical_size = match self.data.clone() {
+            Some(data) => data.get_graphical_size(),
+            None => Size::default(),
+        };
+
+        let position_starting = match self.clone().metadata.position_starting {
+            None => return Pos2::default(),
+            Some(pos) => pos
+        };
+
+        Pos2 {
+            x: position_starting.x - graphical_size.width / 2.0,
+            y: position_starting.y - graphical_size.height / 2.0,
         }
     }
 }

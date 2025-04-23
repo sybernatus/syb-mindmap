@@ -40,9 +40,21 @@ class HtmlPanel(private val listenerDisposable: Disposable) : JPanel(BorderLayou
         // if the file is JSON or YAML
         val document = event.document
         val file = FileDocumentManager.getInstance().getFile(document);
+        val documentText = document.text
+
+
+        // if text contains IntellijIdeaRulezzz skip
+        if (documentText.contains("IntellijIdeaRulezzz")) {
+          println("[PLUGIN] IntellijIdeaRulezzz found, skipping")
+          return
+        }
+        
+        val documentTextEscaped = escapeForJavaScript(documentText)
+        println("[PLUGIN] YAML document changed: $documentTextEscaped")
+
         if (file != null && file.isFile && isDocumentJson(file)) {
-          val documentText = document.text
-          val jsonString = escapeForJavaScript(documentText)
+
+          val jsonString = escapeForJavaScript(documentTextEscaped)
 
           val jsCode = java.lang.String.format(
             "window.postMessage({type: 'JSON', content: '%s'}, '*');",
@@ -54,12 +66,9 @@ class HtmlPanel(private val listenerDisposable: Disposable) : JPanel(BorderLayou
             0
           );
         } else if (file != null && file.isFile && isDocumentYaml(file)) {
-          val documentText = document.text
-          val yamlString = escapeForJavaScript(documentText)
-
           val jsCode = java.lang.String.format(
             "window.postMessage({type: 'YAML', content: '%s'}, '*');",
-            yamlString
+            documentTextEscaped
           )
           browser?.executeJavaScript(
             jsCode,

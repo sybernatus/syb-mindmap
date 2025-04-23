@@ -31,10 +31,17 @@ pub fn compute_control_points_offset(start: Pos2, end: Pos2, offset_ratio: f32) 
     (control_point1, control_point2)
 }
 
-pub fn bezier_svg_path(start: Pos2, end: Pos2, offset_ratio: f32) -> String {
+pub fn bezier_svg_path(start: Pos2, end: Pos2, offset_ratio: f32, mindmap_offset: &Pos2) -> String {
     let (c1, c2) = compute_control_points_offset(start.clone(), end.clone(), offset_ratio);
     format!(
         "M{:.2},{:.2} C{:.2},{:.2} {:.2},{:.2} {:.2},{:.2}",
-        start.x, start.y, c1.x, c1.y, c2.x, c2.y, end.x, end.y
+        start.x - mindmap_offset.x,
+        start.y - mindmap_offset.y,
+        c1.x - mindmap_offset.x,
+        c1.y - mindmap_offset.y,
+        c2.x - mindmap_offset.x,
+        c2.y - mindmap_offset.y,
+        end.x - mindmap_offset.x,
+        end.y - mindmap_offset.y
     )
 }

@@ -4,9 +4,9 @@ data:
   - text: my-test
   - text: my-test2
     children:
-    - text: my-test3
+    - text: my-test
   - text: my-test4
   - text: my-test5
     children:
     - text: my-test6
-    - text: my-test
+    - text: myt

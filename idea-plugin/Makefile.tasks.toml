@@ -35,7 +35,7 @@ script = '''
 #!/bin/bash
 set -e
 
-./gradlew runIde
+./gradlew runIde --continuous
 '''
 category = "Run"
 dependencies = ["idea_build"]

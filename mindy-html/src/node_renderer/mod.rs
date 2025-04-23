@@ -3,9 +3,11 @@ use crate::MINDMAP_DATA;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
+use mindy_engine::utils::pos2::Pos2;
 
 #[component]
 pub fn NodeRendererComp() -> Element {
+
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 
     use_effect(move || {
@@ -18,6 +20,8 @@ pub fn NodeRendererComp() -> Element {
         div {
             class: "node-renderer",
             id: "node-renderer",
+            style: "min-width: inherit;",
+            style: "min-height: inherit;",
             for element in elements.iter() {
                 NodeComp {
                     node: element.node.clone(),

@@ -12,6 +12,25 @@ body {
     max-width: 1200px;
 }
 
+.banner {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    top: 0;
+    left: 0;
+}
+
+.title {
+    font-size: 24px;
+    margin: 0;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+}
+
 .app {
     width: 100%;
     height: 100vh;
@@ -36,6 +55,7 @@ body {
 
 .mindmap {
     position: relative;
+    overflow: hidden;
 }
 
 svg {
@@ -44,10 +64,19 @@ svg {
     height: 100%;
 }
 
+.mindmap-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+    position: relative;
+}
+
 .node-renderer {
-    position: absolute;
-    width: inherit;
-    height: inherit;
+    overflow: visible;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .node {
@@ -61,6 +90,8 @@ svg {
     z-index: 1;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     transform: translate(-50%, -50%);
+    text-wrap: balance;
+    word-break: break-all;
 }
 
 .node:hover {

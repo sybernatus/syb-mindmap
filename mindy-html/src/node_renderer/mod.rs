@@ -5,28 +5,8 @@ use dioxus::prelude::*;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 
-#[derive(Clone, Copy)]
-pub struct NodeRendererState {
-    pub mindmap_bounding_box_position: Signal<Pos2>
-}
-
 #[component]
 pub fn NodeRendererComp() -> Element {
-    let mut state = use_context_provider(|| NodeRendererState {
-        mindmap_bounding_box_position: Signal::new(Pos2::default())
-    });
-
-    use_effect(move || {
-        let mindmap_data = MINDMAP_DATA();
-
-        match mindmap_data {
-            Some(mindmap) => {
-                let bounding_box = mindmap.get_node_bounding_box();
-                state.mindmap_bounding_box_position.set(bounding_box.clone().unwrap_or_default().0);
-            }
-            None => state.mindmap_bounding_box_position.set(Pos2::default())
-        }
-    });
 
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 

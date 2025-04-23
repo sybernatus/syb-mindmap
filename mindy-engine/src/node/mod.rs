@@ -176,7 +176,7 @@ impl Node {
 
         let width = max_x - min_x;
         let height = max_y - min_y;
-        tracing::debug!(
+        tracing::trace!(
             "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
             min_x, min_y, width, height
         );
@@ -188,7 +188,7 @@ impl Node {
         match position_initial.clone() {
             None => None,
             Some(pos) => {
-                tracing::debug!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
+                tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
                 Option::from(pos.subtract(&offset).add(&extra_offset))
             }
         }

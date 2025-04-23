@@ -94,6 +94,7 @@ fn calculate_elements(
         pos_end: actual_position.subtract(&offset.clone()),
         color: None,
         stroke_width: None,
+        path_data: None,
     });
 
     elements

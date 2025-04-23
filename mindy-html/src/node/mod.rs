@@ -3,8 +3,8 @@ use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
+use crate::mindmap::MindmapState;
 use crate::MINDMAP_DATA;
-use crate::node_renderer::NodeRendererState;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct NodeProps {
@@ -13,7 +13,7 @@ pub struct NodeProps {
 
 #[component]
 pub fn NodeComp(props: NodeProps) -> Element {
-    let mindmap_bounding_box_position: Signal<Pos2> = use_context::<NodeRendererState>().mindmap_bounding_box_position;
+    let mindmap_bounding_box_position: Signal<Pos2> = use_context::<MindmapState>().mindmap_bounding_box_position;
     let node = use_memo(move || props.node.clone());
     let mut node_pos: Signal<Pos2> = use_signal(|| Pos2::default());
 

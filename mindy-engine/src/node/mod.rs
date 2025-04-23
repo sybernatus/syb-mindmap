@@ -140,6 +140,7 @@ impl Node {
     }
 
     pub fn get_node_bounding_box(&self) -> Option<(Pos2, Size)> {
+        let extra_offset = Pos2::new(200.0, 100.0);
         let mut min_x = f32::MAX;
         let mut min_y = f32::MAX;
         let mut max_x = f32::MIN;
@@ -180,16 +181,15 @@ impl Node {
             "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
             min_x, min_y, width, height
         );
-        Some((Pos2::new(min_x, min_y), Size { width, height }))
+        Some((Pos2::new(min_x, min_y).subtract(&extra_offset), Size { width, height }))
     }
 
     pub fn get_position_real(position_initial: Option<Pos2>, offset: Pos2) -> Option<Pos2> {
-        let extra_offset = Pos2::new(10.0, 10.0);
         match position_initial.clone() {
             None => None,
             Some(pos) => {
                 tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
-                Option::from(pos.subtract(&offset).add(&extra_offset))
+                Option::from(pos.subtract(&offset))
             }
         }
     }

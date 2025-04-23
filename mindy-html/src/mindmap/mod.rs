@@ -16,6 +16,7 @@ pub struct MindmapState {
 #[component]
 pub fn MindmapComp() -> Element {
     let mut mindmap_size: Signal<Size> = use_signal(|| Size::default());
+    let mut mindmap_position: Signal<Pos2> = use_signal(|| Pos2::default());
     let mut state = use_context_provider(|| MindmapState {
         mindmap_bounding_box_position: Signal::new(Pos2::default())
     });
@@ -38,7 +39,8 @@ pub fn MindmapComp() -> Element {
         match mindmap_data {
             Some(mindmap) => {
                 let size = mindmap.get_node_bounding_box();
-                mindmap_size.set(size.unwrap_or_default().1);
+                mindmap_position.set(size.clone().unwrap_or_default().0);
+                mindmap_size.set(size.clone().unwrap_or_default().1);
             }
             None => mindmap_size.set(Size::default()),
         }
@@ -66,6 +68,8 @@ pub fn MindmapComp() -> Element {
                 style: "transform: translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
                 style: "min-width: {mindmap_size().width}px;",
                 style: "min-height: {mindmap_size().height}px;",
+                style: "width: {mindmap_size().width - mindmap_position().x}px;",
+                style: "height: {mindmap_size().height - mindmap_position().y}px;",
                 LinkRendererComp { }
                 NodeRendererComp { }
             }

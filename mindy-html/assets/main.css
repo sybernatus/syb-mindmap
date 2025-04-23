@@ -64,14 +64,11 @@ svg {
     height: 100%;
 }
 
-.diagram-background {
+.mindmap-background {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    border: 2px grey solid;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
 }
 

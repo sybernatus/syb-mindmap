@@ -1,5 +1,4 @@
 use crate::events::webview::WebviewEvent;
-use crate::update_mindmap;
 use ::web_sys::window;
 use dioxus::logger::tracing;
 use mindy_engine::mindmap::Mindmap;
@@ -8,6 +7,7 @@ use serde_wasm_bindgen::from_value;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
 use web_sys::MessageEvent;
+use crate::mindmap::update_mindmap;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub enum WebviewMessageType {

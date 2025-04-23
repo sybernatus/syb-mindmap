@@ -16,11 +16,13 @@ pub struct Mindmap {
     #[serde(default)]
     pub metadata: MindmapMetadata,
     pub data: Option<Node>,
+    pub size: Option<Size>,
+    pub position: Option<Pos2>,
 }
 
 impl Mindmap {
     pub fn new(metadata: MindmapMetadata, data: Option<Node>) -> Self {
-        Self { metadata, data }
+        Self { metadata, data, size: None, position: None }
     }
 
     pub fn with_metadata(&self, metadata: MindmapMetadata) -> Self {
@@ -215,6 +217,54 @@ impl Mindmap {
             y: position_starting.y - graphical_size.height / 2.0,
         }
     }
+
+    pub fn with_bounding_box(&mut self) -> Self {
+        let extra_offset = Pos2::new(10.0, 10.0);
+        let mut min_x = f32::MAX;
+        let mut min_y = f32::MAX;
+        let mut max_x = f32::MIN;
+        let mut max_y = f32::MIN;
+
+        fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32) {
+            if let (Some(pos), Some(size)) = (node.clone().position_from_initial, Some(node.get_graphical_size())) {
+                let half_w = size.width / 2.0;
+                let half_h = size.height / 2.0;
+
+                let left = pos.x - half_w;
+                let right = pos.x + half_w;
+                let top = pos.y - half_h;
+                let bottom = pos.y + half_h;
+
+                *min_x = min_x.min(left);
+                *max_x = max_x.max(right);
+                *min_y = min_y.min(top);
+                *max_y = max_y.max(bottom);
+            }
+
+            if let Some(children) = node.children {
+                for child in children {
+                    traverse(child, min_x, min_y, max_x, max_y);
+                }
+            }
+        }
+
+        traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y);
+
+        if min_x == f32::MAX || min_y == f32::MAX {
+            return self.to_owned();
+        }
+
+        let width = max_x - min_x;
+        let height = max_y - min_y;
+        tracing::trace!(
+            "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
+            min_x, min_y, width, height
+        );
+        self.position = Some(Pos2::new(min_x, min_y).subtract(&extra_offset));
+        self.size = Some(Size { width, height });
+        self.to_owned()
+    }
+
 }
 
 impl Default for Mindmap {
@@ -222,6 +272,8 @@ impl Default for Mindmap {
         Self {
             metadata: MindmapMetadata::default(),
             data: Some(Node::default()),
+            size: None,
+            position: None,
         }
     }
 }

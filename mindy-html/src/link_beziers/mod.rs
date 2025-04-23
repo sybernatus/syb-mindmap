@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 use mindy_engine::link::bezier_svg_path;
 use mindy_engine::utils::pos2::Pos2;
 use palette::rgb::Rgb;
-use crate::mindmap::MindmapState;
+use crate::mindmap::MINDMAP;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct LinkBezierProps {
@@ -17,19 +17,19 @@ pub struct LinkBezierProps {
 
 #[component]
 pub fn LinkBezierComp(props: LinkBezierProps) -> Element {
-    let mindmap_bounding_box_position: Signal<Pos2> = use_context::<MindmapState>().mindmap_bounding_box_position;
     let mut path_data = use_signal(|| String::new());
-    let mut path_pos_start = use_signal(|| props.pos_start);
-    let mut path_pos_end = use_signal(|| props.pos_end);
+    let path_pos_start = use_signal(|| props.pos_start);
+    let path_pos_end = use_signal(|| props.pos_end);
     // let path_data = bezier_svg_path(props.pos_start, props.pos_end, 0.2, &mindmap_bounding_box_position());
     let color = props.color.unwrap_or(Rgb::new(255.0, 255.0, 255.0));
     let stroke_width = props.stroke_width.unwrap_or(2.0);
 
     use_effect(move || {
-        let mindmap_bounding_box_position = mindmap_bounding_box_position();
+        let mindmap = MINDMAP();
+        let mindmap_bounding_box_position = mindmap.position;
         let path_pos_start = path_pos_start();
         let path_pos_end = path_pos_end();
-        path_data.set(bezier_svg_path(path_pos_start, path_pos_end, 0.2, &mindmap_bounding_box_position));
+        path_data.set(bezier_svg_path(path_pos_start, path_pos_end, 0.2, &mindmap_bounding_box_position.unwrap_or_default()));
 
         tracing::debug!("Link Bezier effect path_data {:?}", path_data());
     });

@@ -1,7 +1,8 @@
 use crate::link_beziers::{LinkBezierComp, LinkBezierProps};
-use crate::MINDMAP_DATA;
+use crate::mindmap::MINDMAP;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
+use mindy_engine::mindmap::Mindmap;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 
@@ -11,26 +12,16 @@ pub fn LinkRendererComp() -> Element {
     let mut mindmap_pos: Signal<Pos2> = use_signal(|| Pos2::default());
 
     use_effect(move || {
-        let mindmap_data = MINDMAP_DATA();
+        let mindmap = MINDMAP();
 
-        match mindmap_data {
-            Some(mindmap) => {
-                let bounding_box = mindmap.get_node_bounding_box();
-                mindmap_pos.set(bounding_box.clone().unwrap_or_default().0);
-            }
+        match mindmap.position {
+            Some(position) => {
+                mindmap_pos.set(position.clone());
+                elements.clear();
+                elements.set(calculate_elements(&mindmap.data.unwrap_or_default(), None, position.clone(), vec![]));
+            },
             None => mindmap_pos.set(Pos2::default())
         }
-    });
-
-    use_effect(move || {
-        let ns = MINDMAP_DATA();
-        let offset = mindmap_pos();
-        let ns = match ns {
-            Some(node) => node,
-            None => return,
-        };
-        elements.clear();
-        elements.set(calculate_elements(&ns, None, offset.clone(), vec![]));
     });
 
     rsx! {

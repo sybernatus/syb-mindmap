@@ -1,50 +1,39 @@
 use crate::link_renderer::LinkRendererComp;
 use crate::node_renderer::{NodeRendererComp};
-use crate::{MINDMAP_BACKGROUND_DATA, MINDMAP_DATA, SHEET_POSITION};
+use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
+use dioxus::logger::tracing;
 use dioxus::prelude::*;
+use mindy_engine::mindmap::metadata::MindmapMetadata;
+use mindy_engine::mindmap::Mindmap;
+use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 use mindy_engine::utils::size::Size;
 
-
-#[derive(Clone, Copy)]
-pub struct MindmapState {
-    pub mindmap_bounding_box_position: Signal<Pos2>
-}
+pub(crate) static MINDMAP: GlobalSignal<Mindmap> = GlobalSignal::new(|| Mindmap::default());
 
 #[component]
 pub fn MindmapComp() -> Element {
     let mut mindmap_size: Signal<Size> = use_signal(|| Size::default());
     let mut mindmap_position: Signal<Pos2> = use_signal(|| Pos2::default());
-    let mut state = use_context_provider(|| MindmapState {
-        mindmap_bounding_box_position: Signal::new(Pos2::default())
-    });
 
     use_effect(move || {
-        let mindmap_data = MINDMAP_DATA();
+        let mindmap = MINDMAP();
+        tracing::debug!("mindmap: position: {:?}", mindmap.position);
+        tracing::debug!("mindmap: size: {:?}", mindmap.size);
 
-        match mindmap_data {
-            Some(mindmap) => {
-                let bounding_box = mindmap.get_node_bounding_box();
-                state.mindmap_bounding_box_position.set(bounding_box.clone().unwrap_or_default().0);
-            }
-            None => state.mindmap_bounding_box_position.set(Pos2::default())
+        match mindmap.position {
+            Some(position) => mindmap_position.set(position),
+            None => mindmap_position.set(Pos2::default())
+        }
+
+        match mindmap.size {
+            Some(size) => mindmap_size.set(size),
+            None => mindmap_size.set(Size::default())
         }
     });
 
-    use_effect(move || {
-        let mindmap_data = MINDMAP_DATA();
-
-        match mindmap_data {
-            Some(mindmap) => {
-                let size = mindmap.get_node_bounding_box();
-                mindmap_position.set(size.clone().unwrap_or_default().0);
-                mindmap_size.set(size.clone().unwrap_or_default().1);
-            }
-            None => mindmap_size.set(Size::default()),
-        }
-    });
     rsx! {
         div {
             class: "mindmap",
@@ -62,6 +51,8 @@ pub fn MindmapComp() -> Element {
                     },
                     "Centered"
                 }
+                "pos_x {mindmap_position().x} - pos_y {mindmap_position().y}
+                --- width {mindmap_size().width} - height {mindmap_size().height}",
             }
             div {
                 class: "mindmap-background",
@@ -70,10 +61,17 @@ pub fn MindmapComp() -> Element {
                 style: "min-height: {mindmap_size().height}px;",
                 style: "width: {mindmap_size().width - mindmap_position().x}px;",
                 style: "height: {mindmap_size().height - mindmap_position().y}px;",
-                LinkRendererComp { }
+                // LinkRendererComp { }
                 NodeRendererComp { }
             }
         }
 
     }
+}
+
+pub fn update_mindmap(mut mindmap: Mindmap) {
+    tracing::debug!("Mindmap updated: {:?}", mindmap);
+    *MINDMAP.write() = mindmap.with_bounding_box();
+    // *MINDMAP_DATA.write() = mindmap.data;
+    // *MINDMAP_METADATA.write() = mindmap.metadata;
 }

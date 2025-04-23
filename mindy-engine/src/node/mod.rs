@@ -117,30 +117,8 @@ impl Node {
         new_size
     }
 
-    fn layout_parent_position(&mut self, parent_position_x: f32) {
-        let children = self.children.as_mut().unwrap();
-        let fist_child = children.first().unwrap();
-        let last_child = children.last().unwrap();
-
-        let children_middle = children.len() / 2;
-
-        let first_y = fist_child.clone().position_from_initial.unwrap().y;
-        let last_y = last_child.clone().position_from_initial.unwrap().y;
-        tracing::debug!(
-            "text: {:?} - first_y: {:?} - last_y: {:?}",
-            self.text,
-            first_y,
-            last_y
-        );
-
-        self.position_from_initial = Some(Pos2::new(
-            parent_position_x,
-            children[children_middle].clone().position_from_initial.unwrap().y,
-        ));
-    }
-
     pub fn get_node_bounding_box(&self) -> Option<(Pos2, Size)> {
-        let extra_offset = Pos2::new(200.0, 100.0);
+        let extra_offset = Pos2::new(10.0, 10.0);
         let mut min_x = f32::MAX;
         let mut min_y = f32::MAX;
         let mut max_x = f32::MIN;

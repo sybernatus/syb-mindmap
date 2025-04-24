@@ -48,7 +48,7 @@ fn to_links_vec(
     tracing::trace!("offset_input: {:?}", offset_input);
 
     let node_input = match mindmap_data {
-        Some(mut node) => node,
+        Some(node) => node,
         None => return elements,
     };
 

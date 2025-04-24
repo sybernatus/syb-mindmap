@@ -7,6 +7,7 @@ use serde_wasm_bindgen::from_value;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
 use web_sys::MessageEvent;
+use mindy_engine::utils::throttler::Throttler;
 use crate::mindmap::update_mindmap;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
@@ -37,6 +38,29 @@ impl WebviewListener {
 
     pub fn add_message_listener(&self) {
         let window = window().expect("Cannot get window");
+        let throttler = Throttler::new(|webview_listener: WebviewListener|{
+            match webview_listener.r#type {
+                WebviewMessageType::JSON => {
+                    tracing::debug!("MessageEvent JSON - {:?}", webview_listener.content);
+                    match Mindmap::from_json_string(webview_listener.content) {
+                        Ok(mindmap) => update_mindmap(mindmap),
+                        Err(_) => {
+                            return;
+                        }
+                    }
+                }
+                WebviewMessageType::YAML => {
+                    tracing::debug!("MessageEvent YAML - {:?}", webview_listener.content);
+                    match Mindmap::from_yaml_string(webview_listener.content) {
+                        Ok(mindmap) => update_mindmap(mindmap),
+                        Err(_) => {
+                            return;
+                        }
+                    }
+                }
+            }
+        }, 3000);
+
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 
             let webview_event = WebviewEvent::new(event);
@@ -69,25 +93,8 @@ impl WebviewListener {
                 };
             } else {
                 match from_value::<WebviewListener>(webview_event.get_data()) {
-                    Ok(webview_listener) => match webview_listener.r#type {
-                        WebviewMessageType::JSON => {
-                            tracing::debug!("MessageEvent JSON - {:?}", webview_listener.content);
-                            match Mindmap::from_json_string(webview_listener.content) {
-                                Ok(mindmap) => update_mindmap(mindmap),
-                                Err(_) => {
-                                    return;
-                                }
-                            }
-                        }
-                        WebviewMessageType::YAML => {
-                            tracing::debug!("MessageEvent YAML - {:?}", webview_listener.content);
-                            match Mindmap::from_yaml_string(webview_listener.content) {
-                                Ok(mindmap) => update_mindmap(mindmap),
-                                Err(_) => {
-                                    return;
-                                }
-                            }
-                        }
+                    Ok(webview_listener) => {
+                        throttler.send(webview_listener);
                     },
                     Err(err) => {
                         tracing::error!("Error parsing message from source - {:?}", err);

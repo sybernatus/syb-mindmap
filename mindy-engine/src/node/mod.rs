@@ -47,10 +47,12 @@ impl Node {
         self.clone()
     }
 
-    pub fn get_children(&self) -> Option<Vec<Node>> {
-        self.children.clone()
+    /// Get the children of the node.
+    pub fn get_children(&self) -> Option<&Vec<Node>> {
+        self.children.as_ref()
     }
 
+    /// Get the graphical size of the node text depending on its style.
     pub fn get_graphical_text_size(&self) -> Size {
         let NodeStyle {
             max_width,
@@ -81,6 +83,7 @@ impl Node {
         }
     }
 
+    /// Get the graphical size of the node depending on its content and style.
     pub fn get_graphical_size(&self) -> Size {
         // Calculate the size of the node based on its content
         let NodeStyle {
@@ -118,17 +121,9 @@ impl Node {
 
         new_size
     }
-    pub fn get_position_real(position_initial: Option<Pos2>, offset: Pos2) -> Option<Pos2> {
-        match position_initial.clone() {
-            None => None,
-            Some(pos) => {
-                tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
-                Option::from(pos.subtract(&offset))
-            }
-        }
-    }
 
-    pub fn with_position_real(&mut self, offset: &Pos2) -> Self {
+    /// Computes the real position of the node based on its initial position and the offset.
+    pub fn with_position_real(&mut self, offset: &Pos2) -> &Self {
         match self.position_from_initial.clone() {
             None => self.position_real = Some(Pos2::default()),
             Some(pos) => {
@@ -136,6 +131,6 @@ impl Node {
                 self.position_real = Some(pos.subtract(&offset));
             }
         }
-        self.clone()
+        self
     }
 }

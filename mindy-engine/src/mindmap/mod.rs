@@ -39,13 +39,14 @@ impl Mindmap {
         }
     }
 
-    pub fn layout_mindmap(&mut self) -> Self {
+    pub fn layout_mindmap(&mut self) -> &mut Self {
         // Launch the layout process based on the diagram type
         match self.metadata.diagram_type {
-            MindmapType::Standard => self.layout_mindmap_standard().to_owned(),
+            MindmapType::Standard => self.layout_mindmap_standard(),
         }
     }
 
+    /// Calculates the position of each nodes following the mindmap standard layout
     pub fn layout_mindmap_standard(&mut self) -> &mut Self {
         let graphical_size = match self.data.clone() {
             Some(data) => data.get_graphical_size(),
@@ -173,11 +174,12 @@ impl Mindmap {
     }
 
 
+    /// Initializes the mindmap from a json string
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
         match serde_json::from_str::<Self>(json_string.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_json_string - {:?}", mindmap);
-                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data).layout_mindmap();
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data);
                 Ok(mindmap)
             }
             Err(e) => {
@@ -187,11 +189,12 @@ impl Mindmap {
         }
     }
 
+    /// Initializes the mindmap from a yaml string
     pub fn from_yaml_string(yaml_str: String) -> Result<Self, impl Error> {
         match serde_yaml::from_str::<Self>(yaml_str.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_yaml_str - {:?}", mindmap);
-                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data).layout_mindmap();
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data);
                 Ok(mindmap)
             }
             Err(e) => {
@@ -201,24 +204,9 @@ impl Mindmap {
         }
     }
 
-    pub fn centered_position(&self) -> Pos2 {
-        let graphical_size = match self.data.clone() {
-            Some(data) => data.get_graphical_size(),
-            None => Size::default(),
-        };
-
-        let position_starting = match self.clone().metadata.position_starting {
-            None => return Pos2::default(),
-            Some(pos) => pos
-        };
-
-        Pos2 {
-            x: position_starting.x - graphical_size.width / 2.0,
-            y: position_starting.y - graphical_size.height / 2.0,
-        }
-    }
-
-    pub fn with_bounding_box(&mut self) -> Self {
+    /// Initializes the bounding box of the mindmap.
+    /// Traverses all the node position and calculate the top left corner position & the width/height of the mindmap
+    pub fn with_bounding_box(&mut self) -> &mut Self {
         let extra_offset = Pos2::new(10.0, 10.0);
         let mut min_x = f32::MAX;
         let mut min_y = f32::MAX;
@@ -251,7 +239,7 @@ impl Mindmap {
         traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y);
 
         if min_x == f32::MAX || min_y == f32::MAX {
-            return self.to_owned();
+            return self;
         }
 
         let width = max_x - min_x;
@@ -262,7 +250,28 @@ impl Mindmap {
         );
         self.position = Some(Pos2::new(min_x, min_y).subtract(&extra_offset));
         self.size = Some(Size { width, height });
-        self.to_owned()
+        self
+    }
+
+    /// Computes the real position of the mindmap nodes and all its children.
+    /// The mindmap position is used as offset
+    pub fn compute_real_position(&mut self) -> &mut Mindmap {
+        // moving through all nodes children and calculate with_position_real()
+        let offset = self.clone().position.unwrap_or_default();
+        if let Some(ref mut data) = self.data {
+            fn traverse(node: &mut Node, offset: &Pos2) {
+                if let Some(children) = node.children.as_mut() {
+                    for child in children {
+                        traverse(child, offset);
+                    }
+                }
+                node.with_position_real(&offset);
+            }
+            data.with_position_real(&offset);
+            traverse(data, &offset);
+        }
+
+        self
     }
 
 }

@@ -13,9 +13,8 @@ pub fn NodeRendererComp() -> Element {
     use_effect(move || {
         let mindmap_position = MINDMAP().position;
         let mindmap_data = MINDMAP().data;
-        tracing::debug!("NodeRenderer: {:?}", mindmap_position);
-        elements.clear();
         let elements_new = to_node_props_vec(mindmap_data, &mindmap_position.unwrap_or_default(), vec![]);
+        elements.clear();
         elements.set(elements_new);
     });
 
@@ -34,6 +33,8 @@ pub fn NodeRendererComp() -> Element {
     }
 }
 
+
+/// Compute a vector of nodes from a parent node moving through all children
 fn to_node_props_vec(mindmap_data: Option<Node>, offset: &Pos2, mut elements: Vec<NodeProps>) -> Vec<NodeProps> {
     let node_input = match mindmap_data {
         Some(node) => node,
@@ -55,7 +56,7 @@ fn to_node_props_vec(mindmap_data: Option<Node>, offset: &Pos2, mut elements: Ve
 
     tracing::debug!("offset: {:?}", offset);
     elements.push(NodeProps {
-        node: node_input.to_owned().with_position_real(&offset),
+        node: node_input,
     });
 
     elements

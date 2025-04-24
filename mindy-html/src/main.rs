@@ -12,9 +12,6 @@ use crate::mindmap::MindmapComp;
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::prelude::*;
-use mindy_engine::mindmap::metadata::MindmapMetadata;
-use mindy_engine::mindmap::Mindmap;
-use mindy_engine::node::Node;
 use std::string::ToString;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");

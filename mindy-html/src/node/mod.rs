@@ -2,7 +2,6 @@ use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
-use crate::mindmap::MINDMAP;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct NodeProps {

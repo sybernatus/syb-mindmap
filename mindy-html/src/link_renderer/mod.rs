@@ -2,26 +2,20 @@ use crate::link_beziers::{LinkBezierComp, LinkBezierProps};
 use crate::mindmap::MINDMAP;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::mindmap::Mindmap;
+use mindy_engine::link::Link;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 
 #[component]
 pub fn LinkRendererComp() -> Element {
     let mut elements: Signal<Vec<LinkBezierProps>> = use_signal(|| vec![]);
-    let mut mindmap_pos: Signal<Pos2> = use_signal(|| Pos2::default());
 
     use_effect(move || {
-        let mindmap = MINDMAP();
-
-        match mindmap.position {
-            Some(position) => {
-                mindmap_pos.set(position.clone());
-                elements.clear();
-                elements.set(calculate_elements(&mindmap.data.unwrap_or_default(), None, position.clone(), vec![]));
-            },
-            None => mindmap_pos.set(Pos2::default())
-        }
+        let mindmap_position = MINDMAP().position;
+        let mindmap_data = MINDMAP().data;
+        let elements_new = to_links_vec(mindmap_data.to_owned(), None, mindmap_position, vec![]);
+        elements.clear();
+        elements.set(elements_new);
     });
 
     rsx! {
@@ -30,44 +24,54 @@ pub fn LinkRendererComp() -> Element {
             id: "link-renderer",
             style: "min-width: inherit;",
             style: "min-height: inherit;",
-            for element in elements.iter() {
+            for element in elements() {
                 LinkBezierComp {
-                    id: element.id.clone(),
-                    pos_start: element.pos_start.clone(),
-                    pos_end: element.pos_end.clone(),
-                    color: element.color.clone(),
-                    stroke_width: element.stroke_width.clone(),
+                    link: element.link.clone(),
                 }
             }
         }
     }
 }
 
-fn calculate_elements(
-    node_input: &Node,
+/// Compute a vector of links from a parent node moving through all children
+/// The link is calculated as follows:
+/// - The end point is the real position of the child node
+/// - The start point is the real position of the parent node
+fn to_links_vec(
+    mindmap_data: Option<Node>,
     parent_position: Option<Pos2>,
-    offset: Pos2,
+    offset: Option<Pos2>,
     mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
+
+    let offset_input = offset.clone().unwrap_or_else(|| Pos2::default());
+    tracing::trace!("offset_input: {:?}", offset_input);
+
+    let node_input = match mindmap_data {
+        Some(mut node) => node,
+        None => return elements,
+    };
+
     if node_input.text.is_none() || node_input.clone().text.unwrap().is_empty() {
         return elements;
     }
 
-    let children = match node_input.children.clone() {
+    let children = match node_input.to_owned().children {
         Some(children) => children,
         None => vec![],
     };
+    tracing::trace!("children: {:?}", children.len());
 
-    for child in &children {
-        let parent_position = match node_input.position_from_initial.clone() {
+    for child in children {
+        let parent_position = match node_input.position_real.clone() {
             None => return elements,
             Some(pos) => pos,
         };
-        elements = calculate_elements(child, Some(parent_position), offset.clone(), elements);
+        elements = to_links_vec(Some(child), Some(parent_position), offset.clone(), elements);
     }
 
     tracing::trace!("parent_position: {:?}", parent_position);
-    let actual_position = match node_input.position_from_initial.clone() {
+    let actual_position = match node_input.position_real.clone() {
         None => return elements,
         Some(pos) => pos,
     };
@@ -79,13 +83,11 @@ fn calculate_elements(
         Some(pos) => pos,
     };
 
+    let link = Link::from_start_end(parent_position.clone(), actual_position.clone())
+        .with_path_data_bezier(0.2);
+
     elements.push(LinkBezierProps {
-        id: Option::from("link".to_string()),
-        pos_start: parent_position.subtract(&offset.clone()),
-        pos_end: actual_position.subtract(&offset.clone()),
-        color: None,
-        stroke_width: None,
-        path_data: None,
+        link,
     });
 
     elements

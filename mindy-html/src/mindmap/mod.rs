@@ -5,9 +5,7 @@ use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
-use mindy_engine::mindmap::metadata::MindmapMetadata;
 use mindy_engine::mindmap::Mindmap;
-use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
 use mindy_engine::utils::size::Size;
 
@@ -51,8 +49,6 @@ pub fn MindmapComp() -> Element {
                     },
                     "Centered"
                 }
-                "pos_x {mindmap_position().x} - pos_y {mindmap_position().y}
-                --- width {mindmap_size().width} - height {mindmap_size().height}",
             }
             div {
                 class: "mindmap-background",
@@ -61,7 +57,7 @@ pub fn MindmapComp() -> Element {
                 style: "min-height: {mindmap_size().height}px;",
                 style: "width: {mindmap_size().width - mindmap_position().x}px;",
                 style: "height: {mindmap_size().height - mindmap_position().y}px;",
-                // LinkRendererComp { }
+                LinkRendererComp { }
                 NodeRendererComp { }
             }
         }
@@ -69,9 +65,11 @@ pub fn MindmapComp() -> Element {
     }
 }
 
+/// Update the global state of the mindmap
 pub fn update_mindmap(mut mindmap: Mindmap) {
-    tracing::debug!("Mindmap updated: {:?}", mindmap);
-    *MINDMAP.write() = mindmap.with_bounding_box();
-    // *MINDMAP_DATA.write() = mindmap.data;
-    // *MINDMAP_METADATA.write() = mindmap.metadata;
+    *MINDMAP.write() = mindmap
+        .layout_mindmap()
+        .with_bounding_box()
+        .compute_real_position()
+        .clone();
 }

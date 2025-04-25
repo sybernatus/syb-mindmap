@@ -36,6 +36,7 @@ impl WebviewListener {
         }
     }
 
+    /// Create a new WebviewListener to capture the message from the webview queue
     pub fn add_message_listener(&self) {
         let window = window().expect("Cannot get window");
         let throttler = Throttler::new(|webview_listener: WebviewListener|{
@@ -59,7 +60,7 @@ impl WebviewListener {
                     }
                 }
             }
-        }, 1000);
+        }, 300);
 
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 

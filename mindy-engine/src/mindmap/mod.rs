@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use crate::mindmap::metadata::MindmapMetadata;
 use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
@@ -6,6 +7,7 @@ use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
+use std::rc::Rc;
 
 pub mod metadata;
 pub mod style;
@@ -279,6 +281,27 @@ impl Mindmap {
         self
     }
 
+    /// Assigns the parent node to all nodes in the mindmap.
+    pub fn compute_parents(&mut self) -> &mut Self {
+        fn assign_parents_recursively(node: &mut Node, parent: Option<Node>) {
+            node.parent = parent.map(Box::new);
+
+            if let Some(mut children) = node.children.take() {
+                let node_clone = node.clone();
+
+                for child in children.iter_mut() {
+                    assign_parents_recursively(child, Some(node_clone.clone()));
+                }
+
+                node.children = Some(children);
+            }
+        }
+
+        if let Some(root) = self.data.as_mut() {
+            assign_parents_recursively(root, None);
+        }
+        self
+    }
 }
 
 impl Default for Mindmap {

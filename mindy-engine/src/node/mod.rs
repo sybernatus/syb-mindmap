@@ -1,5 +1,7 @@
 pub mod style;
 
+use std::cell::RefCell;
+use std::rc::{Rc, Weak};
 use crate::node::style::NodeStyle;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
@@ -19,6 +21,7 @@ pub struct Node {
     pub children: Option<Vec<Node>>,
     pub position_from_initial: Option<Pos2>,
     pub position_real: Option<Pos2>,
+    pub parent: Option<Box<Node>>,
 }
 
 impl Node {
@@ -29,22 +32,28 @@ impl Node {
             style_custom: Option::from(NodeStyle::default()),
             position_from_initial: None,
             position_real: None,
+            parent: None,
         }
     }
 
-    pub fn with_text(&mut self, text: String) -> Self {
+    pub fn with_text(&mut self, text: String) -> &mut Node {
         self.text = Some(text);
-        self.clone()
+        self
     }
 
-    pub fn with_children(&mut self, children: Vec<Node>) -> Self {
+    pub fn with_children(&mut self, children: Vec<Node>) -> &mut Node {
         self.children = Some(children);
-        self.clone()
+        self
     }
 
-    pub fn with_position(&mut self, position: Pos2) -> Self {
+    pub fn with_position(&mut self, position: Pos2) -> &mut Node {
         self.position_from_initial = Some(position);
-        self.clone()
+        self
+    }
+
+    pub fn with_parent(&mut self, node: Self) -> &mut Node {
+        self.parent = Some(Box::new(node));
+        self
     }
 
     /// Get the children of the node.
@@ -132,5 +141,10 @@ impl Node {
             }
         }
         self
+    }
+
+    /// Returns true if the node is a root node.
+    pub fn is_root(&self) -> bool {
+        self.parent.is_none()
     }
 }

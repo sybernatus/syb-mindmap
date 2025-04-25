@@ -71,5 +71,6 @@ pub fn update_mindmap(mut mindmap: Mindmap) {
         .layout_mindmap()
         .with_bounding_box()
         .compute_real_position()
+        .compute_parents()
         .clone();
 }

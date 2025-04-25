@@ -4,11 +4,7 @@ extend = [
     { path = "vscode-extension/syb-mindmap/Makefile.tasks.toml" },
 ]
 [tasks.setup]
-script = [
-    "cargo install cargo-make --version 0.37.24 || true",
-    "cargo install cargo-edit --version 0.13.2 || true",
-    "sudo apt install inkscape || true",
-]
+script = "bash/repository/setup/index.bash"
 
 [tasks.release]
 script_runner = "bash"

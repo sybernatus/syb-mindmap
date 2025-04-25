@@ -59,7 +59,7 @@ impl WebviewListener {
                     }
                 }
             }
-        }, 3000);
+        }, 1000);
 
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 
@@ -79,7 +79,7 @@ impl WebviewListener {
                                 "Received message from source - {:?}",
                                 webview_event.get_data()
                             );
-                            match Mindmap::from_json_string(DATA_JSON.to_string()) {
+                            match Mindmap::from_yaml_string(DATA_JSON.to_string()) {
                                 Ok(mindmap) => update_mindmap(mindmap),
                                 Err(_) => {
                                     return;
@@ -126,53 +126,31 @@ pub fn init_message() {
 }
 
 const DATA_JSON: &str = r#"
-{
-    "data": {
-        "text": "Node 0",
-        "children": [
-            {
-                "text": "Node 1",
-                "position_direction": "Left",
-                "children": [
-                    {
-                        "text": "Node 1.1",
-                        "children": []
-                    }
-                ]
-            },
-            {
-                "text": "Node 2",
-                "children": [
-                    {
-                        "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
-                        "children": []
-                    },
-                    {
-                        "text": "Node 2.2\natata",
-                        "children": []
-                    },
-                    {
-                        "text": "Node 2.3"
-                    }
-                ]
-            },
-            {
-                "text": "<p>Test</p>",
-                "children": []
-            },
-            {
-                "text": "Node 4",
-                "children": []
-            },
-            {
-                "text": "Node 5",
-                "children": []
-            },
-            {
-                "text": "Node 6",
-                "children": []
-            }
-        ]
-    }
-}
+data:
+  text: test
+  children:
+  - text: my-testa azaoziezoa aij eazijea ozeiojza oejaz oeajz eoiazj eajzei oazejioa ziejaz ioezai aze jaoizej oiaze azje azjeo iazjei oazeioajziei azej
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: my-testaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - text: aaaaaaaaaaaaaaaa
+    children:
+      - text: aaaazeaze
+      - text: azeaze
+      - text: aziahzfiohazo
+        children:
+          - text: aaaazeaze
+            children:
+              - text: aaaazeaze
+              - text: azeaze
+              - text: aziahzfiohazo
+          - text: azeaze
+          - text: aziahzfiohazo
+            children:
+              - text: aaaazeaze
+              - text: azeaze
+              - text: aziahzfiohazo
+
 "#;

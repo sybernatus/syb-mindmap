@@ -85,38 +85,37 @@ impl Mindmap {
         }
 
         let position_starting = Pos2::new(0.0, 0.0);
-        // let position_starting = self.metadata.position_starting.clone();
 
         fn layout_mindmap_standard_children(
             current_tree: Vec<&mut Node>,
             parent_position: Pos2,
             parent_size: Size,
-            side: f32, // +1.0 (droite), -1.0 (gauche)
+            side: f32,
             padding_horizontal: f32,
             padding_vertical: f32,
         ) -> f32 {
             let mut y_cursor = parent_position.y;
             let mut total_height = 0.0;
             let mut count = 0;
+            let current_tree_len = current_tree.len();
             for node in current_tree {
                 let size = node.get_graphical_size();
+                y_cursor += size.height / 2.0 + padding_vertical;
 
-                tracing::trace!(
-                    "node: {:?}, - parent_position: {:?}, parent_size: {:?}, size: {:?}",
-                    node,
+                tracing::debug!(
+                    "parent_position: {:?}, parent_size: {:?}, size: {:?}",
                     parent_position,
                     parent_size,
                     size
                 );
 
-                // move to the right or left of the parent node
+                // Calculating the position of the node depending on the parent node
                 node.position_from_initial = Some(Pos2 {
-                    x: parent_position.x
-                        + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
+                    x: parent_position.x + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
                     y: y_cursor,
                 });
 
-                // Layout récursif des enfants du node
+                // Recursively layout the children of the node
                 if let Some(children) = node.children.as_mut() {
                     if !children.is_empty() {
                         let subtree = children.iter_mut().collect::<Vec<&mut Node>>();
@@ -131,7 +130,13 @@ impl Mindmap {
                     }
                 }
 
-                y_cursor += size.height + padding_vertical;
+                y_cursor += size.height / 2.0 + padding_vertical;
+                tracing::debug!(
+                    "y_cursor: {:?}, size: {:?}, text: {:?}",
+                    y_cursor,
+                    size,
+                    node.text.clone().unwrap_or_default()
+                );
                 total_height += size.height + padding_vertical;
                 count += 1;
             }
@@ -143,7 +148,7 @@ impl Mindmap {
             }
         }
 
-        // Layout gauche et droite
+        // Layout right tree
         let right_height = layout_mindmap_standard_children(
             right_tree,
             position_starting.clone(),
@@ -153,6 +158,7 @@ impl Mindmap {
             padding_vertical,
         );
 
+        // Layout left tree
         let left_height = layout_mindmap_standard_children(
             left_tree,
             position_starting.clone(),

@@ -1,34 +1,14 @@
 data:
   text: test
   children:
-  - text: my-test
-  - text: my-test2
+  - text: my-testa azaoziezoa aij eazijea ozeiojza oejaz oeajz eoiazj eajzei oazejioa ziejaz ioezai aze jaoizej oiaze azje azjeo iazjei oazeioajziei azej
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue 
+  - text: my-testaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - text: aaaaaaaaaaaaaaaa
     children:
-    - text: my-test
-  - text: my-test4
-  - text: my-test3
-    children:
-    - text: my-test4
-    - text: my-test5
-    - text: my-test6
-    - text: my-test7
-    - text: my-test8
-    - text: my-test9
-    - text: my-test10
-    - text: my-test11
-    - text: my-test12
-  - text: my-test5
-    children:
-    - text: my-test6
-    - text: taezaeazezaeeza
-    - text: my-test7
-    - text: my-test8
-    - text: my-test9
-    - text: my-test10
-    - text: my-test11
-    - text: my-test12
-    - text: my-test13
-      children: 
-      - text: my-test14
-      - text: my-test15
-      - text: my-test16
+      - text: aaaazeaze
+      - text: azeaze
+      - text: aziahzfiohazofhaziofihazhifhioazofoozafzafhazohfofzoaohifiozaihfiohazihofiizhoafhiofaihozihoiohfazaziahzfiohazofhaziofihazhifhioazofoozafzafhazohfofzoaohifiozaihfiohazihofiizhoafhiofaihozihoiohfazaziahzfiohazofhaziofihazhifhioazofoozafzafhazohfofzoaohifiozaihfiohazihofiizhoafhiofaihozihoiohfaz

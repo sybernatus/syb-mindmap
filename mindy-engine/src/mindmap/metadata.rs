@@ -2,6 +2,7 @@ use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
 use crate::utils::pos2::Pos2;
 use serde::{Deserialize, Serialize};
+use crate::node::style::NodeStyle;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MindmapMetadata {
@@ -11,6 +12,8 @@ pub struct MindmapMetadata {
     pub style: MindmapStyle,
     #[serde(default)]
     pub position_starting: Option<Pos2>,
+    // #[serde(default)]
+    // pub global_node_style: NodeStyle
 }
 
 impl MindmapMetadata {

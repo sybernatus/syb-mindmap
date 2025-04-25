@@ -17,7 +17,8 @@ pub enum Direction {
 #[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 pub struct Node {
     pub text: Option<String>,
-    pub style_custom: Option<NodeStyle>,
+    #[serde(default)]
+    pub style_custom: NodeStyle,
     pub children: Option<Vec<Node>>,
     pub position_from_initial: Option<Pos2>,
     pub position_real: Option<Pos2>,
@@ -29,7 +30,7 @@ impl Node {
         Self {
             text: None,
             children: None,
-            style_custom: Option::from(NodeStyle::default()),
+            style_custom: NodeStyle::default(),
             position_from_initial: None,
             position_real: None,
             parent: None,
@@ -70,8 +71,7 @@ impl Node {
             ..
         } = self
             .style_custom
-            .clone()
-            .unwrap_or_else(|| NodeStyle::default());
+            .clone();
 
         let font_char_width = font_size - 4.0;
         let font_char_height = font_size - 2.0;
@@ -104,8 +104,7 @@ impl Node {
             ..
         } = self
             .style_custom
-            .clone()
-            .unwrap_or_else(|| NodeStyle::default());
+            .clone();
 
         let Size {
             height: text_height,

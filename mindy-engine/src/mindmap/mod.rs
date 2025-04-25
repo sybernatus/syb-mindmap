@@ -8,6 +8,7 @@ use crate::utils::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::rc::Rc;
+use crate::utils::rgb::Rgb;
 
 pub mod metadata;
 pub mod style;
@@ -68,6 +69,7 @@ impl Mindmap {
         let MindmapStyle {
             padding_horizontal,
             padding_vertical,
+            ..
         } = self.metadata.style;
 
         tracing::trace!(
@@ -262,7 +264,7 @@ impl Mindmap {
 
     /// Computes the real position of the mindmap nodes and all its children.
     /// The mindmap position is used as offset
-    pub fn compute_real_position(&mut self) -> &mut Mindmap {
+    pub fn compute_real_position(&mut self) -> &mut Self {
         // moving through all nodes children and calculate with_position_real()
         let offset = self.clone().position.unwrap_or_default();
         if let Some(ref mut data) = self.data {
@@ -300,6 +302,39 @@ impl Mindmap {
         if let Some(root) = self.data.as_mut() {
             assign_parents_recursively(root, None);
         }
+        self
+    }
+
+    /// Computes node color based on the mindmap style
+    pub fn compute_node_color(&mut self) -> &Self {
+        // moving through all nodes children and calculate with_position_real()
+        let parent_background_color = Some(self.metadata.style.root_node_color.clone());
+        let offset = self.clone().position.unwrap_or_default();
+        if let Some(ref mut data) = self.data {
+            fn traverse(node: &mut Node, offset: &Pos2, parent_background_color: Option<Rgb>) {
+                let parent_background_color = parent_background_color.clone().unwrap_or_default();
+
+                // Set the background color of the node based on its parent
+                if node.is_root() {
+                    node.style_custom.with_background_color(parent_background_color.clone());
+                } else {
+                    match node.style_custom.background_color.clone() {
+                        None => node.style_custom.with_background_color(parent_background_color),
+                        Some(bg_color) => node.style_custom.with_background_color(bg_color)
+                    };
+                }
+
+                if let Some(children) = node.children.as_mut() {
+                    for child in children {
+                        traverse(child, offset, node.style_custom.background_color.clone());
+                    }
+                }
+            }
+
+            data.with_position_real(&offset);
+            traverse(data, &offset, parent_background_color.clone());
+        }
+
         self
     }
 }

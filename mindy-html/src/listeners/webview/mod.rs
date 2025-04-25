@@ -137,6 +137,11 @@ data:
   - text: aozieazoieuazieuiozauezaiue
   - text: my-testaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   - text: aaaaaaaaaaaaaaaa
+    style_custom:
+      background_color:
+        red: 0
+        green: 100
+        blue: 0
     children:
       - text: aaaazeaze
       - text: azeaze

@@ -72,5 +72,6 @@ pub fn update_mindmap(mut mindmap: Mindmap) {
         .with_bounding_box()
         .compute_real_position()
         .compute_parents()
+        .compute_node_color()
         .clone();
 }

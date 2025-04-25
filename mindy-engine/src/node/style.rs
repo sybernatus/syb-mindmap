@@ -2,8 +2,9 @@ use crate::utils::rgb::Rgb;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(default)]
 pub struct NodeStyle {
-    pub background_color: Rgb,
+    pub background_color: Option<Rgb>,
     pub children_hidden: bool,
     pub font_size: f32,
     pub font_family: String,
@@ -17,7 +18,7 @@ pub struct NodeStyle {
 impl Default for NodeStyle {
     fn default() -> Self {
         Self {
-            background_color: Rgb::new(122.0, 10.0, 0.0),
+            background_color: None,
             children_hidden: false,
             text_wrapping: true,
             font_size: 12.0,
@@ -27,5 +28,15 @@ impl Default for NodeStyle {
             min_width: 0.0,
             min_height: 0.0,
         }
+    }
+}
+
+impl NodeStyle {
+
+
+    /// set color to the background color
+    pub fn with_background_color(&mut self, color: Rgb) -> &Self {
+        self.background_color = Some(color);
+        self
     }
 }

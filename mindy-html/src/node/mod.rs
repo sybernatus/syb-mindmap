@@ -1,10 +1,7 @@
-use dioxus::html::completions::CompleteWithBraces::set;
 use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
-use crate::mindmap::MindmapState;
-use crate::MINDMAP_DATA;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct NodeProps {
@@ -13,25 +10,6 @@ pub struct NodeProps {
 
 #[component]
 pub fn NodeComp(props: NodeProps) -> Element {
-    let mindmap_bounding_box_position: Signal<Pos2> = use_context::<MindmapState>().mindmap_bounding_box_position;
-    let node = use_memo(move || props.node.clone());
-    let mut node_pos: Signal<Pos2> = use_signal(|| Pos2::default());
-
-    use_effect(move || {
-        // When we read count, it becomes a dependency of the effect
-        let node_position_from_initial = node().position_from_initial;
-        let mindmap_bounding_box_position = mindmap_bounding_box_position();
-        node_pos.set(Node::get_position_real(node_position_from_initial, mindmap_bounding_box_position).clone().unwrap_or_default());
-    });
-
-    let on_click = move |_| {
-        // NODE_LIST.write().iter_mut().for_each(|node| {
-        //     if node.id == props.node.id {
-        //         tracing::trace!("Node clicked, hide children: {:?}", props.node.style_custom.children_hidden);
-        //         node.style_custom.children_hidden = !node.style_custom.children_hidden;
-        //     }
-        // });
-    };
 
     let NodeStyle {
         background_color,
@@ -42,34 +20,36 @@ pub fn NodeComp(props: NodeProps) -> Element {
         max_width,
         min_width,
         ..
-    } = node()
+    } = props.node
         .clone()
         .style_custom
         .clone()
         .unwrap_or(NodeStyle::default());
 
+    let Pos2 { x: pos_x, y: pos_y } = props.node.clone().position_real.unwrap_or_default();
+    let Pos2 { x: i_x, y: i_y } = props.node.clone().position_from_initial.unwrap_or_default();
 
-    let text_size = node().get_graphical_size();
-    let text = node().text.clone().unwrap_or_else(|| "".to_string());
+
+    let text_size = props.node.get_graphical_size();
+    let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
 
     rsx! {
         div {
             class: "node",
-            onclick: on_click,
             style: "background-color: rgb({background_color.red}, {background_color.green}, {background_color.blue});",
-            style: "min-width: {min_width}px;",
+            style: "min-width: {min_width + 120.0}px;",
             style: "max-width: {max_width}px;",
-            style: "min-height: {text_size.height}px;",
+            style: "max-height: 900px;",
             style: "text-wrap: {text_wrap};",
             style: "font-size: {font_size}px;",
             style: "padding: {padding}px;",
             style: "font-family: {font_family};",
             style: "font-size: {font_size}px;",
-            top: "{node_pos().y}px",
-            left: "{node_pos().x}px",
+            top: "{pos_y}px",
+            left: "{pos_x}px",
             id: "test",
-            "{text}"
+            "{text}",
         }
     }
 }

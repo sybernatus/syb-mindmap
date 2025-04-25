@@ -16,11 +16,13 @@ pub struct Mindmap {
     #[serde(default)]
     pub metadata: MindmapMetadata,
     pub data: Option<Node>,
+    pub size: Option<Size>,
+    pub position: Option<Pos2>,
 }
 
 impl Mindmap {
     pub fn new(metadata: MindmapMetadata, data: Option<Node>) -> Self {
-        Self { metadata, data }
+        Self { metadata, data, size: None, position: None }
     }
 
     pub fn with_metadata(&self, metadata: MindmapMetadata) -> Self {
@@ -37,13 +39,14 @@ impl Mindmap {
         }
     }
 
-    pub fn layout_mindmap(&mut self) -> Self {
+    pub fn layout_mindmap(&mut self) -> &mut Self {
         // Launch the layout process based on the diagram type
         match self.metadata.diagram_type {
-            MindmapType::Standard => self.layout_mindmap_standard().to_owned(),
+            MindmapType::Standard => self.layout_mindmap_standard(),
         }
     }
 
+    /// Calculates the position of each nodes following the mindmap standard layout
     pub fn layout_mindmap_standard(&mut self) -> &mut Self {
         let graphical_size = match self.data.clone() {
             Some(data) => data.get_graphical_size(),
@@ -82,38 +85,37 @@ impl Mindmap {
         }
 
         let position_starting = Pos2::new(0.0, 0.0);
-        // let position_starting = self.metadata.position_starting.clone();
 
         fn layout_mindmap_standard_children(
             current_tree: Vec<&mut Node>,
             parent_position: Pos2,
             parent_size: Size,
-            side: f32, // +1.0 (droite), -1.0 (gauche)
+            side: f32,
             padding_horizontal: f32,
             padding_vertical: f32,
         ) -> f32 {
             let mut y_cursor = parent_position.y;
             let mut total_height = 0.0;
             let mut count = 0;
+            let current_tree_len = current_tree.len();
             for node in current_tree {
                 let size = node.get_graphical_size();
+                y_cursor += size.height / 2.0 + padding_vertical;
 
-                tracing::trace!(
-                    "node: {:?}, - parent_position: {:?}, parent_size: {:?}, size: {:?}",
-                    node,
+                tracing::debug!(
+                    "parent_position: {:?}, parent_size: {:?}, size: {:?}",
                     parent_position,
                     parent_size,
                     size
                 );
 
-                // move to the right or left of the parent node
+                // Calculating the position of the node depending on the parent node
                 node.position_from_initial = Some(Pos2 {
-                    x: parent_position.x
-                        + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
+                    x: parent_position.x + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
                     y: y_cursor,
                 });
 
-                // Layout récursif des enfants du node
+                // Recursively layout the children of the node
                 if let Some(children) = node.children.as_mut() {
                     if !children.is_empty() {
                         let subtree = children.iter_mut().collect::<Vec<&mut Node>>();
@@ -128,7 +130,13 @@ impl Mindmap {
                     }
                 }
 
-                y_cursor += size.height + padding_vertical;
+                y_cursor += size.height / 2.0 + padding_vertical;
+                tracing::debug!(
+                    "y_cursor: {:?}, size: {:?}, text: {:?}",
+                    y_cursor,
+                    size,
+                    node.text.clone().unwrap_or_default()
+                );
                 total_height += size.height + padding_vertical;
                 count += 1;
             }
@@ -140,7 +148,7 @@ impl Mindmap {
             }
         }
 
-        // Layout gauche et droite
+        // Layout right tree
         let right_height = layout_mindmap_standard_children(
             right_tree,
             position_starting.clone(),
@@ -150,6 +158,7 @@ impl Mindmap {
             padding_vertical,
         );
 
+        // Layout left tree
         let left_height = layout_mindmap_standard_children(
             left_tree,
             position_starting.clone(),
@@ -171,11 +180,12 @@ impl Mindmap {
     }
 
 
+    /// Initializes the mindmap from a json string
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
         match serde_json::from_str::<Self>(json_string.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_json_string - {:?}", mindmap);
-                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data).layout_mindmap();
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data);
                 Ok(mindmap)
             }
             Err(e) => {
@@ -185,11 +195,12 @@ impl Mindmap {
         }
     }
 
+    /// Initializes the mindmap from a yaml string
     pub fn from_yaml_string(yaml_str: String) -> Result<Self, impl Error> {
         match serde_yaml::from_str::<Self>(yaml_str.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_yaml_str - {:?}", mindmap);
-                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data).layout_mindmap();
+                let mindmap = Mindmap::new(mindmap.metadata, mindmap.data);
                 Ok(mindmap)
             }
             Err(e) => {
@@ -199,22 +210,76 @@ impl Mindmap {
         }
     }
 
-    pub fn centered_position(&self) -> Pos2 {
-        let graphical_size = match self.data.clone() {
-            Some(data) => data.get_graphical_size(),
-            None => Size::default(),
-        };
+    /// Initializes the bounding box of the mindmap.
+    /// Traverses all the node position and calculate the top left corner position & the width/height of the mindmap
+    pub fn with_bounding_box(&mut self) -> &mut Self {
+        let extra_offset = Pos2::new(10.0, 10.0);
+        let mut min_x = f32::MAX;
+        let mut min_y = f32::MAX;
+        let mut max_x = f32::MIN;
+        let mut max_y = f32::MIN;
 
-        let position_starting = match self.clone().metadata.position_starting {
-            None => return Pos2::default(),
-            Some(pos) => pos
-        };
+        fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32) {
+            if let (Some(pos), Some(size)) = (node.clone().position_from_initial, Some(node.get_graphical_size())) {
+                let half_w = size.width / 2.0;
+                let half_h = size.height / 2.0;
 
-        Pos2 {
-            x: position_starting.x - graphical_size.width / 2.0,
-            y: position_starting.y - graphical_size.height / 2.0,
+                let left = pos.x - half_w;
+                let right = pos.x + half_w;
+                let top = pos.y - half_h;
+                let bottom = pos.y + half_h;
+
+                *min_x = min_x.min(left);
+                *max_x = max_x.max(right);
+                *min_y = min_y.min(top);
+                *max_y = max_y.max(bottom);
+            }
+
+            if let Some(children) = node.children {
+                for child in children {
+                    traverse(child, min_x, min_y, max_x, max_y);
+                }
+            }
         }
+
+        traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y);
+
+        if min_x == f32::MAX || min_y == f32::MAX {
+            return self;
+        }
+
+        let width = max_x - min_x;
+        let height = max_y - min_y;
+        tracing::trace!(
+            "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
+            min_x, min_y, width, height
+        );
+        self.position = Some(Pos2::new(min_x, min_y).subtract(&extra_offset));
+        self.size = Some(Size { width, height });
+        self
     }
+
+    /// Computes the real position of the mindmap nodes and all its children.
+    /// The mindmap position is used as offset
+    pub fn compute_real_position(&mut self) -> &mut Mindmap {
+        // moving through all nodes children and calculate with_position_real()
+        let offset = self.clone().position.unwrap_or_default();
+        if let Some(ref mut data) = self.data {
+            fn traverse(node: &mut Node, offset: &Pos2) {
+                if let Some(children) = node.children.as_mut() {
+                    for child in children {
+                        traverse(child, offset);
+                    }
+                }
+                node.with_position_real(&offset);
+            }
+            data.with_position_real(&offset);
+            traverse(data, &offset);
+        }
+
+        self
+    }
+
 }
 
 impl Default for Mindmap {
@@ -222,6 +287,8 @@ impl Default for Mindmap {
         Self {
             metadata: MindmapMetadata::default(),
             data: Some(Node::default()),
+            size: None,
+            position: None,
         }
     }
 }

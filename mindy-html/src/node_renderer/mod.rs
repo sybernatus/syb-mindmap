@@ -1,9 +1,9 @@
 use crate::node::{NodeComp, NodeProps};
-use crate::MINDMAP_DATA;
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
 use mindy_engine::utils::pos2::Pos2;
+use crate::mindmap::MINDMAP;
 
 #[component]
 pub fn NodeRendererComp() -> Element {
@@ -11,9 +11,11 @@ pub fn NodeRendererComp() -> Element {
     let mut elements: Signal<Vec<NodeProps>> = use_signal(|| vec![]);
 
     use_effect(move || {
-        let mindmap_data = MINDMAP_DATA();
-        tracing::trace!("NodeRenderer: {:?}", mindmap_data);
-        elements.set(calculate_elements(mindmap_data, vec![]));
+        let mindmap_position = MINDMAP().position;
+        let mindmap_data = MINDMAP().data;
+        let elements_new = to_node_props_vec(mindmap_data, &mindmap_position.unwrap_or_default(), vec![]);
+        elements.clear();
+        elements.set(elements_new);
     });
 
     rsx! {
@@ -31,7 +33,9 @@ pub fn NodeRendererComp() -> Element {
     }
 }
 
-fn calculate_elements(mindmap_data: Option<Node>, mut elements: Vec<NodeProps>) -> Vec<NodeProps> {
+
+/// Compute a vector of nodes from a parent node moving through all children
+fn to_node_props_vec(mindmap_data: Option<Node>, offset: &Pos2, mut elements: Vec<NodeProps>) -> Vec<NodeProps> {
     let node_input = match mindmap_data {
         Some(node) => node,
         None => return elements,
@@ -47,11 +51,12 @@ fn calculate_elements(mindmap_data: Option<Node>, mut elements: Vec<NodeProps>) 
     };
 
     for child in children {
-        elements = calculate_elements(Some(child), elements);
+        elements = to_node_props_vec(Some(child), offset, elements);
     }
 
+    tracing::debug!("offset: {:?}", offset);
     elements.push(NodeProps {
-        node: node_input.clone(),
+        node: node_input,
     });
 
     elements

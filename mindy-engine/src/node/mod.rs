@@ -18,6 +18,7 @@ pub struct Node {
     pub style_custom: Option<NodeStyle>,
     pub children: Option<Vec<Node>>,
     pub position_from_initial: Option<Pos2>,
+    pub position_real: Option<Pos2>,
 }
 
 impl Node {
@@ -27,6 +28,7 @@ impl Node {
             children: None,
             style_custom: Option::from(NodeStyle::default()),
             position_from_initial: None,
+            position_real: None,
         }
     }
 
@@ -45,10 +47,12 @@ impl Node {
         self.clone()
     }
 
-    pub fn get_children(&self) -> Option<Vec<Node>> {
-        self.children.clone()
+    /// Get the children of the node.
+    pub fn get_children(&self) -> Option<&Vec<Node>> {
+        self.children.as_ref()
     }
 
+    /// Get the graphical size of the node text depending on its style.
     pub fn get_graphical_text_size(&self) -> Size {
         let NodeStyle {
             max_width,
@@ -79,6 +83,7 @@ impl Node {
         }
     }
 
+    /// Get the graphical size of the node depending on its content and style.
     pub fn get_graphical_size(&self) -> Size {
         // Calculate the size of the node based on its content
         let NodeStyle {
@@ -117,80 +122,15 @@ impl Node {
         new_size
     }
 
-    fn layout_parent_position(&mut self, parent_position_x: f32) {
-        let children = self.children.as_mut().unwrap();
-        let fist_child = children.first().unwrap();
-        let last_child = children.last().unwrap();
-
-        let children_middle = children.len() / 2;
-
-        let first_y = fist_child.clone().position_from_initial.unwrap().y;
-        let last_y = last_child.clone().position_from_initial.unwrap().y;
-        tracing::debug!(
-            "text: {:?} - first_y: {:?} - last_y: {:?}",
-            self.text,
-            first_y,
-            last_y
-        );
-
-        self.position_from_initial = Some(Pos2::new(
-            parent_position_x,
-            children[children_middle].clone().position_from_initial.unwrap().y,
-        ));
-    }
-
-    pub fn get_node_bounding_box(&self) -> Option<(Pos2, Size)> {
-        let extra_offset = Pos2::new(200.0, 100.0);
-        let mut min_x = f32::MAX;
-        let mut min_y = f32::MAX;
-        let mut max_x = f32::MIN;
-        let mut max_y = f32::MIN;
-
-        fn traverse(node: &Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32) {
-            if let (Some(pos), Some(size)) = (node.clone().position_from_initial, Some(node.get_graphical_size())) {
-                let half_w = size.width / 2.0;
-                let half_h = size.height / 2.0;
-
-                let left = pos.x - half_w;
-                let right = pos.x + half_w;
-                let top = pos.y - half_h;
-                let bottom = pos.y + half_h;
-
-                *min_x = min_x.min(left);
-                *max_x = max_x.max(right);
-                *min_y = min_y.min(top);
-                *max_y = max_y.max(bottom);
-            }
-
-            if let Some(children) = &node.children {
-                for child in children {
-                    traverse(child, min_x, min_y, max_x, max_y);
-                }
-            }
-        }
-
-        traverse(self, &mut min_x, &mut min_y, &mut max_x, &mut max_y);
-
-        if min_x == f32::MAX || min_y == f32::MAX {
-            return None;
-        }
-
-        let width = max_x - min_x;
-        let height = max_y - min_y;
-        tracing::trace!(
-            "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
-            min_x, min_y, width, height
-        );
-        Some((Pos2::new(min_x, min_y).subtract(&extra_offset), Size { width, height }))
-    }
-
-    pub fn get_position_real(position_initial: Option<Pos2>, offset: Pos2) -> Option<Pos2> {
-        match position_initial.clone() {
-            None => None,
+    /// Computes the real position of the node based on its initial position and the offset.
+    pub fn with_position_real(&mut self, offset: &Pos2) -> &Self {
+        match self.position_from_initial.clone() {
+            None => self.position_real = Some(Pos2::default()),
             Some(pos) => {
                 tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
-                Option::from(pos.subtract(&offset))
+                self.position_real = Some(pos.subtract(&offset));
             }
         }
+        self
     }
 }

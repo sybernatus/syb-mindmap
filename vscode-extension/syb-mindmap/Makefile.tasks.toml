@@ -6,7 +6,7 @@ script = '''
 set -e
 rm -rf media/*
 cp --recursive --force ../../target/dx/mindy-html/debug/web/public/* media
-rm -rf icons/logo.png
+rm --recursive --force icons/logo.png
 inkscape ../../assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
 version="$( cat package.json | jq --raw-output --compact-output .version )"
 code --uninstall-extension "syb-mindmap-${version}.vsix" || true

@@ -1,5 +1,4 @@
 use crate::events::webview::WebviewEvent;
-use crate::update_mindmap;
 use ::web_sys::window;
 use dioxus::logger::tracing;
 use mindy_engine::mindmap::Mindmap;
@@ -8,6 +7,8 @@ use serde_wasm_bindgen::from_value;
 use web_sys::wasm_bindgen::closure::Closure;
 use web_sys::wasm_bindgen::{JsCast, JsValue};
 use web_sys::MessageEvent;
+use mindy_engine::utils::throttler::Throttler;
+use crate::mindmap::update_mindmap;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub enum WebviewMessageType {
@@ -37,6 +38,29 @@ impl WebviewListener {
 
     pub fn add_message_listener(&self) {
         let window = window().expect("Cannot get window");
+        let throttler = Throttler::new(|webview_listener: WebviewListener|{
+            match webview_listener.r#type {
+                WebviewMessageType::JSON => {
+                    tracing::debug!("MessageEvent JSON - {:?}", webview_listener.content);
+                    match Mindmap::from_json_string(webview_listener.content) {
+                        Ok(mindmap) => update_mindmap(mindmap),
+                        Err(_) => {
+                            return;
+                        }
+                    }
+                }
+                WebviewMessageType::YAML => {
+                    tracing::debug!("MessageEvent YAML - {:?}", webview_listener.content);
+                    match Mindmap::from_yaml_string(webview_listener.content) {
+                        Ok(mindmap) => update_mindmap(mindmap),
+                        Err(_) => {
+                            return;
+                        }
+                    }
+                }
+            }
+        }, 1000);
+
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 
             let webview_event = WebviewEvent::new(event);
@@ -55,7 +79,7 @@ impl WebviewListener {
                                 "Received message from source - {:?}",
                                 webview_event.get_data()
                             );
-                            match Mindmap::from_json_string(DATA_JSON.to_string()) {
+                            match Mindmap::from_yaml_string(DATA_JSON.to_string()) {
                                 Ok(mindmap) => update_mindmap(mindmap),
                                 Err(_) => {
                                     return;
@@ -69,25 +93,8 @@ impl WebviewListener {
                 };
             } else {
                 match from_value::<WebviewListener>(webview_event.get_data()) {
-                    Ok(webview_listener) => match webview_listener.r#type {
-                        WebviewMessageType::JSON => {
-                            tracing::debug!("MessageEvent JSON - {:?}", webview_listener.content);
-                            match Mindmap::from_json_string(webview_listener.content) {
-                                Ok(mindmap) => update_mindmap(mindmap),
-                                Err(_) => {
-                                    return;
-                                }
-                            }
-                        }
-                        WebviewMessageType::YAML => {
-                            tracing::debug!("MessageEvent YAML - {:?}", webview_listener.content);
-                            match Mindmap::from_yaml_string(webview_listener.content) {
-                                Ok(mindmap) => update_mindmap(mindmap),
-                                Err(_) => {
-                                    return;
-                                }
-                            }
-                        }
+                    Ok(webview_listener) => {
+                        throttler.send(webview_listener);
                     },
                     Err(err) => {
                         tracing::error!("Error parsing message from source - {:?}", err);
@@ -119,53 +126,31 @@ pub fn init_message() {
 }
 
 const DATA_JSON: &str = r#"
-{
-    "data": {
-        "text": "Node 0",
-        "children": [
-            {
-                "text": "Node 1",
-                "position_direction": "Left",
-                "children": [
-                    {
-                        "text": "Node 1.1",
-                        "children": []
-                    }
-                ]
-            },
-            {
-                "text": "Node 2",
-                "children": [
-                    {
-                        "text": "Node 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123NodeNode 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123Node 123",
-                        "children": []
-                    },
-                    {
-                        "text": "Node 2.2\natata",
-                        "children": []
-                    },
-                    {
-                        "text": "Node 2.3"
-                    }
-                ]
-            },
-            {
-                "text": "<p>Test</p>",
-                "children": []
-            },
-            {
-                "text": "Node 4",
-                "children": []
-            },
-            {
-                "text": "Node 5",
-                "children": []
-            },
-            {
-                "text": "Node 6",
-                "children": []
-            }
-        ]
-    }
-}
+data:
+  text: test
+  children:
+  - text: my-testa azaoziezoa aij eazijea ozeiojza oejaz oeajz eoiazj eajzei oazejioa ziejaz ioezai aze jaoizej oiaze azje azjeo iazjei oazeioajziei azej
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: aozieazoieuazieuiozauezaiue
+  - text: my-testaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - text: aaaaaaaaaaaaaaaa
+    children:
+      - text: aaaazeaze
+      - text: azeaze
+      - text: aziahzfiohazo
+        children:
+          - text: aaaazeaze
+            children:
+              - text: aaaazeaze
+              - text: azeaze
+              - text: aziahzfiohazo
+          - text: azeaze
+          - text: aziahzfiohazo
+            children:
+              - text: aaaazeaze
+              - text: azeaze
+              - text: aziahzfiohazo
+
 "#;

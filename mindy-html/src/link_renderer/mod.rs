@@ -56,10 +56,7 @@ fn to_links_vec(
         return elements;
     }
 
-    let children = match node_input.to_owned().children {
-        Some(children) => children,
-        None => vec![],
-    };
+    let children = node_input.to_owned().children.unwrap_or_else(|| vec![]);
     tracing::trace!("children: {:?}", children.len());
 
     for child in children {

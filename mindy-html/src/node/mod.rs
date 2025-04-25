@@ -27,10 +27,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
         .unwrap_or(NodeStyle::default());
 
     let Pos2 { x: pos_x, y: pos_y } = props.node.clone().position_real.unwrap_or_default();
-    let Pos2 { x: i_x, y: i_y } = props.node.clone().position_from_initial.unwrap_or_default();
 
-
-    let text_size = props.node.get_graphical_size();
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
 
@@ -38,7 +35,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
         div {
             class: "node",
             style: "background-color: rgb({background_color.red}, {background_color.green}, {background_color.blue});",
-            style: "min-width: {min_width + 120.0}px;",
+            style: "min-width: {min_width}px;",
             style: "max-width: {max_width}px;",
             style: "max-height: 900px;",
             style: "text-wrap: {text_wrap};",

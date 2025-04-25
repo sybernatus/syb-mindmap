@@ -97,7 +97,6 @@ impl Mindmap {
             let mut y_cursor = parent_position.y;
             let mut total_height = 0.0;
             let mut count = 0;
-            let current_tree_len = current_tree.len();
             for node in current_tree {
                 let size = node.get_graphical_size();
                 y_cursor += size.height / 2.0 + padding_vertical;

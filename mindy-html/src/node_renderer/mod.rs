@@ -45,10 +45,7 @@ fn to_node_props_vec(mindmap_data: Option<Node>, offset: &Pos2, mut elements: Ve
         return elements;
     }
 
-    let children = match node_input.to_owned().children {
-        Some(children) => children,
-        None => vec![],
-    };
+    let children = node_input.to_owned().children.unwrap_or_else(|| vec![]);
 
     for child in children {
         elements = to_node_props_vec(Some(child), offset, elements);

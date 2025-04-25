@@ -1,10 +1,5 @@
 data:
-  text: TODO
+  text: My new mindmap
   children:
   - text: engine
-    children: 
-    - text: node
-      children:
-      - text: take into account node style
-      - text: ah bon ?
-  - text: aaze
+  - text: I have something for you

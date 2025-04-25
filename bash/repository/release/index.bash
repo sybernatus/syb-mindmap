@@ -4,8 +4,8 @@ set -e
 trap 'echo "Error occurred at line $LINENO"' ERR
 
 git cliff --bump --config .cliff.toml > .github/CHANGELOG.md
-git cliff --unreleased --bump --config .cliff.toml > vscode-extension/syb-mindmap/CHANGELOG.md
-git cliff --unreleased --bump --config .cliff.toml > idea-plugin/CHANGELOG.md
+git cliff --bump --config .cliff.toml > vscode-extension/syb-mindmap/CHANGELOG.md
+git cliff --bump --config .cliff.toml > idea-plugin/CHANGELOG.md
 git add .github/CHANGELOG.md
 
 version="$( git cliff --config .cliff.toml --bumped-version 2> /dev/null )"

@@ -17,7 +17,7 @@ pub enum Direction {
 #[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 pub struct Node {
     pub text: Option<String>,
-    #[serde(default)]
+    #[serde(default = "NodeStyle::new")]
     pub style_custom: NodeStyle,
     pub children: Option<Vec<Node>>,
     pub position_from_initial: Option<Pos2>,

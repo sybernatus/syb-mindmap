@@ -12,8 +12,8 @@ pub struct MindmapMetadata {
     pub style: MindmapStyle,
     #[serde(default)]
     pub position_starting: Option<Pos2>,
-    // #[serde(default)]
-    // pub global_node_style: NodeStyle
+    #[serde(default)]
+    pub global_node_style: NodeStyle
 }
 
 impl MindmapMetadata {
@@ -46,6 +46,7 @@ impl Default for MindmapMetadata {
             diagram_type: MindmapType::default(),
             style: MindmapStyle::default(),
             position_starting: None,
+            global_node_style: NodeStyle::default(),
         }
     }
 }

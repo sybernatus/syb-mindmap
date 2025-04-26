@@ -1,4 +1,3 @@
-use std::cell::RefCell;
 use crate::mindmap::metadata::MindmapMetadata;
 use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
@@ -7,8 +6,6 @@ use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use std::rc::Rc;
-use crate::utils::rgb::Rgb;
 
 pub mod metadata;
 pub mod style;

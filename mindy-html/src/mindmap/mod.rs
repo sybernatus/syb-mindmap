@@ -68,10 +68,6 @@ pub fn MindmapComp() -> Element {
 /// Update the global state of the mindmap
 pub fn update_mindmap(mut mindmap: Mindmap) {
     *MINDMAP.write() = mindmap
-        .layout_mindmap()
-        .with_bounding_box()
-        .compute_real_position()
-        .compute_parents()
-        .compute_node_color()
+        .compute_all()
         .clone();
 }

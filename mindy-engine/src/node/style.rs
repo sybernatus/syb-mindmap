@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[serde(default)]
 pub struct NodeStyle {
     pub background_color: Option<Rgb>,
-    pub children_hidden: bool,
+    pub hidden: bool,
     pub font_size: f32,
     pub font_family: String,
     pub max_width: f32,
@@ -18,8 +18,8 @@ pub struct NodeStyle {
 impl Default for NodeStyle {
     fn default() -> Self {
         Self {
-            background_color: Option::from(Rgb::new(120.0, 40.0, 40.0)),
-            children_hidden: false,
+            background_color: Some(Rgb::new(120.0, 40.0, 40.0)),
+            hidden: false,
             text_wrapping: true,
             font_size: 12.0,
             padding: 10.0,
@@ -36,7 +36,7 @@ impl NodeStyle {
     pub fn new() -> Self {
         Self {
             background_color: None,
-            children_hidden: false,
+            hidden: false,
             text_wrapping: true,
             font_size: 12.0,
             padding: 10.0,
@@ -52,4 +52,5 @@ impl NodeStyle {
         self.background_color = Some(color);
         self
     }
+
 }

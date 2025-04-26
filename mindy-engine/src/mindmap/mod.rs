@@ -305,30 +305,58 @@ impl Mindmap {
         self
     }
 
-    /// Computes node color based on the mindmap style
-    pub fn compute_node_color(&mut self) -> &Self {
-        // moving through all nodes children and calculate with_position_real()
-        if let Some(ref mut data) = self.data {
-            fn traverse(node: &mut Node, parent_background_color: Rgb) {
+    /// Computes all the mindmap properties:
+    /// - layout mindmap
+    /// - layout bounding box
+    /// - node real position
+    /// - node parents
+    /// - node style
+    pub fn compute_all(&mut self) -> &Self {
 
-                // Set the background color of the node based on its parent
-                match node.style_custom.background_color.clone() {
-                    Some(bg_color) => node.style_custom.with_background_color(bg_color),
-                    None => node.style_custom.with_background_color(parent_background_color),
-                };
+
+        self.layout_mindmap()
+            .with_bounding_box()
+            .compute_real_position()
+            .compute_parents();
+
+        // Compute background color
+        self.compute_node_style(
+                |node: &Node| node.style_custom.background_color.clone(),
+                |node: &mut Node, value| { node.style_custom.with_background_color(value); },
+                self.metadata.global_node_style.background_color.clone().unwrap(),
+                self.metadata.style.root_node_color.clone()
+        );
+
+        self
+    }
+
+    /// Computes node style based on the mindmap global style & the node style
+    pub fn compute_node_style<T, FGet, FSet>(&mut self, mut get: FGet, mut set: FSet, default_value: T, parent_value: T) -> &Self
+    where
+        T: Clone,
+        FGet: FnMut(&Node) -> Option<T>,
+        FSet: FnMut(&mut Node, T),
+    {
+        if let Some(ref mut data) = self.data {
+            fn traverse<T, FGet, FSet>(node: &mut Node, parent_value: T, get: &mut FGet, set: &mut FSet)
+            where
+                T: Clone,
+                FGet: FnMut(&Node) -> Option<T>,
+                FSet: FnMut(&mut Node, T),
+            {
+                let value = get(node).unwrap_or_else(|| parent_value.clone());
+                set(node, value.clone());
 
                 if let Some(children) = node.children.as_mut() {
                     for child in children {
-                        traverse(child, node.style_custom.background_color.clone().unwrap_or_default());
+                        traverse(child, value.clone(), get, set);
                     }
                 }
             }
 
-            let default_background_color: Rgb = self.metadata.global_node_style.background_color.clone().unwrap();
-            traverse(data, default_background_color);
+            traverse(data, default_value, &mut get, &mut set);
 
-            let parent_background_color = self.metadata.style.root_node_color.clone();
-            data.style_custom.with_background_color(parent_background_color);
+            set(data, parent_value);
         }
 
         self

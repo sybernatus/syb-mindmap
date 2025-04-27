@@ -2592,7 +2592,7 @@ dependencies = [
 
 [[package]]
 name = "mindy-engine"
-version = "0.6.3"
+version = "0.7.0"
 dependencies = [
  "gloo-timers",
  "serde",
@@ -2603,7 +2603,7 @@ dependencies = [
 
 [[package]]
 name = "mindy-html"
-version = "0.6.3"
+version = "0.7.0"
 dependencies = [
  "base64",
  "dioxus",

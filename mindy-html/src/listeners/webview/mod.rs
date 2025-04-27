@@ -128,35 +128,20 @@ pub fn init_message() {
 
 const DATA_JSON: &str = r#"
 data:
-  text: test
+  text: GCP
   children:
-  - text: my-testa azaoziezoa aij eazijea ozeiojza oejaz oeajz eoiazj eajzei oazejioa ziejaz ioezai aze jaoizej oiaze azje azjeo iazjei oazeioajziei azej
-  - text: aozieazoieuazieuiozauezaiue
-  - text: aozieazoieuazieuiozauezaiue
-  - text: aozieazoieuazieuiozauezaiue
-  - text: aozieazoieuazieuiozauezaiue
-  - text: my-testaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  - text: aaaaaaaaaaaaaaaa
-    style_custom:
-      background_color:
-        red: 0
-        green: 100
-        blue: 0
+  - text: Databases
     children:
-      - text: aaaazeaze
-      - text: azeaze
-      - text: aziahzfiohazo
-        children:
-          - text: aaaazeaze
-            children:
-              - text: aaaazeaze
-              - text: azeaze
-              - text: aziahzfiohazo
-          - text: azeaze
-          - text: aziahzfiohazo
-            children:
-              - text: aaaazeaze
-              - text: azeaze
-              - text: aziahzfiohazo
+      - text: Big Query
+      - text: Data Table
+      - text: Data Table
+      - text: Data Tableeeeeee     aazeazeeeee
+        custom_style:
+          background_color:
+            red: 0
+            green: 150
+            blue: 0
+      - text: Data Table
+
 
 "#;

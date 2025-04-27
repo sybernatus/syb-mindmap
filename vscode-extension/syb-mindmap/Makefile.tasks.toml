@@ -4,6 +4,9 @@ cwd = "vscode-extension/syb-mindmap"
 script = '''
 #!/bin/bash
 set -e
+
+yarn
+mkdir --parents media
 rm -rf media/*
 cp --recursive --force ../../target/dx/mindy-html/debug/web/public/* media
 rm --recursive --force icons/logo.png

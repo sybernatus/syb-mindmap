@@ -218,11 +218,13 @@ impl Mindmap {
         let mut min_y = f32::MAX;
         let mut max_x = f32::MIN;
         let mut max_y = f32::MIN;
+        let padding_horizontal = self.metadata.style.padding_horizontal;
+        let padding_vertical = self.metadata.style.padding_vertical;
 
-        fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32) {
+        fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32, padding_horizontal: f32, padding_vertical: f32) {
             if let (Some(pos), Some(size)) = (node.clone().position_from_initial, Some(node.get_graphical_size())) {
-                let half_w = size.width / 2.0;
-                let half_h = size.height / 2.0;
+                let half_w = size.width / 2.0 + padding_horizontal;
+                let half_h = size.height / 2.0 + padding_vertical;
 
                 let left = pos.x - half_w;
                 let right = pos.x + half_w;
@@ -237,12 +239,12 @@ impl Mindmap {
 
             if let Some(children) = node.children {
                 for child in children {
-                    traverse(child, min_x, min_y, max_x, max_y);
+                    traverse(child, min_x, min_y, max_x, max_y, padding_horizontal, padding_vertical);
                 }
             }
         }
 
-        traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y);
+        traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y, padding_horizontal, padding_vertical);
 
         if min_x == f32::MAX || min_y == f32::MAX {
             return self;

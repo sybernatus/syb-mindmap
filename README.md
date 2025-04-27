@@ -1,21 +1,9 @@
-<style>
-    #header {
-        text-align: center;
-        img {
-            display: block;
-            margin: 0 auto;
-        }
-    }
-
-    #logo {
-        width: 200px;
-    }
-</style>
-
-<a id="header" href="https://github.com/sybernatus/syb-mindmap">
-    <img id="logo" src="./assets/logo/logo.svg" alt="logo">
-    <h1>Syb-mindmap</h1>
-</a>
+<div align="center">
+    <a href="https://github.com/sybernatus/syb-mindmap">
+        <img width="200px" src="./assets/logo/logo.svg" alt="logo">
+        <h1 style="width: 200px;">Syb-mindmap</h1>
+    </a>
+</div>
 
 ---
 

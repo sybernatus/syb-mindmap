@@ -3,6 +3,7 @@ set -e
 
 trap 'echo "Error occurred at line $LINENO"' ERR
 
+git pull
 git cliff --bump --config .cliff.toml > .github/CHANGELOG.md
 git cliff --bump --config .cliff.toml > vscode-extension/syb-mindmap/CHANGELOG.md
 git cliff --bump --config .cliff.toml > idea-plugin/CHANGELOG.md
@@ -27,4 +28,4 @@ git add --all
 git commit --message "chore: release tag '${version}'"
 
 git tag "${version}"
-git push --follow-tags
+git push --tags

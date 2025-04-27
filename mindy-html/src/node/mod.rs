@@ -1,3 +1,4 @@
+use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
@@ -23,11 +24,12 @@ pub fn NodeComp(props: NodeProps) -> Element {
     } = props.node
         .clone()
         .style_custom
-        .clone()
-        .unwrap_or(NodeStyle::default());
+        .clone();
+
+    let background_color = background_color.unwrap_or_default();
+    tracing::debug!("node style - background_color: {:?} - font_size: {:?}", background_color, font_size);
 
     let Pos2 { x: pos_x, y: pos_y } = props.node.clone().position_real.unwrap_or_default();
-
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
 

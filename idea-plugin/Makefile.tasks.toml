@@ -5,6 +5,7 @@ script = '''
 #!/bin/bash
 set -e
 
+mkdir --parents src/main/resources/html/
 rm --recursive --force src/main/resources/html/*
 cp --recursive --force ../target/dx/mindy-html/debug/web/public/* src/main/resources/html/
 cp --recursive --force ../assets/logo/logo.svg src/main/resources/META-INF/pluginIcon.svg

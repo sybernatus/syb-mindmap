@@ -36,6 +36,7 @@ impl WebviewListener {
         }
     }
 
+    /// Create a new WebviewListener to capture the message from the webview queue
     pub fn add_message_listener(&self) {
         let window = window().expect("Cannot get window");
         let throttler = Throttler::new(|webview_listener: WebviewListener|{
@@ -59,7 +60,7 @@ impl WebviewListener {
                     }
                 }
             }
-        }, 1000);
+        }, 300);
 
         let closure = Closure::<dyn FnMut(_)>::new(move |event: MessageEvent| {
 
@@ -127,30 +128,20 @@ pub fn init_message() {
 
 const DATA_JSON: &str = r#"
 data:
-  text: test
+  text: GCP
   children:
-  - text: my-testa azaoziezoa aij eazijea ozeiojza oejaz oeajz eoiazj eajzei oazejioa ziejaz ioezai aze jaoizej oiaze azje azjeo iazjei oazeioajziei azej
-  - text: aozieazoieuazieuiozauezaiue
-  - text: aozieazoieuazieuiozauezaiue
-  - text: aozieazoieuazieuiozauezaiue
-  - text: aozieazoieuazieuiozauezaiue
-  - text: my-testaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  - text: aaaaaaaaaaaaaaaa
+  - text: Databases
     children:
-      - text: aaaazeaze
-      - text: azeaze
-      - text: aziahzfiohazo
-        children:
-          - text: aaaazeaze
-            children:
-              - text: aaaazeaze
-              - text: azeaze
-              - text: aziahzfiohazo
-          - text: azeaze
-          - text: aziahzfiohazo
-            children:
-              - text: aaaazeaze
-              - text: azeaze
-              - text: aziahzfiohazo
+      - text: Big Query
+      - text: Data Table
+      - text: Data Table
+      - text: Data Tableeeeeee     aazeazeeeee
+        custom_style:
+          background_color:
+            red: 0
+            green: 150
+            blue: 0
+      - text: Data Table
+
 
 "#;

@@ -15,10 +15,12 @@ pub enum Direction {
 #[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 pub struct Node {
     pub text: Option<String>,
-    pub style_custom: Option<NodeStyle>,
+    #[serde(default = "NodeStyle::new")]
+    pub style_custom: NodeStyle,
     pub children: Option<Vec<Node>>,
     pub position_from_initial: Option<Pos2>,
     pub position_real: Option<Pos2>,
+    pub parent: Option<Box<Node>>,
 }
 
 impl Node {
@@ -26,25 +28,31 @@ impl Node {
         Self {
             text: None,
             children: None,
-            style_custom: Option::from(NodeStyle::default()),
+            style_custom: NodeStyle::default(),
             position_from_initial: None,
             position_real: None,
+            parent: None,
         }
     }
 
-    pub fn with_text(&mut self, text: String) -> Self {
+    pub fn with_text(&mut self, text: String) -> &mut Node {
         self.text = Some(text);
-        self.clone()
+        self
     }
 
-    pub fn with_children(&mut self, children: Vec<Node>) -> Self {
+    pub fn with_children(&mut self, children: Vec<Node>) -> &mut Node {
         self.children = Some(children);
-        self.clone()
+        self
     }
 
-    pub fn with_position(&mut self, position: Pos2) -> Self {
+    pub fn with_position(&mut self, position: Pos2) -> &mut Node {
         self.position_from_initial = Some(position);
-        self.clone()
+        self
+    }
+
+    pub fn with_parent(&mut self, node: Self) -> &mut Node {
+        self.parent = Some(Box::new(node));
+        self
     }
 
     /// Get the children of the node.
@@ -61,8 +69,7 @@ impl Node {
             ..
         } = self
             .style_custom
-            .clone()
-            .unwrap_or_else(|| NodeStyle::default());
+            .clone();
 
         let font_char_width = font_size - 4.0;
         let font_char_height = font_size - 2.0;
@@ -95,8 +102,7 @@ impl Node {
             ..
         } = self
             .style_custom
-            .clone()
-            .unwrap_or_else(|| NodeStyle::default());
+            .clone();
 
         let Size {
             height: text_height,
@@ -132,5 +138,10 @@ impl Node {
             }
         }
         self
+    }
+
+    /// Returns true if the node is a root node.
+    pub fn is_root(&self) -> bool {
+        self.parent.is_none()
     }
 }

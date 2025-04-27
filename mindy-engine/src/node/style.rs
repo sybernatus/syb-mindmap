@@ -2,9 +2,10 @@ use crate::utils::rgb::Rgb;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(default)]
 pub struct NodeStyle {
-    pub background_color: Rgb,
-    pub children_hidden: bool,
+    pub background_color: Option<Rgb>,
+    pub hidden: bool,
     pub font_size: f32,
     pub font_family: String,
     pub max_width: f32,
@@ -17,8 +18,8 @@ pub struct NodeStyle {
 impl Default for NodeStyle {
     fn default() -> Self {
         Self {
-            background_color: Rgb::new(122.0, 10.0, 0.0),
-            children_hidden: false,
+            background_color: Some(Rgb::new(120.0, 40.0, 40.0)),
+            hidden: false,
             text_wrapping: true,
             font_size: 12.0,
             padding: 10.0,
@@ -28,4 +29,28 @@ impl Default for NodeStyle {
             min_height: 0.0,
         }
     }
+}
+
+impl NodeStyle {
+
+    pub fn new() -> Self {
+        Self {
+            background_color: None,
+            hidden: false,
+            text_wrapping: true,
+            font_size: 12.0,
+            padding: 10.0,
+            font_family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif".to_string(),
+            max_width: 200.0,
+            min_width: 0.0,
+            min_height: 0.0,
+        }
+    }
+
+    /// set color to the background color
+    pub fn with_background_color(&mut self, color: Rgb) -> &Self {
+        self.background_color = Some(color);
+        self
+    }
+
 }

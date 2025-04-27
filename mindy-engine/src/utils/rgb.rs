@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize, Copy)]
 pub struct Rgb {
     pub red: f32,
     pub green: f32,

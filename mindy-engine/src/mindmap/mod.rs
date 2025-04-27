@@ -66,6 +66,7 @@ impl Mindmap {
         let MindmapStyle {
             padding_horizontal,
             padding_vertical,
+            ..
         } = self.metadata.style;
 
         tracing::trace!(
@@ -217,11 +218,13 @@ impl Mindmap {
         let mut min_y = f32::MAX;
         let mut max_x = f32::MIN;
         let mut max_y = f32::MIN;
+        let padding_horizontal = self.metadata.style.padding_horizontal;
+        let padding_vertical = self.metadata.style.padding_vertical;
 
-        fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32) {
+        fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32, padding_horizontal: f32, padding_vertical: f32) {
             if let (Some(pos), Some(size)) = (node.clone().position_from_initial, Some(node.get_graphical_size())) {
-                let half_w = size.width / 2.0;
-                let half_h = size.height / 2.0;
+                let half_w = size.width / 2.0 + padding_horizontal;
+                let half_h = size.height / 2.0 + padding_vertical;
 
                 let left = pos.x - half_w;
                 let right = pos.x + half_w;
@@ -236,12 +239,12 @@ impl Mindmap {
 
             if let Some(children) = node.children {
                 for child in children {
-                    traverse(child, min_x, min_y, max_x, max_y);
+                    traverse(child, min_x, min_y, max_x, max_y, padding_horizontal, padding_vertical);
                 }
             }
         }
 
-        traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y);
+        traverse(self.clone().data.unwrap_or_default(), &mut min_x, &mut min_y, &mut max_x, &mut max_y, padding_horizontal, padding_vertical);
 
         if min_x == f32::MAX || min_y == f32::MAX {
             return self;
@@ -260,7 +263,7 @@ impl Mindmap {
 
     /// Computes the real position of the mindmap nodes and all its children.
     /// The mindmap position is used as offset
-    pub fn compute_real_position(&mut self) -> &mut Mindmap {
+    pub fn compute_real_position(&mut self) -> &mut Self {
         // moving through all nodes children and calculate with_position_real()
         let offset = self.clone().position.unwrap_or_default();
         if let Some(ref mut data) = self.data {
@@ -279,6 +282,84 @@ impl Mindmap {
         self
     }
 
+    /// Assigns the parent node to all nodes in the mindmap.
+    pub fn compute_parents(&mut self) -> &mut Self {
+        fn assign_parents_recursively(node: &mut Node, parent: Option<Node>) {
+            node.parent = parent.map(Box::new);
+
+            if let Some(mut children) = node.children.take() {
+                let node_clone = node.clone();
+
+                for child in children.iter_mut() {
+                    assign_parents_recursively(child, Some(node_clone.clone()));
+                }
+
+                node.children = Some(children);
+            }
+        }
+
+        if let Some(root) = self.data.as_mut() {
+            assign_parents_recursively(root, None);
+        }
+        self
+    }
+
+    /// Computes all the mindmap properties:
+    /// - layout mindmap
+    /// - layout bounding box
+    /// - node real position
+    /// - node parents
+    /// - node style
+    pub fn compute_all(&mut self) -> &Self {
+
+
+        self.layout_mindmap()
+            .with_bounding_box()
+            .compute_real_position()
+            .compute_parents();
+
+        // Compute background color
+        self.compute_node_style(
+                |node: &Node| node.style_custom.background_color.clone(),
+                |node: &mut Node, value| { node.style_custom.with_background_color(value); },
+                self.metadata.global_node_style.background_color.clone().unwrap(),
+                self.metadata.style.root_node_color.clone()
+        );
+
+        self
+    }
+
+    /// Computes node style based on the mindmap global style & the node style
+    pub fn compute_node_style<T, FGet, FSet>(&mut self, mut get: FGet, mut set: FSet, default_value: T, parent_value: T) -> &Self
+    where
+        T: Clone,
+        FGet: FnMut(&Node) -> Option<T>,
+        FSet: FnMut(&mut Node, T),
+    {
+        if let Some(ref mut data) = self.data {
+            fn traverse<T, FGet, FSet>(node: &mut Node, parent_value: T, get: &mut FGet, set: &mut FSet)
+            where
+                T: Clone,
+                FGet: FnMut(&Node) -> Option<T>,
+                FSet: FnMut(&mut Node, T),
+            {
+                let value = get(node).unwrap_or_else(|| parent_value.clone());
+                set(node, value.clone());
+
+                if let Some(children) = node.children.as_mut() {
+                    for child in children {
+                        traverse(child, value.clone(), get, set);
+                    }
+                }
+            }
+
+            traverse(data, default_value, &mut get, &mut set);
+
+            set(data, parent_value);
+        }
+
+        self
+    }
 }
 
 impl Default for Mindmap {

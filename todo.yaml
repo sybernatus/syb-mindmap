@@ -1,5 +1,11 @@
 data:
-  text: My new mindmap
+  text: GCP
   children:
-  - text: engine
-  - text: I have something for you
+  - text: Databases
+    children:
+      - text: Big Query
+      - text: Data Table
+      - text: Data Table
+      - text: Data Table
+      - text: Data Table
+

@@ -28,4 +28,4 @@ git add --all
 git commit --message "chore: release tag '${version}'"
 
 git tag "${version}"
-git push --tags
+git push && git push --tags

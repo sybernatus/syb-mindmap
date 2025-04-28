@@ -10,7 +10,7 @@ This extension provides a way to visualize and edit mind maps as code.
 
 ## Features
 
-- Open mindmap view in a new tab using `ctrl + shift + P` then `syb mindmap`.
+- Open the plugin view in the dedicated panel.
 - Open `json` or `yaml` file and start editing the mindmap.
 
 ### YAML format

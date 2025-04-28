@@ -5,7 +5,12 @@ data:
     children:
       - text: Big Query
       - text: Data Table
-      - text: Data Table
-      - text: Data Table
-      - text: Data Table
-
+  - text: Compute
+    children:
+      - text: Compute Engine
+      - text: App Engine
+        style_custom:
+          background_color:
+            red: 0
+            green: 0
+            blue: 120

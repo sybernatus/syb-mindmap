@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
     id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.changelog") version "2.2.1"
 }
 
 group = "com.sybernatus"
@@ -33,6 +34,12 @@ tasks {
     patchPluginXml {
         sinceBuild.set("241")
         untilBuild.set("")
+        changeNotes.set(provider {
+            changelog.renderItem(
+                changelog.get(project.version.toString()),
+                org.jetbrains.changelog.Changelog.OutputType.HTML
+            )
+        })
     }
 
     signPlugin {
@@ -44,4 +51,9 @@ tasks {
     publishPlugin {
         token.set(System.getenv("IDEA_PUBLISH_TOKEN"))
     }
+}
+
+changelog {
+    version.set(project.version.toString())
+    path.set("${project.projectDir}/CHANGELOG.md")
 }

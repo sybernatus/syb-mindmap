@@ -8,13 +8,24 @@
 This extension provides a way to visualize and edit mind maps as code.
 
 
+## Table of Contents
+
+- [Features](#features)
+- [Usage](#usage)
+    - [YAML format](#yaml-format)
+    - [Json format](#json-format)
+
 ## Features
 
 - Open the plugin view in the dedicated panel.
 - Open `json` or `yaml` file and start editing the mindmap.
 
+## Usage
+
 ### YAML format
+
 ```yaml
+$schema: https://raw.githubusercontent.com/sybernatus/syb-mindmap/main/assets/schemas/mindmap.schema.yaml
 data:
   text: My Mindmap
   children:
@@ -27,6 +38,7 @@ data:
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/sybernatus/syb-mindmap/main/assets/schemas/mindmap.schema.yaml",
   "data": {
     "text": "My Mindmap",
     "children": [

@@ -7,6 +7,23 @@
 
 ---
 
+## Table of Contents
+
+- [Description](#description)
+- [Installation](#installation)
+  - [Plugins](#plugins)
+    - [VSCode](#vscode)
+      - [Using VSCode Marketplace](#using-vscode-marketplace)
+      - [Using Command Line](#using-command-line)
+    - [Intellij IDEA](#intellij-idea)
+      - [Using JetBrains Marketplace](#using-jetbrains-marketplace)
+  - [Usage](#usage)
+    - [YAML format](#yaml-format)
+    - [Json format](#json-format)
+  - [Contributors](#contributors)
+  - [License](#license)
+  - [Copyright](#copyright)
+
 ## Description
 
 **Syb-mindmap** is a lightweight tool that generates mindmap diagrams directly from YAML or JSON files.  
@@ -41,6 +58,42 @@ code --install-extension sybernatus.syb-mindmap --force
 - Search for "Syb Mindmap" in the JetBrains Marketplace.
 - Click on the "Install" button.
 - After installation, the panel will be available in the right sidebar.
+
+## Usage
+
+### YAML format
+
+```yaml
+$schema: https://raw.githubusercontent.com/sybernatus/syb-mindmap/main/assets/schemas/mindmap.schema.yaml
+data:
+  text: My Mindmap
+  children:
+    - text: My first element
+      children:
+        - text: View my topic
+```
+
+### Json format
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/sybernatus/syb-mindmap/main/assets/schemas/mindmap.schema.yaml",
+  "data": {
+    "text": "My Mindmap",
+    "children": [
+      {
+        "text": "My first element",
+        "children": [
+          {
+            "text": "View my topic"
+          }
+        ]
+      }
+    ]
+  }
+
+}
+```
 
 ## Contributors
 

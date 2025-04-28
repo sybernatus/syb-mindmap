@@ -1,0 +1,45 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: MindMap Node
+type: object
+properties:
+  data:
+    $ref: "#/$defs/node"
+required:
+  - data
+$defs:
+  node:
+    type: object
+    properties:
+      text:
+        type: string
+      children:
+        type: array
+        items:
+          $ref: "#/$defs/node"
+      style_custom:
+        type: object
+        properties:
+          background_color:
+            type: object
+            properties:
+              red:
+                type: integer
+                minimum: 0
+                maximum: 255
+              green:
+                type: integer
+                minimum: 0
+                maximum: 255
+              blue:
+                type: integer
+                minimum: 0
+                maximum: 255
+            required:
+              - red
+              - green
+              - blue
+            additionalProperties: false
+        required: []
+        additionalProperties: false
+    required: []
+    additionalProperties: false

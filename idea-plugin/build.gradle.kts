@@ -40,6 +40,12 @@ tasks {
                 org.jetbrains.changelog.Changelog.OutputType.HTML
             )
         })
+        pluginDescription.set(
+            provider {
+                val readme = file("README.md").readText()
+                readme.trim()
+            }
+        )
     }
 
     signPlugin {

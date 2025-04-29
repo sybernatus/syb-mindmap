@@ -35,7 +35,7 @@ tasks:
       - "build"
     command: "./gradlew clean runIde --continuous"
   publish:
-    command: yarn run vsce publish
-    description: ./gradlew publishPlugin
+    command: ./gradlew publishPlugin
+    description: Publish the plugin
     deps:
       - "build"

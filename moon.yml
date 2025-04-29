@@ -1,0 +1,16 @@
+$schema: https://moonrepo.dev/schemas/project.json
+id: @root
+tasks:
+  setup:
+    command: "bash/repository/setup/index.bash"
+  release:
+    command: "bash/repository/release/index.bash"
+  deploy:
+    script: |
+      #!/bin/bash
+      set -e
+
+      most_recent_tag="$( git describe --tags --abbrev=0 )"
+      git checkout main
+      git reset --hard "${most_recent_tag}"
+      git push --force-with-lease

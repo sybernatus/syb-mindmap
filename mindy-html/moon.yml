@@ -1,0 +1,29 @@
+$schema: https://moonrepo.dev/schemas/project.json
+id: mindy-html
+language: rust
+dependsOn:
+  - "mindy-engine"
+tasks:
+  test:
+    command: cargo test
+    description: Run tests
+    env:
+      RUST_BACKTRACE: "1"
+  build.assets:
+    options:
+      runFromWorkspaceRoot: true
+    command: cp --recursive --force assets/logo/ $projectRoot/assets/
+    description: Build the assets
+  build:
+    deps:
+      - build.assets
+    command: dx build --platform=web
+    description: Build the project
+  serve:
+    deps:
+      - build.assets
+    options:
+      runInCI: false
+      persistent: true
+    command: dx serve
+    description: Serve the project

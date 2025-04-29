@@ -5,11 +5,15 @@ script = '''
 #!/bin/bash
 set -e
 
+repoDir="$( git rev-parse --show-toplevel )"
+
 mkdir --parents src/main/resources/html/
 rm --recursive --force src/main/resources/html/*
 cp --recursive --force ../target/dx/mindy-html/debug/web/public/* src/main/resources/html/
 cp --recursive --force ../assets/logo/logo.svg src/main/resources/META-INF/pluginIcon.svg
 cp --recursive --force ../assets/logo/logo_dark.svg src/main/resources/META-INF/pluginIcon_dark.svg
+
+${repoDir}/.bin/pandoc README.md -o build/README.html
 
 version="$( cat build.gradle.kts | grep --extended-regexp "^version =" | cut --delimiter '"' --field 2 )"
 ./gradlew buildPlugin -PpluginVersion="${version}"
@@ -36,7 +40,7 @@ script = '''
 #!/bin/bash
 set -e
 
-./gradlew runIde --continuous
+./gradlew clean runIde --continuous
 '''
 category = "Run"
 dependencies = ["idea_build"]

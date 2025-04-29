@@ -42,8 +42,8 @@ tasks {
         })
         pluginDescription.set(
             provider {
-                val readme = file("README.md").readText()
-                readme.trim()
+                val readme = file("build/README.html").readText()
+                readme
             }
         )
     }

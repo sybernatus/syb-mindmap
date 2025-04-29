@@ -21,3 +21,6 @@ target/
 /target
 /tmp
 /.bin
+# moon
+.moon/cache
+.moon/docker

@@ -1,0 +1,41 @@
+$schema: https://moonrepo.dev/schemas/project.json
+id: idea-plugin
+language: typescript
+dependsOn:
+  - "mindy-html"
+tasks:
+  test:
+    command: ./gradlew test
+    description: Run tests
+  build:
+    deps:
+      - "^:build"
+    description: Build the project
+    options:
+      cache: false
+    script: |
+      #!/bin/bash
+      set -e
+      
+      mkdir --parents src/main/resources/html/
+      rm --recursive --force src/main/resources/html/*
+      cp --recursive --force $workspaceRoot/target/dx/mindy-html/debug/web/public/* src/main/resources/html/
+      cp --recursive --force $workspaceRoot/assets/logo/logo.svg src/main/resources/META-INF/pluginIcon.svg
+      cp --recursive --force $workspaceRoot/assets/logo/logo_dark.svg src/main/resources/META-INF/pluginIcon_dark.svg
+      
+      $workspaceRoot/.bin/pandoc README.md --from markdown_mmd --to html --output build/README.html
+      
+      version="$( cat build.gradle.kts | grep --extended-regexp "^version =" | cut --delimiter '"' --field 2 )"
+      ./gradlew buildPlugin -PpluginVersion="${version}"
+  serve:
+    options:
+      runInCI: false
+    description: Serve the project
+    deps:
+      - "build"
+    command: "./gradlew clean runIde --continuous"
+  publish:
+    command: yarn run vsce publish
+    description: ./gradlew publishPlugin
+    deps:
+      - "build"

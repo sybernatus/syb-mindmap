@@ -25,3 +25,4 @@ media/
 /out
 /syb-mindmap*.vsix
 /yarn-error.log
+/.vscode-test

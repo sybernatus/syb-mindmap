@@ -1,0 +1,12 @@
+$schema: https://moonrepo.dev/schemas/project.json
+id: mindy-engine
+language: rust
+tasks:
+  test:
+    command: cargo test
+    description: Run tests
+    env:
+      RUST_BACKTRACE: "1"
+  build:
+    command: cargo build
+    description: Build the project

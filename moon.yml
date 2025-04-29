@@ -1,5 +1,5 @@
 $schema: https://moonrepo.dev/schemas/project.json
-id: @root
+id: root
 tasks:
   setup:
     command: "bash/repository/setup/index.bash"

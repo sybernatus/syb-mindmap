@@ -63,13 +63,13 @@ impl Link {
             self.clone().get_link_metadata();
 
         let control_point1 = Pos2 {
-            x: self.pos_start.x + direction_x / 3.0 + normal_x * distance * offset_ratio,
-            y: self.pos_start.y + direction_y / 3.0 + normal_y * distance * offset_ratio,
+            x: self.pos_start.x + direction_x / 6.0 - normal_x * distance * offset_ratio,
+            y: self.pos_start.y + direction_y / 6.0 - normal_y * distance * offset_ratio,
         };
 
         let control_point2 = Pos2 {
-            x: self.pos_start.x + direction_x / 6.0 + normal_x * distance * -offset_ratio,
-            y: self.pos_start.y + direction_y / 6.0 + normal_y * distance * -offset_ratio,
+            x: self.pos_start.x + direction_x / 3.0 + normal_x * distance * offset_ratio,
+            y: self.pos_start.y + direction_y / 3.0 + normal_y * distance * offset_ratio,
         };
 
         (control_point1, control_point2)

@@ -6,6 +6,8 @@ tasks:
   release:
     command: "bash/repository/release/index.bash"
   deploy:
+    options:
+      cache: false
     script: |
       #!/bin/bash
       set -e

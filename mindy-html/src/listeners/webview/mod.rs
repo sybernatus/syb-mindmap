@@ -130,18 +130,32 @@ const DATA_JSON: &str = r#"
 data:
   text: GCP
   children:
+  - text: toto
+  - text: tata
+  - text: titi
+    children:
+    - text: tata
+    - text: titititititititititititititititititititititititititititititi
   - text: Databases
     children:
       - text: Big Query
       - text: Data Table
-      - text: Data Table
+      - text: Data TabletitititititititititititititititititititititititititititititiTabletitititititititititititititititititititititititititititititiTabletitititititititititititititititititititititititititititititiTabletitititititititititititititititititititititititititititititiTabletitititititititititititititititititititititititititititititi
       - text: Data Tableeeeeee     aazeazeeeee
-        custom_style:
-          background_color:
-            red: 0
-            green: 150
-            blue: 0
+        children:
+        - text: toto
+        - text: tata
+        - text: titi
+          children:
+            - text: tata
+            - text: titititititititititititititititititititititititititititititi
       - text: Data Table
-
+        children:
+        - text: toto
+        - text: tata
+        - text: titi
+          children:
+            - text: tata
+            - text: titi
 
 "#;

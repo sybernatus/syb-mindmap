@@ -22,6 +22,7 @@ pub struct Node {
     pub position_real: Option<Pos2>,
     pub parent: Option<Box<Node>>,
     pub graphical_size: Option<Size>,
+    pub children_graphical_size: Option<Size>,
 }
 
 impl Node {
@@ -34,6 +35,7 @@ impl Node {
             position_real: None,
             parent: None,
             graphical_size: None,
+            children_graphical_size: None,
         }
     }
 
@@ -127,8 +129,27 @@ impl Node {
             height: new_height,
         };
         self.graphical_size = Some(new_size.clone());
+        tracing::debug!("compute_graphical_size - new_size: {:?}", new_size);
         self
     }
+
+
+    /// Compute the vertical graphical size of the direct children subtree.
+    pub fn compute_children_graphical_size(&mut self, padding_vertical: f32, padding_horizontal: f32) -> &mut Node {
+        if let Some(children) = &self.children {
+            let mut children_graph_size = Size::new(0.0, 0.0);
+            for child in children {
+                let child_children_size = child.clone().children_graphical_size.unwrap_or(Size::new(0.0, 0.0));
+                let child_size = child.clone().graphical_size.unwrap_or(Size::new(0.0, 0.0));
+                children_graph_size.height += child_children_size.height.max(child_size.height) + padding_vertical;
+                children_graph_size.width = children_graph_size.width.max(child_size.width + child_children_size.width + padding_horizontal);
+            }
+            self.children_graphical_size = Some(children_graph_size);
+        }
+        self
+    }
+
+
 
     /// Get the graphical size of the node.
     pub fn get_graphical_size(&self) -> Size {
@@ -142,7 +163,7 @@ impl Node {
         match self.position_from_initial.clone() {
             None => self.position_real = Some(Pos2::default()),
             Some(pos) => {
-                tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
+                tracing::debug!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
                 self.position_real = Some(pos.subtract(&offset));
             }
         }

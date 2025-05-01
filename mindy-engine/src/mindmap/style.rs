@@ -14,8 +14,8 @@ pub struct MindmapStyle {
 impl Default for MindmapStyle {
     fn default() -> Self {
         Self {
-            padding_horizontal: 40.0,
-            padding_vertical: 20.0,
+            padding_horizontal: 0.0,
+            padding_vertical: 0.0,
             root_node_color: Rgb::new(100.0, 100.0, 100.0),
         }
     }

@@ -81,7 +81,7 @@ fn to_links_vec(
     };
 
     let link = Link::from_start_end(parent_position.clone(), actual_position.clone())
-        .with_path_data_bezier(0.2);
+        .with_path_data_bezier(0.5);
 
     elements.push(LinkBezierProps {
         link,

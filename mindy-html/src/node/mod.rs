@@ -29,6 +29,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
     let background_color = background_color.unwrap_or_default();
     tracing::debug!("node style - background_color: {:?} - font_size: {:?}", background_color, font_size);
 
+    let Pos2 { x: ini_x, y: ini_y } = props.node.clone().position_from_initial.unwrap_or_default();
     let Pos2 { x: pos_x, y: pos_y } = props.node.clone().position_real.unwrap_or_default();
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
@@ -49,6 +50,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
             left: "{pos_x}px",
             id: "test",
             "{text}",
+            // "ini_x: {ini_x}",
         }
     }
 }

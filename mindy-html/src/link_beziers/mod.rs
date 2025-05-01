@@ -2,7 +2,6 @@ use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::link::{Link};
 use mindy_engine::utils::rgb::Rgb;
-use regex::Regex;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct LinkBezierProps {

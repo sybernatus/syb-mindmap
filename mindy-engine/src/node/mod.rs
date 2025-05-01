@@ -129,7 +129,7 @@ impl Node {
             height: new_height,
         };
         self.graphical_size = Some(new_size.clone());
-        tracing::debug!("compute_graphical_size - new_size: {:?}", new_size);
+        tracing::trace!("compute_graphical_size - new_size: {:?}", new_size);
         self
     }
 

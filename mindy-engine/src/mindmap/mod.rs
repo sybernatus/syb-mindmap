@@ -114,7 +114,7 @@ impl Mindmap {
 
         fn traverse(node: Node, min_x: &mut f32, min_y: &mut f32, max_x: &mut f32, max_y: &mut f32, padding_horizontal: f32, padding_vertical: f32) {
             if let (Some(pos), Some(size)) = (node.clone().position_from_initial, Some(node.get_graphical_size())) {
-                let half_w = size.width / 2.0 + padding_horizontal + 100.0;
+                let half_w = size.width / 2.0 + padding_horizontal;
                 let half_h = size.height / 2.0 + padding_vertical;
 
                 let left = pos.x - half_w;

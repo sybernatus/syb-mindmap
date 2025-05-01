@@ -21,6 +21,7 @@ pub struct Node {
     pub position_from_initial: Option<Pos2>,
     pub position_real: Option<Pos2>,
     pub parent: Option<Box<Node>>,
+    pub graphical_size: Option<Size>,
 }
 
 impl Node {
@@ -32,6 +33,7 @@ impl Node {
             position_from_initial: None,
             position_real: None,
             parent: None,
+            graphical_size: None,
         }
     }
 
@@ -90,8 +92,8 @@ impl Node {
         }
     }
 
-    /// Get the graphical size of the node depending on its content and style.
-    pub fn get_graphical_size(&self) -> Size {
+    /// Set the graphical size of the node.
+    pub fn compute_graphical_size(&mut self) -> &mut Node {
         // Calculate the size of the node based on its content
         let NodeStyle {
             min_width,
@@ -124,8 +126,15 @@ impl Node {
             width: new_width,
             height: new_height,
         };
+        self.graphical_size = Some(new_size.clone());
+        self
+    }
 
-        new_size
+    /// Get the graphical size of the node.
+    pub fn get_graphical_size(&self) -> Size {
+        self.graphical_size
+            .clone()
+            .unwrap_or_else(|| Size::default())
     }
 
     /// Computes the real position of the node based on its initial position and the offset.

@@ -1,15 +1,16 @@
 use crate::mindmap::metadata::MindmapMetadata;
-use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
 use crate::node::Node;
 use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
+use crate::mindmap::layout::LayoutEngine;
 
 pub mod metadata;
 pub mod style;
 pub mod r#type;
+pub mod layout;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Mindmap {
@@ -42,139 +43,29 @@ impl Mindmap {
     pub fn layout_mindmap(&mut self) -> &mut Self {
         // Launch the layout process based on the diagram type
         match self.metadata.diagram_type {
-            MindmapType::Standard => self.layout_mindmap_standard(),
+            MindmapType::LeftRightHorizontal => LayoutEngine::layout_mindmap_left_right_horizontal(self),
+            MindmapType::LeftRightBottom => LayoutEngine::layout_mindmap_standard(self),
         }
     }
 
-    /// Calculates the position of each nodes following the mindmap standard layout
-    pub fn layout_mindmap_standard(&mut self) -> &mut Self {
-        let graphical_size = match self.data.clone() {
-            Some(data) => data.get_graphical_size(),
-            None => Size::default(),
-        };
+    /// Computes the vertical graphical size of all the nodes in the mindmap
+    pub fn compute_nodes_subtree_graphical_size(&mut self) -> &mut Self {
 
-        let data = match self.data.as_mut() {
-            Some(data) => data,
-            None => return self,
-        };
+        let padding_vertical = self.metadata.style.padding_vertical;
+        let padding_horizontal = self.metadata.style.padding_horizontal;
 
-        let children = match data.children.as_mut() {
-            Some(children) => children,
-            None => &mut vec![],
-        };
-
-        let MindmapStyle {
-            padding_horizontal,
-            padding_vertical,
-            ..
-        } = self.metadata.style;
-
-        tracing::trace!(
-            "Mindmap layout: padding_horizontal: {}, padding_vertical: {}",
-            padding_horizontal,
-            padding_vertical
-        );
-
-        // divide the children into two trees
-        let mut right_tree: Vec<&mut Node> = Vec::new();
-        let mut left_tree: Vec<&mut Node> = Vec::new();
-        for (index, child) in children.iter_mut().enumerate() {
-            match index {
-                index if index % 2 == 0 => right_tree.push(child),
-                _ => left_tree.push(child),
-            }
-        }
-
-        let position_starting = Pos2::new(0.0, 0.0);
-
-        fn layout_mindmap_standard_children(
-            current_tree: Vec<&mut Node>,
-            parent_position: Pos2,
-            parent_size: Size,
-            side: f32,
-            padding_horizontal: f32,
-            padding_vertical: f32,
-        ) -> f32 {
-            let mut y_cursor = parent_position.y;
-            let mut total_height = 0.0;
-            let mut count = 0;
-            for node in current_tree {
-                let size = node.get_graphical_size();
-                y_cursor += size.height / 2.0 + padding_vertical;
-
-                tracing::debug!(
-                    "parent_position: {:?}, parent_size: {:?}, size: {:?}",
-                    parent_position,
-                    parent_size,
-                    size
-                );
-
-                // Calculating the position of the node depending on the parent node
-                node.position_from_initial = Some(Pos2 {
-                    x: parent_position.x + side * (parent_size.width / 2.0 + padding_horizontal + size.width / 2.0),
-                    y: y_cursor,
-                });
-
-                // Recursively layout the children of the node
-                if let Some(children) = node.children.as_mut() {
-                    if !children.is_empty() {
-                        let subtree = children.iter_mut().collect::<Vec<&mut Node>>();
-                        layout_mindmap_standard_children(
-                            subtree,
-                            node.position_from_initial.clone().unwrap(),
-                            size.clone(),
-                            side,
-                            padding_horizontal,
-                            padding_vertical,
-                        );
-                    }
+        fn traverse(node: &mut Node, padding_vertical: f32, padding_horizontal: f32) {
+            if let Some(children) = node.children.as_mut() {
+                for child in children {
+                    traverse(child, padding_vertical, padding_horizontal);
                 }
-
-                y_cursor += size.height / 2.0 + padding_vertical;
-                tracing::debug!(
-                    "y_cursor: {:?}, size: {:?}, text: {:?}",
-                    y_cursor,
-                    size,
-                    node.text.clone().unwrap_or_default()
-                );
-                total_height += size.height + padding_vertical;
-                count += 1;
             }
-
-            if count > 0 {
-                total_height - padding_vertical
-            } else {
-                0.0
-            }
+            node.compute_children_graphical_size(padding_vertical, padding_horizontal);
         }
 
-        // Layout right tree
-        let right_height = layout_mindmap_standard_children(
-            right_tree,
-            position_starting.clone(),
-            graphical_size.clone(),
-            1.0,
-            padding_horizontal,
-            padding_vertical,
-        );
-
-        // Layout left tree
-        let left_height = layout_mindmap_standard_children(
-            left_tree,
-            position_starting.clone(),
-            graphical_size.clone(),
-            -1.0,
-            padding_horizontal,
-            padding_vertical,
-        );
-
-        let total_height = right_height.max(left_height);
-
-        // Center parent node on children
-        self.data.as_mut().unwrap().position_from_initial = Some(Pos2 {
-            x: position_starting.x,
-            y: position_starting.y + total_height / 2.0 - graphical_size.height / 2.0,
-        });
+        if let Some(ref mut data) = self.data {
+            traverse(data, padding_vertical, padding_horizontal);
+        }
 
         self
     }
@@ -275,7 +166,6 @@ impl Mindmap {
                 }
                 node.with_position_real(&offset);
             }
-            data.with_position_real(&offset);
             traverse(data, &offset);
         }
 
@@ -304,6 +194,24 @@ impl Mindmap {
         self
     }
 
+    /// Computes the nodes graphical size
+    pub fn compute_graphical_size(&mut self) -> &mut Self {
+
+        fn traverse(node: &mut Node) {
+            node.compute_graphical_size();
+            if let Some(children) = node.children.as_mut() {
+                for child in children {
+                    traverse(child);
+                }
+            }
+        }
+
+        if let Some(ref mut data) = self.data {
+            traverse(data);
+        }
+        self
+    }
+
     /// Computes all the mindmap properties:
     /// - layout mindmap
     /// - layout bounding box
@@ -313,7 +221,9 @@ impl Mindmap {
     pub fn compute_all(&mut self) -> &Self {
 
 
-        self.layout_mindmap()
+        self.compute_graphical_size()
+            .compute_nodes_subtree_graphical_size()
+            .layout_mindmap()
             .with_bounding_box()
             .compute_real_position()
             .compute_parents();

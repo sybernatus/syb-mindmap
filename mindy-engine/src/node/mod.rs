@@ -21,6 +21,8 @@ pub struct Node {
     pub position_from_initial: Option<Pos2>,
     pub position_real: Option<Pos2>,
     pub parent: Option<Box<Node>>,
+    pub graphical_size: Option<Size>,
+    pub children_graphical_size: Option<Size>,
 }
 
 impl Node {
@@ -32,6 +34,8 @@ impl Node {
             position_from_initial: None,
             position_real: None,
             parent: None,
+            graphical_size: None,
+            children_graphical_size: None,
         }
     }
 
@@ -90,8 +94,8 @@ impl Node {
         }
     }
 
-    /// Get the graphical size of the node depending on its content and style.
-    pub fn get_graphical_size(&self) -> Size {
+    /// Set the graphical size of the node.
+    pub fn compute_graphical_size(&mut self) -> &mut Node {
         // Calculate the size of the node based on its content
         let NodeStyle {
             min_width,
@@ -124,8 +128,34 @@ impl Node {
             width: new_width,
             height: new_height,
         };
+        self.graphical_size = Some(new_size.clone());
+        tracing::trace!("compute_graphical_size - new_size: {:?}", new_size);
+        self
+    }
 
-        new_size
+
+    /// Compute the vertical graphical size of the direct children subtree.
+    pub fn compute_children_graphical_size(&mut self, padding_vertical: f32, padding_horizontal: f32) -> &mut Node {
+        if let Some(children) = &self.children {
+            let mut children_graph_size = Size::new(0.0, 0.0);
+            for child in children {
+                let child_children_size = child.clone().children_graphical_size.unwrap_or(Size::new(0.0, 0.0));
+                let child_size = child.clone().graphical_size.unwrap_or(Size::new(0.0, 0.0));
+                children_graph_size.height += child_children_size.height.max(child_size.height) + padding_vertical;
+                children_graph_size.width = children_graph_size.width.max(child_size.width + child_children_size.width + padding_horizontal);
+            }
+            self.children_graphical_size = Some(children_graph_size);
+        }
+        self
+    }
+
+
+
+    /// Get the graphical size of the node.
+    pub fn get_graphical_size(&self) -> Size {
+        self.graphical_size
+            .clone()
+            .unwrap_or_else(|| Size::default())
     }
 
     /// Computes the real position of the node based on its initial position and the offset.
@@ -133,7 +163,7 @@ impl Node {
         match self.position_from_initial.clone() {
             None => self.position_real = Some(Pos2::default()),
             Some(pos) => {
-                tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
+                tracing::debug!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
                 self.position_real = Some(pos.subtract(&offset));
             }
         }

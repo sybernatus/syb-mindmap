@@ -128,20 +128,25 @@ pub fn init_message() {
 
 const DATA_JSON: &str = r#"
 data:
-  text: GCP
+  text: GitOps with ArgoCD
   children:
-  - text: Databases
+  - text: Introduction
     children:
-      - text: Big Query
-      - text: Data Table
-      - text: Data Table
-      - text: Data Tableeeeeee     aazeazeeeee
-        custom_style:
-          background_color:
-            red: 0
-            green: 150
-            blue: 0
-      - text: Data Table
+    - text: GitOps is a modern approach to managing Kubernetes deployments using Git as the single source of truth for declarative manifests.
+    - text: ArgoCD is a Kubernetes controller that compares the declared state in Git with the actual state in the cluster to perform automatic or manual synchronization.
+  - text: Core Principles
+    children:
+    - text: The Git repository contains the full configuration of an environment (deployments, services, configmaps…), enabling complete traceability and easy auditing.
+    - text: Changes are made through pull requests, ensuring code review, automatic CI validation, and improved governance of environments.
+    - text: The concept of state reconciliation is key - ArgoCD continuously monitors the Kubernetes cluster and applies any differences to ensure zero drift. This mechanism is especially useful in dynamic environments where manual actions risk introducing inconsistencies. With GitOps, every change must go through Git, drastically reducing human error and improving system resilience. This model also allows instant recovery to a known good state by reverting to a previous Git commit, which is crucial for debugging or fast rollbacks. The transparency provided by GitOps enables seamless collaboration between Dev and Ops teams around a shared, version-controlled history.
+  - text: Deploying with ArgoCD
+    children:
+    - text: ArgoCD can be deployed in any Kubernetes cluster and connected to one or more Git repositories containing your manifests or Helm charts.
+    - text: It offers both a web interface and CLI to view, sync, or restore applications, supporting automatic or manual synchronization strategies.
+  - text: Benefits and Limitations
+    children:
+    - text: Advantages include better auditability, reduced human error, quicker rollbacks, and consistent automation across environments.
+    - text: ArgoCD is Kubernetes-focused and requires strict Git best practices; onboarding can be challenging for teams unfamiliar with Git workflows.
 
 
 "#;

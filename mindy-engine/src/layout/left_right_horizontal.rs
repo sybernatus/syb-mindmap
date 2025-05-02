@@ -1,3 +1,4 @@
+use crate::layout::Layout;
 use crate::layout::pos2::Pos2;
 use crate::layout::size::Size;
 use crate::mindmap::Mindmap;
@@ -5,6 +6,8 @@ use crate::mindmap::style::MindmapStyle;
 use crate::node::Node;
 
 pub struct LeftRightHorizontalLayout {}
+
+impl Layout for LeftRightHorizontalLayout {}
 
 impl LeftRightHorizontalLayout {
 
@@ -58,24 +61,6 @@ impl LeftRightHorizontalLayout {
             }
         }
         total_height
-    }
-
-    /// Divide the element vector in right & left trees
-    /// # Arguments
-    /// * `elements` - A mutable reference to a vector of nodes
-    /// # Returns
-    /// * `(right_tree, left_tree)` - A tuple of two vectors of mutable references to nodes
-    fn divide_elements_tree(elements: &mut Vec<Node>) -> (Vec<&mut Node>, Vec<&mut Node>) {
-        // divide the children into two trees
-        let mut right_tree: Vec<&mut Node> = Vec::new();
-        let mut left_tree: Vec<&mut Node> = Vec::new();
-        for (index, child) in elements.iter_mut().enumerate() {
-            match index {
-                index if index % 2 == 0 => right_tree.push(child),
-                _ => left_tree.push(child),
-            }
-        }
-        (right_tree, left_tree)
     }
 
     /// Recursively place the node positions based on the parent position and size

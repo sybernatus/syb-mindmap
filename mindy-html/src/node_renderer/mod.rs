@@ -2,7 +2,7 @@ use crate::node::{NodeComp, NodeProps};
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::Node;
-use mindy_engine::utils::pos2::Pos2;
+use mindy_engine::layout::pos2::Pos2;
 use crate::mindmap::MINDMAP;
 
 #[component]

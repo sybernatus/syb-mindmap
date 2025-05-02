@@ -4,7 +4,7 @@ use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::link::Link;
 use mindy_engine::node::Node;
-use mindy_engine::utils::pos2::Pos2;
+use mindy_engine::layout::pos2::Pos2;
 
 #[component]
 pub fn LinkRendererComp() -> Element {

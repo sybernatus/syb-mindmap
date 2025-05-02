@@ -1,16 +1,18 @@
 use crate::mindmap::metadata::MindmapMetadata;
 use crate::mindmap::r#type::MindmapType;
 use crate::node::Node;
-use crate::utils::pos2::Pos2;
-use crate::utils::size::Size;
+use crate::layout::pos2::Pos2;
+use crate::layout::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use crate::mindmap::layout::LayoutEngine;
+use crate::layout::left_right_bottom::LeftRightBottomLayout;
+use crate::layout::left_right_horizontal::LeftRightHorizontalLayout;
+use crate::layout::Position2D;
+
 
 pub mod metadata;
 pub mod style;
 pub mod r#type;
-pub mod layout;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Mindmap {
@@ -43,8 +45,8 @@ impl Mindmap {
     pub fn layout_mindmap(&mut self) -> &mut Self {
         // Launch the layout process based on the diagram type
         match self.metadata.diagram_type {
-            MindmapType::LeftRightHorizontal => LayoutEngine::layout_mindmap_left_right_horizontal(self),
-            MindmapType::LeftRightBottom => LayoutEngine::layout_mindmap_standard(self),
+            MindmapType::LeftRightHorizontal => LeftRightHorizontalLayout::layout(self),
+            MindmapType::LeftRightBottom => LeftRightBottomLayout::layout(self),
         }
     }
 
@@ -147,7 +149,7 @@ impl Mindmap {
             "get_node_bounding_box - min_x: {:?}, min_y: {:?}, width: {:?}, height: {:?}",
             min_x, min_y, width, height
         );
-        self.position = Some(Pos2::new(min_x, min_y).subtract(&extra_offset));
+        self.position = Some(Pos2::new(min_x, min_y).subtract(&extra_offset).clone());
         self.size = Some(Size { width, height });
         self
     }

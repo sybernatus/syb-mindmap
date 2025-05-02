@@ -1,2 +1,2 @@
-pub mod rgb;
+pub mod color;
 pub mod throttler;

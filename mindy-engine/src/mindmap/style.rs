@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::utils::rgb::Rgb;
+use crate::utils::color::Color;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MindmapStyle {
@@ -8,7 +8,7 @@ pub struct MindmapStyle {
     #[serde(default)]
     pub padding_vertical: f32,
     #[serde(default)]
-    pub root_node_color: Rgb,
+    pub root_node_color: Color,
 }
 
 impl Default for MindmapStyle {
@@ -16,7 +16,7 @@ impl Default for MindmapStyle {
         Self {
             padding_horizontal: 40.0,
             padding_vertical: 20.0,
-            root_node_color: Rgb::new(100.0, 100.0, 100.0),
+            root_node_color: Color::from_hex("#AA4545".to_string()),
         }
     }
 }
@@ -26,7 +26,7 @@ impl MindmapStyle {
         Self {
             padding_horizontal,
             padding_vertical,
-            root_node_color: Rgb::new(0.0, 0.0, 0.0),
+            root_node_color: Color::from_rgb(0, 0, 0),
         }
     }
 
@@ -34,7 +34,7 @@ impl MindmapStyle {
         self.padding_horizontal
     }
 
-    pub fn with_root_node_color(&mut self, color: Rgb) -> &Self {
+    pub fn with_root_node_color(&mut self, color: Color) -> &Self {
         self.root_node_color = color;
         self
     }

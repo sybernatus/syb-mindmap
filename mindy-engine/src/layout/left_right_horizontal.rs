@@ -180,3 +180,113 @@ impl LeftRightHorizontalLayout {
 
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::node::Node;
+    use crate::layout::size::Size;
+    use crate::layout::pos2::Pos2;
+    use crate::mindmap::{Mindmap, style::MindmapStyle};
+    use crate::mindmap::metadata::MindmapMetadata;
+
+    fn create_node(width: f32, height: f32) -> Node {
+        Node {
+            graphical_size: Some(Size { width, height }),
+            children_graphical_size: Some(Size { width, height }),
+            children: Some(vec![]),
+            position_from_initial: None,
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn test_place_node_no_children() {
+        let mut node = create_node( 100.0, 50.0);
+        let parent_pos = Pos2::new(0.0, 0.0);
+        let parent_size = Size { width: 50.0, height: 50.0 };
+
+        LeftRightHorizontalLayout::place_node_positions(
+            &mut node,
+            parent_pos,
+            parent_size,
+            1.0,
+            20.0,
+            10.0,
+        );
+
+        let pos = node.position_from_initial.unwrap();
+        assert_eq!(pos.x, 95.0);
+        assert_eq!(pos.y, 0.0);
+    }
+
+    #[test]
+    fn test_place_node_with_children() {
+        let child1 = create_node( 50.0, 20.0);
+        let child2 = create_node( 50.0, 20.0);
+        let mut node = create_node( 100.0, 50.0);
+        node.children = Some(vec![child1, child2]);
+        node.children_graphical_size = Some(Size { width: 100.0, height: 60.0 });
+
+        let parent_pos = Pos2::new(0.0, 0.0);
+        let parent_size = Size { width: 50.0, height: 50.0 };
+
+        LeftRightHorizontalLayout::place_node_positions(
+            &mut node,
+            parent_pos,
+            parent_size,
+            1.0,
+            10.0,
+            10.0,
+        );
+
+        let children = node.children.unwrap();
+        assert_eq!(children.len(), 2);
+        assert!(children[0].position_from_initial.is_some());
+        assert!(children[1].position_from_initial.is_some());
+        assert_eq!(children[0].position_from_initial.clone().unwrap().x, 170.0);
+        assert_eq!(children[0].position_from_initial.clone().unwrap().y, -20.0);
+        assert_eq!(children[1].position_from_initial.clone().unwrap().x, 170.0);
+        assert_eq!(children[1].position_from_initial.clone().unwrap().y, 10.0);
+    }
+
+    #[test]
+    fn test_position_parent_node_centered() {
+        let mut child1 = create_node( 20.0, 10.0);
+        child1.position_from_initial = Some(Pos2::new(0.0, -40.0));
+
+        let mut child2 = create_node( 20.0, 10.0);
+        child2.position_from_initial = Some(Pos2::new(0.0, 30.0));
+
+        let mut children = vec![child1, child2];
+        let pos = LeftRightHorizontalLayout::position_parent_node(&mut children);
+
+        assert_eq!(pos.x, 0.0);
+        assert_eq!(pos.y, -5.0);
+    }
+
+    #[test]
+    fn test_layout_mindmap() {
+        let child1 = create_node( 40.0, 20.0);
+        let child2 = create_node( 40.0, 20.0);
+        let mut data = create_node( 60.0, 40.0);
+        data.children = Some(vec![child1, child2]);
+        data.children_graphical_size = Some(Size { width: 100.0, height: 60.0 });
+
+        let mut mindmap = Mindmap {
+            data: Some(data),
+            metadata: MindmapMetadata {
+                style: MindmapStyle {
+                    padding_horizontal: 10.0,
+                    padding_vertical: 5.0,
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        let result = LeftRightHorizontalLayout::layout(&mut mindmap);
+        assert!(result.data.as_ref().unwrap().position_from_initial.is_some());
+    }
+}

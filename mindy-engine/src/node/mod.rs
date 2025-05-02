@@ -1,9 +1,10 @@
 pub mod style;
 
 use crate::node::style::NodeStyle;
-use crate::utils::pos2::Pos2;
 use crate::utils::size::Size;
 use serde::{Deserialize, Serialize};
+use crate::layout::pos2::Pos2;
+use crate::layout::Position2D;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
 pub enum Direction {
@@ -162,9 +163,9 @@ impl Node {
     pub fn with_position_real(&mut self, offset: &Pos2) -> &Self {
         match self.position_from_initial.clone() {
             None => self.position_real = Some(Pos2::default()),
-            Some(pos) => {
+            Some(mut pos) => {
                 tracing::debug!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
-                self.position_real = Some(pos.subtract(&offset));
+                self.position_real = Some(pos.subtract(&offset).clone());
             }
         }
         self

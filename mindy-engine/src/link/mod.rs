@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::utils::pos2::Pos2;
+use crate::layout::pos2::Pos2;
 use crate::utils::rgb::Rgb;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]

@@ -1,7 +1,7 @@
 use crate::mindmap::Mindmap;
 use crate::mindmap::style::MindmapStyle;
 use crate::node::Node;
-use crate::utils::pos2::Pos2;
+use crate::layout::pos2::Pos2;
 use crate::utils::size::Size;
 
 pub struct LayoutEngine {}

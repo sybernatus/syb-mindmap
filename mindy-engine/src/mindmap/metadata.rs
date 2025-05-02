@@ -1,6 +1,6 @@
 use crate::mindmap::style::MindmapStyle;
 use crate::mindmap::r#type::MindmapType;
-use crate::utils::pos2::Pos2;
+use crate::layout::pos2::Pos2;
 use serde::{Deserialize, Serialize};
 use crate::node::style::NodeStyle;
 

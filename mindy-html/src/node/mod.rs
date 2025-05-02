@@ -2,7 +2,7 @@ use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::node::style::NodeStyle;
 use mindy_engine::node::Node;
-use mindy_engine::utils::pos2::Pos2;
+use mindy_engine::layout::pos2::Pos2;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct NodeProps {

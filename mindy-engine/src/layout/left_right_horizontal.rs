@@ -288,5 +288,7 @@ mod tests {
 
         let result = LeftRightHorizontalLayout::layout(&mut mindmap);
         assert!(result.data.as_ref().unwrap().position_from_initial.is_some());
+        assert_eq!(result.data.as_ref().unwrap().position_from_initial.clone().unwrap().x, 0.0);
+        assert_eq!(result.data.as_ref().unwrap().position_from_initial.clone().unwrap().y, 10.0);
     }
 }

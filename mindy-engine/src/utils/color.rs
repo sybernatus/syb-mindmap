@@ -16,3 +16,20 @@ impl Color {
     }
 
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_color() {
+        let color = Color::from_hex("#FF5733".to_string());
+        assert_eq!(color.hex, "#FF5733");
+    }
+
+    #[test]
+    fn test_color_rgb() {
+        let color = Color::from_rgb(255, 87, 51);
+        assert_eq!(color.hex, "#FF5733");
+    }
+}

@@ -136,7 +136,12 @@ impl Node {
 
 
     /// Compute the vertical graphical size of the direct children subtree.
-    pub fn compute_children_graphical_size(&mut self, padding_vertical: f32, padding_horizontal: f32) -> &mut Node {
+    /// # Arguments
+    /// * `padding_vertical` - The vertical padding between the children.
+    /// * `padding_horizontal` - The horizontal padding between the children.
+    /// # Returns
+    /// * `&mut Node` - The updated node with the computed children graphical size.
+    pub fn compute_children_graphical_size(&mut self, padding_vertical: f32, padding_horizontal: f32) -> &mut Self {
         if let Some(children) = &self.children {
             let mut children_graph_size = Size::new(0.0, 0.0);
             for child in children {
@@ -160,6 +165,10 @@ impl Node {
     }
 
     /// Computes the real position of the node based on its initial position and the offset.
+    /// # Arguments
+    /// * `offset` - The offset to be subtracted from the initial position.
+    /// # Returns
+    /// * `&Self` - The updated node with the computed real position.
     pub fn with_position_real(&mut self, offset: &Pos2) -> &Self {
         match self.position_from_initial.clone() {
             None => self.position_real = Some(Pos2::default()),

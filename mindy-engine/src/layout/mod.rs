@@ -1,5 +1,6 @@
 pub mod pos2;
 pub mod size;
+pub mod left_right_horizontal;
 
 pub trait Position2D {
     fn x(&self) -> f32;

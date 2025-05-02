@@ -5,6 +5,7 @@ use crate::layout::pos2::Pos2;
 use crate::layout::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
+use crate::layout::left_right_horizontal::LeftRightHorizontalLayout;
 use crate::layout::Position2D;
 use crate::mindmap::layout::LayoutEngine;
 
@@ -45,7 +46,7 @@ impl Mindmap {
     pub fn layout_mindmap(&mut self) -> &mut Self {
         // Launch the layout process based on the diagram type
         match self.metadata.diagram_type {
-            MindmapType::LeftRightHorizontal => LayoutEngine::layout_mindmap_left_right_horizontal(self),
+            MindmapType::LeftRightHorizontal => LeftRightHorizontalLayout::layout(self),
             MindmapType::LeftRightBottom => LayoutEngine::layout_mindmap_standard(self),
         }
     }

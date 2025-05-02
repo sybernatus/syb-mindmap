@@ -1,4 +1,6 @@
 pub mod pos2;
+pub mod size;
+
 pub trait Position2D {
     fn x(&self) -> f32;
     fn y(&self) -> f32;
@@ -16,5 +18,15 @@ pub trait Position2D {
         *self.y_mut() -= other.y();
         self
     }
+
+}
+
+pub trait Size2D {
+
+    fn new(width: f32, height: f32) -> Self;
+    fn width(&self) -> f32;
+    fn height(&self) -> f32;
+    fn width_mut(&mut self) -> &mut f32;
+    fn height_mut(&mut self) -> &mut f32;
 
 }

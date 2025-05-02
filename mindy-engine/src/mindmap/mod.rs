@@ -2,7 +2,7 @@ use crate::mindmap::metadata::MindmapMetadata;
 use crate::mindmap::r#type::MindmapType;
 use crate::node::Node;
 use crate::layout::pos2::Pos2;
-use crate::utils::size::Size;
+use crate::layout::size::Size;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use crate::layout::Position2D;

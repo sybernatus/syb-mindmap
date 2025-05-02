@@ -1,10 +1,10 @@
 pub mod style;
 
 use crate::node::style::NodeStyle;
-use crate::utils::size::Size;
+use crate::layout::size::Size;
 use serde::{Deserialize, Serialize};
 use crate::layout::pos2::Pos2;
-use crate::layout::Position2D;
+use crate::layout::{Position2D, Size2D};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
 pub enum Direction {

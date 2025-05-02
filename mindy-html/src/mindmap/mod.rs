@@ -7,7 +7,7 @@ use dioxus::logger::tracing;
 use dioxus::prelude::*;
 use mindy_engine::mindmap::Mindmap;
 use mindy_engine::layout::pos2::Pos2;
-use mindy_engine::utils::size::Size;
+use mindy_engine::layout::size::Size;
 
 pub(crate) static MINDMAP: GlobalSignal<Mindmap> = GlobalSignal::new(|| Mindmap::default());
 

@@ -22,22 +22,10 @@ $defs:
           background_color:
             type: object
             properties:
-              red:
-                type: integer
-                minimum: 0
-                maximum: 255
-              green:
-                type: integer
-                minimum: 0
-                maximum: 255
-              blue:
-                type: integer
-                minimum: 0
-                maximum: 255
+              hex:
+                type: string
             required:
-              - red
-              - green
-              - blue
+              - hex
             additionalProperties: false
         required: []
         additionalProperties: false

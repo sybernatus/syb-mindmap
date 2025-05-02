@@ -1,10 +1,10 @@
-use crate::utils::rgb::Rgb;
+use crate::utils::color::Color;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(default)]
 pub struct NodeStyle {
-    pub background_color: Option<Rgb>,
+    pub background_color: Option<Color>,
     pub hidden: bool,
     pub font_size: f32,
     pub font_family: String,
@@ -18,10 +18,10 @@ pub struct NodeStyle {
 impl Default for NodeStyle {
     fn default() -> Self {
         Self {
-            background_color: Some(Rgb::new(120.0, 40.0, 40.0)),
+            background_color: Some(Color::from_hex("#777777".to_string())),
             hidden: false,
             text_wrapping: true,
-            font_size: 12.0,
+            font_size: 16.0,
             padding: 10.0,
             font_family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif".to_string(),
             max_width: 200.0,
@@ -38,17 +38,17 @@ impl NodeStyle {
             background_color: None,
             hidden: false,
             text_wrapping: true,
-            font_size: 12.0,
+            font_size: 16.0,
             padding: 10.0,
             font_family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif".to_string(),
-            max_width: 200.0,
+            max_width: 400.0,
             min_width: 0.0,
             min_height: 0.0,
         }
     }
 
     /// set color to the background color
-    pub fn with_background_color(&mut self, color: Rgb) -> &Self {
+    pub fn with_background_color(&mut self, color: Color) -> &Self {
         self.background_color = Some(color);
         self
     }

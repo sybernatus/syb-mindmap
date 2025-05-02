@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 use crate::layout::pos2::Pos2;
-use crate::utils::rgb::Rgb;
+use crate::utils::color::Color;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
 pub struct Link {
     pub pos_start: Pos2,
     pub pos_end: Pos2,
     pub path_data: Option<String>,
-    pub color: Option<Rgb>,
+    pub color: Option<Color>,
     pub stroke_width: Option<f32>,
 }
 

@@ -11,6 +11,4 @@ data:
       - text: App Engine
         style_custom:
           background_color:
-            red: 0
-            green: 0
-            blue: 120
+            hex: "#000088"

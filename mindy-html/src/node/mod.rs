@@ -36,7 +36,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
     rsx! {
         div {
             class: "node",
-            style: "background-color: rgb({background_color.red}, {background_color.green}, {background_color.blue});",
+            style: "background-color: {background_color.hex};",
             style: "min-width: {min_width}px;",
             style: "max-width: {max_width}px;",
             style: "max-height: 900px;",

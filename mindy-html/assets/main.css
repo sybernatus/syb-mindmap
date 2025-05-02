@@ -85,6 +85,7 @@ svg {
     border: 1px solid #ffffff;
     border-radius: 15px;
     cursor: pointer;
+    color: black;
     position: absolute;
     box-sizing: border-box;
     z-index: 1;

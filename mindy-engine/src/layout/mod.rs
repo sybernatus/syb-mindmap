@@ -1,4 +1,3 @@
-use crate::node::Node;
 
 pub mod pos2;
 pub mod size;
@@ -42,10 +41,10 @@ pub trait Layout {
     /// * `elements` - A mutable reference to a vector of nodes
     /// # Returns
     /// * `(right_tree, left_tree)` - A tuple of two vectors of mutable references to nodes
-    fn divide_elements_tree(elements: &mut Vec<Node>) -> (Vec<&mut Node>, Vec<&mut Node>) {
+    fn divide_elements_tree<T>(elements: &mut Vec<T>) -> (Vec<&mut T>, Vec<&mut T>) {
         // divide the children into two trees
-        let mut right_tree: Vec<&mut Node> = Vec::new();
-        let mut left_tree: Vec<&mut Node> = Vec::new();
+        let mut right_tree: Vec<&mut T> = Vec::new();
+        let mut left_tree: Vec<&mut T> = Vec::new();
         for (index, child) in elements.iter_mut().enumerate() {
             match index {
                 index if index % 2 == 0 => right_tree.push(child),
@@ -55,4 +54,20 @@ pub trait Layout {
         (right_tree, left_tree)
     }
 
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    pub struct Test {}
+    impl Layout for Test {}
+    #[test]
+    fn test_position2d() {
+        let mut vec1 = vec![0, 1, 2, 4, 5];
+        let (right, left) = Test::divide_elements_tree(&mut vec1);
+        assert_eq!(right.len(), 3);
+        assert_eq!(left.len(), 2);
+    }
 }

@@ -39,11 +39,12 @@ impl Link {
     }
 
     /// Get the metadata of the link
-    /// direction_x: the link horizontal direction
-    /// direction_y: the link vertical direction
-    /// distance: the distance between the start and end position
-    /// normal_x: the normal vector of the link in the x direction
-    /// normal_y: the normal vector of the link in the y direction
+    /// # Returns
+    /// * `direction_x` - the link horizontal direction
+    /// * `direction_y` - the link vertical direction
+    /// * `distance` - the distance between the start and end position
+    /// * `normal_x` - the normal vector of the link in the x direction
+    /// * `normal_y` - the normal vector of the link in the y direction
     pub fn get_link_metadata(self) -> (f32, f32, f32, f32, f32) {
         let direction_x = self.pos_end.x - self.pos_start.x;
         let direction_y = self.pos_end.y - self.pos_start.y;
@@ -58,6 +59,10 @@ impl Link {
     /// Computes the control points for a cubic Bézier curve between two points.
     /// The control points are offset from the line connecting the two points
     /// by a specified ratio.
+    /// # Arguments
+    /// * `offset_ratio` - The ratio by which to offset the control points from the line.
+    /// # Returns
+    /// * `(control_point1, control_point2)` - The computed control points.
     pub fn compute_control_points_offset(self, offset_ratio: f32) -> (Pos2, Pos2) {
         let (direction_x, direction_y, distance, normal_x, normal_y) =
             self.clone().get_link_metadata();
@@ -77,6 +82,10 @@ impl Link {
 
     /// Calculates the path data for a cubic Bézier curve between the start & end position of the link.
     /// The curve is amplified by a specified offset ratio.
+    /// # Arguments
+    /// * `offset_ratio` - The ratio by which to amplify the curve.
+    /// # Returns
+    /// * `self` - The updated link with the computed path data.
     pub fn with_path_data_bezier(mut self, offset_ratio: f32) -> Self {
         let (c1, c2) = self.clone().compute_control_points_offset(offset_ratio);
         self.path_data = Some(format!(

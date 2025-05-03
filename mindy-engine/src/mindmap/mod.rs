@@ -74,6 +74,10 @@ impl Mindmap {
 
 
     /// Initializes the mindmap from a json string
+    /// # Arguments
+    /// * `json_string` - The json string to decode
+    /// # Returns
+    /// * `Result<Self, impl Error>` - The decoded mindmap
     pub fn from_json_string(json_string: String) -> Result<Self, impl Error> {
         match serde_json::from_str::<Self>(json_string.as_str()) {
             Ok(mindmap) => {
@@ -89,6 +93,10 @@ impl Mindmap {
     }
 
     /// Initializes the mindmap from a yaml string
+    /// # Arguments
+    /// * `yaml_str` - The yaml string to decode
+    /// # Returns
+    /// * `Result<Self, impl Error>` - The decoded mindmap
     pub fn from_yaml_string(yaml_str: String) -> Result<Self, impl Error> {
         match serde_yaml::from_str::<Self>(yaml_str.as_str()) {
             Ok(mindmap) => {
@@ -242,6 +250,13 @@ impl Mindmap {
     }
 
     /// Computes node style based on the mindmap global style & the node style
+    /// # Arguments
+    /// * `get` - function to get the node style
+    /// * `set` - function to set the node style
+    /// * `default_value` - default value to set if the node style is not set
+    /// * `parent_value` - parent value to set if the node style is not set
+    /// # Returns
+    /// * `&Self` - the mindmap
     pub fn compute_node_style<T, FGet, FSet>(&mut self, mut get: FGet, mut set: FSet, default_value: T, parent_value: T) -> &Self
     where
         T: Clone,

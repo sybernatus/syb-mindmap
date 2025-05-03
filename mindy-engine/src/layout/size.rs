@@ -28,3 +28,22 @@ impl Size2D for Size {
         &mut self.height
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_size() {
+        let size = Size::new(100.0, 200.0);
+        assert_eq!(size.width, 100.0);
+        assert_eq!(size.height, 200.0);
+    }
+
+    #[test]
+    fn test_size_default() {
+        let size: Size = Default::default();
+        assert_eq!(size.width, 0.0);
+        assert_eq!(size.height, 0.0);
+    }
+}

@@ -3,6 +3,7 @@ members = [
     "mindy-html",
     "mindy-engine",
 ]
+resolver = "3"
 
 [profile]
 

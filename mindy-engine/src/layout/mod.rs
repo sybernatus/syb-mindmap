@@ -1,3 +1,4 @@
+use crate::layout::size::Size;
 
 pub mod pos2;
 pub mod size;
@@ -31,7 +32,7 @@ pub trait Size2D {
     fn height(&self) -> f32;
     fn width_mut(&mut self) -> &mut f32;
     fn height_mut(&mut self) -> &mut f32;
-
+    fn max(&self, other: Size) -> Self;
 }
 
 pub trait Layout {

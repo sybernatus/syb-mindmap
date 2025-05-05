@@ -1,10 +1,12 @@
 pub mod style;
+pub mod image;
 
 use crate::node::style::NodeStyle;
 use crate::layout::size::Size;
 use serde::{Deserialize, Serialize};
 use crate::layout::pos2::Pos2;
 use crate::layout::{Position2D, Size2D};
+use crate::node::image::{ImagePosition, NodeImage};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Default, Serialize)]
 pub enum Direction {
@@ -16,6 +18,7 @@ pub enum Direction {
 #[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
 pub struct Node {
     pub text: Option<String>,
+    pub image: Option<NodeImage>,
     #[serde(default = "NodeStyle::new")]
     pub style_custom: NodeStyle,
     pub children: Option<Vec<Node>>,
@@ -37,6 +40,7 @@ impl Node {
             parent: None,
             graphical_size: None,
             children_graphical_size: None,
+            image: Some(NodeImage::default()),
         }
     }
 
@@ -66,7 +70,7 @@ impl Node {
     }
 
     /// Get the graphical size of the node text depending on its style.
-    pub fn get_graphical_text_size(&self) -> Size {
+    pub fn get_graphical_text_size(&self, offset_width: f32) -> Size {
         let NodeStyle {
             max_width,
             text_wrapping,
@@ -83,7 +87,7 @@ impl Node {
         let text_length = self.text.as_ref().map_or(0, |text| text.len()) as f32;
         let text_width = text_length * font_char_width;
         let text_height = if text_wrapping {
-            let lines_count = (text_width / max_width).ceil();
+            let lines_count = (text_width / (max_width - offset_width)).ceil();
             lines_count * font_char_height + (font_interline * lines_count)
         } else {
             font_char_height + font_interline
@@ -109,20 +113,47 @@ impl Node {
             .style_custom
             .clone();
 
-        let Size {
-            height: text_height,
-            width: text_width,
-        } = self.get_graphical_text_size();
+        let image_size = Size::new(150.0, 150.0);
+        let image_position = ImagePosition::Left;
 
-        let new_width = match text_width + (padding * 2.0) {
-            size if size < min_width => min_width,
-            size if size > max_width && text_wrapping => max_width,
-            _ => text_width + (padding * 2.0),
+        let text_size = match image_position {
+            ImagePosition::Left | ImagePosition::Right => {
+                self.get_graphical_text_size(image_size.width + 20.0)
+            }
+            ImagePosition::Top | ImagePosition::Bottom => {
+                self.get_graphical_text_size(padding)
+            }
         };
 
-        let new_height = match text_height + (padding * 2.0) {
+        let real_size = match image_position {
+            ImagePosition::Left | ImagePosition::Right => {
+                Size {
+                    width: text_size.width + image_size.width + padding,
+                    height: text_size.height.max(image_size.height),
+                }
+            }
+            ImagePosition::Top | ImagePosition::Bottom => {
+                Size {
+                    width: text_size.width.max(image_size.width),
+                    height: text_size.height + image_size.height + padding,
+                }
+            }
+        };
+
+
+        // let Size {
+        //     width: real_width,
+        //     height: real_height,
+        // } = text_size.max(image_size);
+        let new_width = match real_size.width + (padding * 2.0) {
+            size if size < min_width => min_width,
+            size if size > max_width && text_wrapping => max_width,
+            _ => real_size.width + (padding * 2.0),
+        };
+
+        let new_height = match real_size.height + (padding * 2.0) {
             size if size < min_height => min_height,
-            _ => text_height + (padding * 2.0),
+            _ => real_size.height + (padding * 2.0),
         };
 
         let new_size = Size {

@@ -1,9 +1,13 @@
 data:
   text: GCP
+  image:
+    data: "./assets/images/gcp.png"
   children:
   - text: Databases
     children:
       - text: Big Query
+        image:
+          data: "./assets/images/bigquery.png"
       - text: Data Table
   - text: Compute
     children:

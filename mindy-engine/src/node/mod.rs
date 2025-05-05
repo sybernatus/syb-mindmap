@@ -113,18 +113,21 @@ impl Node {
             .style_custom
             .clone();
 
+        // Get image size
         let image_size = Size::new(150.0, 150.0);
         let image_position = ImagePosition::Left;
 
+        // Get text size
         let text_size = match image_position {
             ImagePosition::Left | ImagePosition::Right => {
-                self.get_graphical_text_size(image_size.width + 20.0)
+                self.get_graphical_text_size(image_size.width)
             }
             ImagePosition::Top | ImagePosition::Bottom => {
                 self.get_graphical_text_size(padding)
             }
         };
 
+        // Calculate the size of the node based on its content
         let real_size = match image_position {
             ImagePosition::Left | ImagePosition::Right => {
                 Size {
@@ -140,11 +143,6 @@ impl Node {
             }
         };
 
-
-        // let Size {
-        //     width: real_width,
-        //     height: real_height,
-        // } = text_size.max(image_size);
         let new_width = match real_size.width + (padding * 2.0) {
             size if size < min_width => min_width,
             size if size > max_width && text_wrapping => max_width,

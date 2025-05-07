@@ -52,7 +52,7 @@ pub fn MindmapComp() -> Element {
             }
             div {
                 class: "mindmap-background",
-                style: "transform: translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
+                style: "transform: scale(0.8) translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
                 style: "min-width: {mindmap_size().width}px;",
                 style: "min-height: {mindmap_size().height}px;",
                 style: "width: {mindmap_size().width - mindmap_position().x}px;",

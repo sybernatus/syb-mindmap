@@ -1,5 +1,9 @@
+$schema: "assets/schemas/mindmap.schema.yaml"
 data:
   text: GCP
+  image:
+    path: "./assets/logo/logo.png"
+    width: 100
   children:
   - text: Databases
     children:

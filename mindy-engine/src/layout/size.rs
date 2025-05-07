@@ -27,6 +27,13 @@ impl Size2D for Size {
     fn height_mut(&mut self) -> &mut f32 {
         &mut self.height
     }
+
+    fn max(&self, other: Size) -> Self {
+        Self {
+            width: self.width.max(other.width),
+            height: self.height.max(other.height),
+        }
+    }
 }
 
 #[cfg(test)]

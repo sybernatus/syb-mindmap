@@ -33,9 +33,15 @@ pub fn NodeComp(props: NodeProps) -> Element {
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
 
+    let data = props.node.image.clone().unwrap_or_default().data.unwrap_or_default();
+    let width = props.node.image.clone().unwrap_or_default().width.unwrap_or_default();
+    tracing::debug!("data: {:?} - width: {:?}", data, width);
     rsx! {
         div {
             class: "node",
+            style: "display: flex;",
+            style: "justify-content: center;",
+            style: "align-items: center;",
             style: "background-color: {background_color.hex};",
             style: "min-width: {min_width}px;",
             style: "max-width: {max_width}px;",
@@ -47,8 +53,18 @@ pub fn NodeComp(props: NodeProps) -> Element {
             style: "font-size: {font_size}px;",
             top: "{pos_y}px",
             left: "{pos_x}px",
-            id: "test",
-            "{text}",
+            div {
+                style: "display: flex;",
+                // style: "justify-content: center;",
+                style: "align-items: center;",
+                img {
+                    src: "{data}",
+                    width: "{width}px",
+                }
+            }
+            div {
+                "{text}",
+            }
         }
     }
 }

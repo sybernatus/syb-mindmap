@@ -40,6 +40,10 @@
     "test": "vscode-test",
     "deploy:debug": "code --uninstall-extension syb-mindmap-0.0.1.vsix || true && code --update-extensions && yarn run vsce package --allow-missing-repository && code --install-extension syb-mindmap-0.0.1.vsix"
   },
+  "dependencies": {
+    "sharp": "^0.34.1",
+    "yaml": "^2.7.1"
+  },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",

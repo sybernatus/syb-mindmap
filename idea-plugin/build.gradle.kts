@@ -12,6 +12,12 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.+")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.+")
+    implementation("net.coobird:thumbnailator:0.4.20")
+}
+
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {

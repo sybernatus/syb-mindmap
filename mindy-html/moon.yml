@@ -12,9 +12,12 @@ tasks:
   build.assets:
     options:
       runFromWorkspaceRoot: true
+      cache: false
     command: cp --recursive --force assets/logo/ $projectRoot/assets/
     description: Build the assets
   build:
+    options:
+      cache: false
     deps:
       - build.assets
     command: dx build --platform=web

@@ -230,7 +230,6 @@ impl Mindmap {
     /// - node style
     pub fn compute_all(&mut self) -> &Self {
 
-
         self.compute_graphical_size()
             .compute_nodes_subtree_graphical_size()
             .layout_mindmap()

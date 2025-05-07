@@ -52,7 +52,8 @@ body {
     z-index: 1000; /* pour passer au-dessus du reste */
     min-width: 10px;
     button {
-        padding: 0.5rem 1rem;
+        margin: 0.2rem;
+        border-radius: 0.2rem;
     }
 }
 

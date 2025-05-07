@@ -1,12 +1,28 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import sharp from 'sharp';
+
+enum IMAGE_DATA_TYPE {
+    PNG = 'image/png',
+    JPEG = 'image/jpeg',
+    SVG = 'image/svg+xml',
+}
+async function compressImageToBase64(filePath: string): Promise<string> {
+
+    const buffer = await fs.readFile(filePath);
+    const resized = await sharp(buffer)
+        .resize(1024)
+        .toBuffer();
+
+    return resized.toString('base64');
+}
 
 // Get the image MIME type based on the file extension
 function getMimeType(filePath: string): string {
     const ext = path.extname(filePath).toLowerCase();
-    if (ext === '.png') return 'image/png';
-    if (ext === '.jpg' || ext === '.jpeg') return 'image/jpeg';
-    if (ext === '.svg') return 'image/svg+xml';
+    if (ext === '.png') return IMAGE_DATA_TYPE.PNG;
+    if (ext === '.jpg' || ext === '.jpeg') return IMAGE_DATA_TYPE.JPEG;
+    if (ext === '.svg') return IMAGE_DATA_TYPE.SVG;
     return 'application/octet-stream';
 }
 
@@ -16,9 +32,21 @@ async function inlineImageField(node: any, baseDir: string): Promise<void> {
     if (typeof pathStr === 'string') {
         const filePath = path.resolve(baseDir, pathStr);
         try {
-            const buffer = await fs.readFile(filePath);
             const mime = getMimeType(filePath);
-            node.image.data = `data:${mime};base64,${buffer.toString('base64')}`;
+            switch (mime) {
+                case IMAGE_DATA_TYPE.PNG:
+                case IMAGE_DATA_TYPE.JPEG:
+                    const buffer = await compressImageToBase64(filePath);
+                    node.image.data = `data:${mime};base64,${buffer}`;
+                    break;
+                case IMAGE_DATA_TYPE.SVG:
+                    const svgContent = await fs.readFile(filePath, 'utf-8');
+                    node.image.data = `data:${mime};utf8,${encodeURIComponent(svgContent)}`;
+                    return;
+                default:
+                    console.warn(`Unsupported image type: ${mime}`);
+                    return;
+            }
         } catch (err) {
             console.warn(`Image not found or unreadable: ${filePath}`);
         }

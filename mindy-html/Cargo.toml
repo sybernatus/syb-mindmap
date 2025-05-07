@@ -1,6 +1,6 @@
 [package]
 name = "mindy-html"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Jérôme Garcia <jerome.garcia@bashroom.com>"]
 edition = "2021"
 

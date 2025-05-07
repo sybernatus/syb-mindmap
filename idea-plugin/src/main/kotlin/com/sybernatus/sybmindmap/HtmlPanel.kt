@@ -112,21 +112,4 @@ class HtmlPanel(private val listenerDisposable: Disposable) : JPanel(BorderLayou
       }
     }
   }
-//
-//  private fun enrichDocument(mapper: ObjectMapper, documentText: String, browser: CefBrowser?, baseDir: Path) {
-//    try {
-//      val rootNode = mapper.readValue(documentText, Node::class.java)
-//
-//      // Enrich with image.data
-//      enrichNodeImages(rootNode, baseDir)
-//
-//      // Convert to JS text
-//      val enrichedJson = mapper.writeValueAsString(rootNode)
-//      val documentTextEscaped = escapeForJavaScript(enrichedJson)
-//      publishFileContent(file, documentTextEscaped, browser)
-//
-//    } catch (e: Exception) {
-//      e.printStackTrace()
-//    }
-//  }
 }

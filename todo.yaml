@@ -1,3 +1,4 @@
+$schema: "assets/schemas/mindmap.schema.yaml"
 data:
   text: GCP
   image:

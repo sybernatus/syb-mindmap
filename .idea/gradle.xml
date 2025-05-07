@@ -8,8 +8,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/idea-plugin" />
-            <option value="$PROJECT_DIR$/idea-plugin/idea-plugin" />
-            <option value="$PROJECT_DIR$/idea-plugin/untitled" />
           </set>
         </option>
       </GradleProjectSettings>

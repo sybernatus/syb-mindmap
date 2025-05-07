@@ -9,5 +9,3 @@ plugins {
 }
 
 rootProject.name = "syb-mindmap"
-include("untitled")
-include("idea-plugin")

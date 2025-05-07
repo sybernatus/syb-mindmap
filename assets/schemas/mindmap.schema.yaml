@@ -7,11 +7,23 @@ properties:
 required:
   - data
 $defs:
+  image:
+    type: object
+    properties:
+      path:
+        type: string
+      width:
+        type: number
+    required:
+      - path
+    additionalProperties: false
   node:
     type: object
     properties:
       text:
         type: string
+      image:
+        $ref: "#/$defs/image"
       children:
         type: array
         items:

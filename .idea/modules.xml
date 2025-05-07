@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mindy-gen.iml" filepath="$PROJECT_DIR$/.idea/mindy-gen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mindy-engine/mindy-engine.iml" filepath="$PROJECT_DIR$/mindy-engine/mindy-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mindy-html/mindy-html.iml" filepath="$PROJECT_DIR$/mindy-html/mindy-html.iml" />
+      <module fileurl="file://$PROJECT_DIR$/syb-mindmap.iml" filepath="$PROJECT_DIR$/syb-mindmap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vscode-extension/vscode-extension.iml" filepath="$PROJECT_DIR$/vscode-extension/vscode-extension.iml" />
     </modules>
   </component>
 </project>

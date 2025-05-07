@@ -33,9 +33,12 @@ tasks:
     description: Serve the project
     deps:
       - "build"
-    command: "./gradlew clean runIde --continuous"
+    command: "./gradlew runIde --continuous"
   publish:
     command: ./gradlew publishPlugin
     description: Publish the plugin
     deps:
       - "build"
+  stop:
+    description: Stop gradlew daemon
+    command: "./gradlew --stop"

@@ -5,6 +5,8 @@ use dioxus::prelude::*;
 use mindy_engine::link::Link;
 use mindy_engine::node::Node;
 use mindy_engine::layout::pos2::Pos2;
+use mindy_engine::layout::Size2D;
+use mindy_engine::layout::size::Size;
 
 #[component]
 pub fn LinkRendererComp() -> Element {
@@ -13,7 +15,7 @@ pub fn LinkRendererComp() -> Element {
     use_effect(move || {
         let mindmap_position = MINDMAP().position;
         let mindmap_data = MINDMAP().data;
-        let elements_new = to_links_vec(mindmap_data.to_owned(), None, mindmap_position, vec![]);
+        let elements_new = to_links_vec(mindmap_data.to_owned(), None, None, mindmap_position,vec![]);
         elements.clear();
         elements.set(elements_new);
     });
@@ -38,8 +40,9 @@ pub fn LinkRendererComp() -> Element {
 /// - The end point is the real position of the child node
 /// - The start point is the real position of the parent node
 fn to_links_vec(
-    mindmap_data: Option<Node>,
+    current_node: Option<Node>,
     parent_position: Option<Pos2>,
+    parent_size: Option<Size>,
     offset: Option<Pos2>,
     mut elements: Vec<LinkBezierProps>,
 ) -> Vec<LinkBezierProps> {
@@ -47,7 +50,7 @@ fn to_links_vec(
     let offset_input = offset.clone().unwrap_or_else(|| Pos2::default());
     tracing::trace!("offset_input: {:?}", offset_input);
 
-    let node_input = match mindmap_data {
+    let node_input = match current_node {
         Some(node) => node,
         None => return elements,
     };
@@ -64,7 +67,11 @@ fn to_links_vec(
             None => return elements,
             Some(pos) => pos,
         };
-        elements = to_links_vec(Some(child), Some(parent_position), offset.clone(), elements);
+
+        let parent_size = node_input
+            .get_graphical_size();
+
+        elements = to_links_vec(Some(child), Some(parent_position), Some(parent_size), offset.clone(), elements);
     }
 
     tracing::trace!("parent_position: {:?}", parent_position);
@@ -80,7 +87,12 @@ fn to_links_vec(
         Some(pos) => pos,
     };
 
-    let link = Link::from_start_end(parent_position.clone(), actual_position.clone())
+    let current_size = node_input
+        .get_graphical_size();
+
+    let parent_size = parent_size.unwrap_or_else(|| Size::new(200.0, 200.0));
+
+    let link = Link::from_start_end(parent_position.clone(), actual_position.clone(), parent_size.clone(), current_size.clone())
         .with_path_data_bezier(0.5);
 
     elements.push(LinkBezierProps {

@@ -56,8 +56,8 @@ pub fn NodeComp(props: NodeProps) -> Element {
             top: "{pos_y}px",
             left: "{pos_x}px",
             div {
+                class: "node-image",
                 style: "display: flex;",
-                // style: "justify-content: center;",
                 style: "align-items: center;",
                 img {
                     src: "{data}",
@@ -65,6 +65,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
                 }
             }
             div {
+                class: "node-text",
                 "{text}",
             }
         }

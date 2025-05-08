@@ -2,11 +2,51 @@ $schema: "https://json-schema.org/draft/2020-12/schema"
 title: MindMap Node
 type: object
 properties:
+  metadata:
+    $ref: "#/$defs/metadata"
   data:
     $ref: "#/$defs/node"
 required:
   - data
 $defs:
+  color:
+    type: object
+    properties:
+      hex:
+        description: The color in hex format, e.g. #FF0000.
+        type: string
+    required:
+      - hex
+    additionalProperties: false
+  metadata:
+    type: object
+    properties:
+      style:
+        type: object
+        properties:
+          padding_vertical:
+            description: The vertical padding between the nodes.
+            type: number
+          padding_horizontal:
+            description: The horizontal padding between the nodes.
+            type: number
+          root_node_color:
+            description: The color of the root node. This is a hex color code, e.g. #FF0000.
+            type: object
+            $ref: "#/$defs/color"
+        required: []
+        additionalProperties: false
+      diagram_type:
+        $ref: "#/$defs/mindmapType"
+      position_starting:
+        $ref: "#/$defs/pos2"
+    required: []
+    additionalProperties: false
+  mindmapType:
+    type: string
+    enum:
+      - LeftRightBottom
+      - LeftRightHorizontal
   image:
     type: object
     properties:
@@ -29,17 +69,80 @@ $defs:
         items:
           $ref: "#/$defs/node"
       style_custom:
+        $ref: "#/$defs/nodeStyle"
+    required: []
+    additionalProperties: false
+  pos2:
+    type: object
+    properties:
+      x:
+        description: The x coordinate of the node.
+        type: number
+      y:
+        description: The y coordinate of the node.
+        type: number
+    required:
+      - x
+      - y
+    additionalProperties: false
+  size:
+    type: object
+    properties:
+      width:
+        description: The width of the node.
+        type: number
+      height:
+        description: The height of the node.
+        type: number
+    required:
+      - width
+      - height
+    additionalProperties: false
+  nodeStyle:
+    description: Node style properties.
+    type: object
+    properties:
+      background_color:
+        description: Background color of the node.
         type: object
         properties:
-          background_color:
-            type: object
-            properties:
-              hex:
-                type: string
-            required:
-              - hex
-            additionalProperties: false
-        required: []
+          hex:
+            type: string
+        required:
+          - hex
         additionalProperties: false
+      text_color:
+        description: Text color of the node.
+        type: object
+        properties:
+          hex:
+            type: string
+        required:
+          - hex
+        additionalProperties: false
+      hidden:
+        description: Whether the node is hidden.
+        type: boolean
+      font_size:
+        description: Font size of the node text.
+        type: number
+      font_family:
+        description: Font family of the node text.
+        type: string
+      max_width:
+        description: Maximum width of the node.
+        type: number
+      min_width:
+        description: Minimum width of the node.
+        type: number
+      min_height:
+        description: Minimum height of the node.
+        type: number
+      padding:
+        description: Padding around the content of the node.
+        type: number
+      text_wrapping:
+        description: Whether text wrapping is enabled for the node.
+        type: boolean
     required: []
     additionalProperties: false

@@ -16,6 +16,7 @@ pub struct NodeImage {
     pub data: Option<String>,
     pub path: Option<String>,
     pub width: Option<f32>,
+    pub height: Option<f32>,
     pub position: ImagePosition
 }
 
@@ -25,6 +26,7 @@ impl Default for NodeImage {
             data: None,
             path: None,
             width: None,
+            height: None,
             position: ImagePosition::Left
         }
     }

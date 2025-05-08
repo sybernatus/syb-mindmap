@@ -15,9 +15,6 @@ tasks:
     script: |
       cp --recursive --force ../assets/logo/ assets/
       git add assets
-      if git commit --message "chore(assets): update logo" --no-verify; then
-        git push
-      fi
     description: Build the assets
   build:
     options:

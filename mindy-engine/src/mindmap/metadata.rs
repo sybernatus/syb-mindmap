@@ -5,39 +5,12 @@ use serde::{Deserialize, Serialize};
 use crate::node::style::NodeStyle;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(default)]
 pub struct MindmapMetadata {
-    #[serde(default)]
     pub diagram_type: MindmapType,
-    #[serde(default)]
     pub style: MindmapStyle,
-    #[serde(default)]
     pub position_starting: Option<Pos2>,
-    #[serde(default)]
     pub global_node_style: NodeStyle
-}
-
-impl MindmapMetadata {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn with_style(&self, style: MindmapStyle) -> Self {
-        Self {
-            style,
-            ..self.clone()
-        }
-    }
-
-    pub fn with_diagram_type(&self, diagram_type: MindmapType) -> Self {
-        Self {
-            diagram_type,
-            ..self.clone()
-        }
-    }
-
-    pub fn get_style(&self) -> MindmapStyle {
-        self.clone().style
-    }
 }
 
 impl Default for MindmapMetadata {
@@ -45,7 +18,7 @@ impl Default for MindmapMetadata {
         Self {
             diagram_type: MindmapType::default(),
             style: MindmapStyle::default(),
-            position_starting: None,
+            position_starting: Some(Pos2::zero()),
             global_node_style: NodeStyle::default(),
         }
     }

@@ -15,11 +15,22 @@ pub(crate) static MINDMAP: GlobalSignal<Mindmap> = GlobalSignal::new(|| Mindmap:
 pub fn MindmapComp() -> Element {
     let mut mindmap_size: Signal<Size> = use_signal(|| Size::default());
     let mut mindmap_position: Signal<Pos2> = use_signal(|| Pos2::default());
+    let mut mindmap_root_node_position: Signal<Pos2> = use_signal(|| Pos2::default());
 
     use_effect(move || {
         let mindmap = MINDMAP();
-        tracing::debug!("mindmap: position: {:?}", mindmap.position);
-        tracing::debug!("mindmap: size: {:?}", mindmap.size);
+        tracing::trace!("mindmap: position: {:?}", mindmap.position);
+        tracing::trace!("mindmap: size: {:?}", mindmap.size);
+
+        match mindmap.data {
+            None => {}
+            Some(data) => {
+                match data.position_real {
+                    Some(position) => mindmap_root_node_position.set(position),
+                    None => mindmap_root_node_position.set(Pos2::default())
+                }
+            }
+        }
 
         match mindmap.position {
             Some(position) => mindmap_position.set(position),
@@ -45,9 +56,15 @@ pub fn MindmapComp() -> Element {
                 class: "floating-menu",
                 button {
                     onclick: move |_| {
+                        *SHEET_POSITION.write() = (-mindmap_root_node_position().x as f64, -mindmap_root_node_position().y as f64);
+                    },
+                    "Root"
+                }
+                button {
+                    onclick: move |_| {
                         *SHEET_POSITION.write() = (0.0, 0.0);
                     },
-                    "Centered"
+                    "Origin"
                 }
             }
             div {

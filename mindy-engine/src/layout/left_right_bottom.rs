@@ -135,7 +135,7 @@ impl LeftRightBottomLayout {
         // divide the children into two trees
         let (right_tree,left_tree) = Self::divide_elements_tree(children);
 
-        let position_starting = Pos2::new(0.0, 0.0);
+        let position_starting = mindmap.metadata.position_starting.clone().unwrap_or_else(|| Pos2::zero());
 
         // Layout right tree
         let right_height = Self::layout_mindmap_standard_children(

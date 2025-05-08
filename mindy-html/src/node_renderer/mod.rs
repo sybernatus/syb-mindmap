@@ -51,7 +51,7 @@ fn to_node_props_vec(mindmap_data: Option<Node>, offset: &Pos2, mut elements: Ve
         elements = to_node_props_vec(Some(child), offset, elements);
     }
 
-    tracing::debug!("offset: {:?}", offset);
+    tracing::trace!("offset: {:?}", offset);
     elements.push(NodeProps {
         node: node_input,
     });

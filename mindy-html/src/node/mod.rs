@@ -20,26 +20,27 @@ pub fn NodeComp(props: NodeProps) -> Element {
         padding,
         max_width,
         min_width,
+        text_color,
+        hidden,
         ..
     } = props.node
         .clone()
         .style_custom
         .clone();
 
-    let background_color = background_color.unwrap_or_default();
-    tracing::debug!("node style - background_color: {:?} - font_size: {:?}", background_color, font_size);
+    tracing::trace!("node style - background_color: {:?} - font_size: {:?}", background_color, font_size);
 
-    let Pos2 { x: pos_x, y: pos_y } = props.node.clone().position_real.unwrap_or_default();
+    let Pos2 { x: pos_x, y: pos_y } = props.node.clone().position_real.unwrap_or(Pos2::zero());
     let text = props.node.text.clone().unwrap_or_else(|| "".to_string());
     let text_wrap = if text_wrapping { "wrap" } else { "nowrap" };
-
+    let display = if hidden { "none" } else { "flex" };
     let data = props.node.image.clone().unwrap_or_default().data.unwrap_or_default();
     let width = props.node.image.clone().unwrap_or_default().width.unwrap_or_default();
-    tracing::debug!("data: {:?} - width: {:?}", data, width);
+    tracing::trace!("data: {:?} - width: {:?}", data, width);
     rsx! {
         div {
             class: "node",
-            style: "display: flex;",
+            style: "display: {display};",
             style: "justify-content: center;",
             style: "align-items: center;",
             style: "background-color: {background_color.hex};",
@@ -51,6 +52,7 @@ pub fn NodeComp(props: NodeProps) -> Element {
             style: "padding: {padding}px;",
             style: "font-family: {font_family};",
             style: "font-size: {font_size}px;",
+            style: "color: {text_color.hex};",
             top: "{pos_y}px",
             left: "{pos_x}px",
             div {

@@ -3,11 +3,11 @@ use crate::utils::color::Color;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct MindmapStyle {
-    #[serde(default)]
+    #[serde(default = "MindmapStyle::default_padding_horizontal")]
     pub padding_horizontal: f32,
-    #[serde(default)]
+    #[serde(default = "MindmapStyle::default_padding_vertical")]
     pub padding_vertical: f32,
-    #[serde(default)]
+    #[serde(default = "MindmapStyle::default_root_node_color")]
     pub root_node_color: Color,
 }
 
@@ -37,5 +37,20 @@ impl MindmapStyle {
     pub fn with_root_node_color(&mut self, color: Color) -> &Self {
         self.root_node_color = color;
         self
+    }
+
+    /// get default root node color
+    pub fn default_root_node_color() -> Color {
+        Color::from_hex("#AA4545".to_string())
+    }
+
+    /// get default padding horizontal
+    pub fn default_padding_horizontal() -> f32 {
+        40.0
+    }
+
+    /// get default padding vertical
+    pub fn default_padding_vertical() -> f32 {
+        20.0
     }
 }

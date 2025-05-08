@@ -51,7 +51,7 @@ impl WebviewListener {
                     }
                 }
                 WebviewMessageType::YAML => {
-                    tracing::debug!("MessageEvent YAML - {:?}", webview_listener.content);
+                    tracing::trace!("MessageEvent YAML - {:?}", webview_listener.content);
                     match Mindmap::from_yaml_string(webview_listener.content) {
                         Ok(mindmap) => update_mindmap(mindmap),
                         Err(_) => {

@@ -1,4 +1,5 @@
-$schema: "assets/schemas/mindmap.schema.yaml"
+# yaml-language-server: $schema=./assets/schemas/mindmap.schema.yaml
+$schema: ./assets/schemas/mindmap.schema.yaml
 data:
   text: GCP
   image:
@@ -12,7 +13,8 @@ data:
   - text: Compute
     children:
       - text: Compute Engine
-      - text: App Engine
-        style_custom:
-          background_color:
-            hex: "#000088"
+      - text: App Enginezouopzauepozaueoazueopuezopuaopueauopzeuopuopaeop
+        children:
+            - text: App Engine Standard
+            - text: App Engine Flexible
+        

@@ -15,12 +15,25 @@ pub mod style;
 pub mod r#type;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(default)]
 pub struct Mindmap {
-    #[serde(default)]
     pub metadata: MindmapMetadata,
     pub data: Option<Node>,
-    pub size: Option<Size>,
+    #[serde(skip)]
     pub position: Option<Pos2>,
+    #[serde(skip)]
+    pub size: Option<Size>,
+}
+
+impl Default for Mindmap {
+    fn default() -> Self {
+        Self {
+            metadata: MindmapMetadata::default(),
+            data: None,
+            size: None,
+            position: None,
+        }
+    }
 }
 
 impl Mindmap {
@@ -166,7 +179,7 @@ impl Mindmap {
     /// The mindmap position is used as offset
     pub fn compute_real_position(&mut self) -> &mut Self {
         // moving through all nodes children and calculate with_position_real()
-        let offset = self.clone().position.unwrap_or_default();
+        let offset = self.clone().position.unwrap_or(Pos2::zero());
         if let Some(ref mut data) = self.data {
             fn traverse(node: &mut Node, offset: &Pos2) {
                 if let Some(children) = node.children.as_mut() {
@@ -239,10 +252,10 @@ impl Mindmap {
 
         // Compute background color
         self.compute_node_style(
-                |node: &Node| node.style_custom.background_color.clone(),
-                |node: &mut Node, value| { node.style_custom.with_background_color(value); },
-                self.metadata.global_node_style.background_color.clone().unwrap(),
-                self.metadata.style.root_node_color.clone()
+            |node: &Node| Some(node.style_custom.background_color.clone()),
+            |node: &mut Node, value| { node.style_custom.with_background_color(value); },
+            self.metadata.global_node_style.background_color.clone(),
+            self.metadata.style.root_node_color.clone()
         );
 
         self
@@ -285,16 +298,5 @@ impl Mindmap {
         }
 
         self
-    }
-}
-
-impl Default for Mindmap {
-    fn default() -> Self {
-        Self {
-            metadata: MindmapMetadata::default(),
-            data: Some(Node::default()),
-            size: None,
-            position: None,
-        }
     }
 }

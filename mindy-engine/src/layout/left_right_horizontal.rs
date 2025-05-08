@@ -85,10 +85,10 @@ impl LeftRightHorizontalLayout {
             let subtree_height = first_child.children_graphical_size.clone().unwrap_or_else(|| first_child.graphical_size.clone().unwrap()).height;
             let center_y = y_cursor + subtree_height / 2.0;
 
-            let child_pos = Pos2::new(position_starting.x, center_y);
+            let first_child_pos = Pos2::new(position_starting.x, center_y);
             Self::place_node_positions(
                 first_child,
-                child_pos,
+                first_child_pos,
                 graphical_size.clone(),
                 tree_side,
                 padding_horizontal,
@@ -153,7 +153,7 @@ impl LeftRightHorizontalLayout {
         // divide the children into two trees
         let (right_tree,left_tree) = Self::divide_elements_tree(children);
 
-        let position_starting = Pos2::new(0.0, 0.0);
+        let position_starting = Pos2::zero();
 
         Self::place_tree_positions(
             right_tree,
@@ -203,7 +203,7 @@ mod tests {
     #[test]
     fn test_place_node_no_children() {
         let mut node = create_node( 100.0, 50.0);
-        let parent_pos = Pos2::new(0.0, 0.0);
+        let parent_pos = Pos2::zero();
         let parent_size = Size { width: 50.0, height: 50.0 };
 
         LeftRightHorizontalLayout::place_node_positions(
@@ -228,7 +228,7 @@ mod tests {
         node.children = Some(vec![child1, child2]);
         node.children_graphical_size = Some(Size { width: 100.0, height: 60.0 });
 
-        let parent_pos = Pos2::new(0.0, 0.0);
+        let parent_pos = Pos2::zero();
         let parent_size = Size { width: 50.0, height: 50.0 };
 
         LeftRightHorizontalLayout::place_node_positions(

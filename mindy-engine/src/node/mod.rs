@@ -16,16 +16,21 @@ pub enum Direction {
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Deserialize, Serialize)]
+#[serde(default)]
 pub struct Node {
     pub text: Option<String>,
     pub image: Option<NodeImage>,
-    #[serde(default = "NodeStyle::new")]
     pub style_custom: NodeStyle,
     pub children: Option<Vec<Node>>,
+    #[serde(skip)]
     pub position_from_initial: Option<Pos2>,
+    #[serde(skip)]
     pub position_real: Option<Pos2>,
+    #[serde(skip)]
     pub parent: Option<Box<Node>>,
+    #[serde(skip)]
     pub graphical_size: Option<Size>,
+    #[serde(skip)]
     pub children_graphical_size: Option<Size>,
 }
 
@@ -114,7 +119,21 @@ impl Node {
             .clone();
 
         // Get image size
-        let image_size = Size::new(150.0, 150.0);
+        let image_width = match &self.image {
+            None => { 0.0 }
+            Some(image) => {
+                image.width.unwrap_or(0.0).min(max_width)
+            }
+        };
+
+        let image_height = match &self.image {
+            None => { 0.0 }
+            Some(image) => {
+                image.height.unwrap_or(50.0).min(max_width)
+            }
+        };
+
+        let image_size = Size { width: image_width, height: image_height };
         let image_position = ImagePosition::Left;
 
         // Get text size
@@ -200,9 +219,12 @@ impl Node {
     /// * `&Self` - The updated node with the computed real position.
     pub fn with_position_real(&mut self, offset: &Pos2) -> &Self {
         match self.position_from_initial.clone() {
-            None => self.position_real = Some(Pos2::default()),
+            None => {
+                tracing::error!("with_position_real - position_from_initial is None");
+                self.position_real = Some(Pos2::default());
+            },
             Some(mut pos) => {
-                tracing::debug!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
+                tracing::trace!("get_position_real - pos: {:?} - offset: {:?}", pos, offset);
                 self.position_real = Some(pos.subtract(&offset).clone());
             }
         }

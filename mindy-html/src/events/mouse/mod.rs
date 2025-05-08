@@ -61,8 +61,11 @@ pub fn mouse_zooming_update() -> impl Fn(Event<WheelData>) {
         use_future(move || {
             let value = event.clone();
             async move {
-                *SHEET_ZOOM.write() = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
-                tracing::trace!("Mouse scroll event: {:?}", -value.data.delta().strip_units().y.clamp(-1.0, 1.0));
+                if SHEET_ZOOM() < 0.01 {
+                    *SHEET_ZOOM.write() = 0.01;
+                } else {
+                    *SHEET_ZOOM.write() = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
+                }
             }
         });
     }

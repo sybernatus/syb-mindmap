@@ -1,4 +1,4 @@
-use crate::SHEET_POSITION;
+use crate::{SHEET_POSITION, SHEET_ZOOM};
 use dioxus::logger::tracing;
 use dioxus::prelude::*;
 
@@ -50,6 +50,20 @@ pub fn mouse_dragging_disable(mut is_dragging: Signal<bool>) -> impl Fn(Event<Mo
     move |_event: Event<MouseData>| {
         use_future(move || async move {
             is_dragging.set(false);
+        });
+    }
+}
+
+
+
+pub fn mouse_zooming_update() -> impl Fn(Event<WheelData>) {
+    move |event: Event<WheelData>| {
+        use_future(move || {
+            let value = event.clone();
+            async move {
+                *SHEET_ZOOM.write() = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
+                tracing::trace!("Mouse scroll event: {:?}", -value.data.delta().strip_units().y.clamp(-1.0, 1.0));
+            }
         });
     }
 }

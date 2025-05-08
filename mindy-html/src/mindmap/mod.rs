@@ -1,6 +1,6 @@
 use crate::link_renderer::LinkRendererComp;
 use crate::node_renderer::{NodeRendererComp};
-use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION};
+use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION, SHEET_ZOOM};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
@@ -56,6 +56,18 @@ pub fn MindmapComp() -> Element {
                 class: "floating-menu",
                 button {
                     onclick: move |_| {
+                        *SHEET_ZOOM.write() = SHEET_ZOOM() - 0.1;
+                    },
+                    "-"
+                }
+                button {
+                    onclick: move |_| {
+                        *SHEET_ZOOM.write() = SHEET_ZOOM() + 0.1;
+                    },
+                    "+"
+                }
+                button {
+                    onclick: move |_| {
                         *SHEET_POSITION.write() = (-mindmap_root_node_position().x as f64, -mindmap_root_node_position().y as f64);
                     },
                     "Root"
@@ -69,7 +81,7 @@ pub fn MindmapComp() -> Element {
             }
             div {
                 class: "mindmap-background",
-                style: "transform: scale(0.8) translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
+                style: "transform: scale({SHEET_ZOOM()}) translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
                 style: "min-width: {mindmap_size().width}px;",
                 style: "min-height: {mindmap_size().height}px;",
                 style: "width: {mindmap_size().width - mindmap_position().x}px;",

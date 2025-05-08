@@ -118,12 +118,12 @@ pub fn init_message() {
         "type": "init",
         "content": "init_message"
     }"#;
-    tracing::debug!("init_message - {:?}", init_message);
+    tracing::trace!("init_message - {:?}", init_message);
     window()
         .unwrap()
         .post_message(JsValue::from_str(init_message).as_ref(), "*")
         .unwrap();
-    tracing::debug!("init_message - {:?}", init_message);
+    tracing::trace!("init_message - {:?}", init_message);
 }
 
 const DATA_JSON: &str = r#"

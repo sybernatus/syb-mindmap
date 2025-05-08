@@ -6,7 +6,7 @@ mod mindmap;
 mod node;
 mod node_renderer;
 
-use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update};
+use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update, mouse_zooming_update};
 use crate::listeners::webview::{init_message, WebviewListener};
 use crate::mindmap::MindmapComp;
 use base64::engine::general_purpose::STANDARD;
@@ -18,6 +18,7 @@ const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 const MINDMAP_ICON: &str = include_str!("../assets/logo/logo.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));
+static SHEET_ZOOM: GlobalSignal<f64> = GlobalSignal::new(|| 1.0);
 
 fn main() {
     launch(App);
@@ -51,6 +52,7 @@ fn App() -> Element {
             onmouseup: mouse_dragging_disable(is_dragging),
             onmousemove: mouse_position_update(is_dragging, last_mouse),
             onmouseout: mouse_dragging_disable(is_dragging),
+            onwheel: mouse_zooming_update(),
             MindmapComp { }
         }
     }

@@ -87,23 +87,23 @@ impl Link {
             y: self.pos_start.y,
         };
 
-        let c1x = self.pos_start.x + (self.size_start.width / 2.0 * direction_x.signum());
+        let c1x = self.pos_start.x + (self.size_start.width / 2.5 * direction_x.signum());
         let control_point1 = Pos2 {
             x: c1x,
             y: self.pos_start.y,
         };
 
         let control_point2 = Pos2 {
-            x: self.pos_start.x + ((self.size_start.width / 2.0 + distance / 6.0 * offset_ratio) * direction_x.signum() ),
+            x: self.pos_start.x + ((self.size_start.width / 2.4 + distance / 6.0 * offset_ratio) * direction_x.signum() ),
             y: self.pos_start.y,
         };
 
         let control_point3 = Pos2 {
-            x: self.pos_end.x + ((self.size_end.width / 2.0 + distance / 6.0 * offset_ratio) * -direction_x.signum()),
+            x: self.pos_end.x + ((self.size_end.width / 1.8 + distance / 6.0 * offset_ratio) * -direction_x.signum()),
             y: self.pos_end.y,
         };
 
-        let c4x = self.pos_end.x + (self.size_end.width / 2.0 * -direction_x.signum()) ;
+        let c4x = self.pos_end.x + (self.size_end.width / 1.9 * -direction_x.signum()) ;
         let control_point4 = Pos2 {
             x: c4x,
             y: self.pos_end.y,

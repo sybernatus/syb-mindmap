@@ -1,17 +1,17 @@
 [application]
 
 [web.app]
-
 # HTML title tag content
 title = "syb-mindmap"
 
+
+[web.watcher]
+reload_html = true
+watch_path = [ "assets/main.css" ]
+
 # include `assets` in web platform
 [web.resource]
-
-# Additional CSS style files
 style = []
-
-# Additional JavaScript files
 script = []
 
 [web.resource.dev]
@@ -19,3 +19,6 @@ script = []
 # Javascript code file
 # serve: [dev-server] only
 script = []
+
+[bundle]
+icon = ["assets/logo/logo_256.png"]

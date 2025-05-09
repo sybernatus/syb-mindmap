@@ -16,6 +16,7 @@ use std::string::ToString;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
+const GITHUB_ICON: &str = include_str!("../assets/ext/github-circle.svg");
 const MINDMAP_ICON: &str = include_str!("../assets/logo/logo.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));
 static SHEET_ZOOM: GlobalSignal<f64> = GlobalSignal::new(|| 1.0);
@@ -36,13 +37,29 @@ fn App() -> Element {
         document::Style { "{CSS_DATA}" }
         header {
             class: "banner",
-            img {
-                class: "logo",
-                src: "data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_ICON.to_string())}",
+            div {
+                class: "logo-container",
+                img {
+                    class: "logo",
+                    src: "data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_ICON.to_string())}",
+                }
+                h1 {
+                    class: "title",
+                    "Mindmap"
+                }
             }
-            h1 {
-                class: "title",
-                "Mindmap"
+            div {
+                class: "useful-links",
+                a {
+                    class: "menu-item",
+                    href: "https://github.com/sybernatus/syb-mindmap",
+                    target: "_blank",
+                    img {
+                        class: "github-icon",
+                        src: "data:image/svg+xml;base64,{STANDARD.encode(GITHUB_ICON.to_string())}",
+                        alt: "Github Repository",
+                    }
+                }
             }
         }
         div {

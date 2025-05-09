@@ -13,7 +13,9 @@ tasks:
     options:
       cache: false
     script: |
+      cp --recursive --force ../assets/logo/logo_256.png assets/favicon.ico
       cp --recursive --force ../assets/logo/ assets/
+      cp --recursive --force ../assets/ext/ assets/
       git add assets
     description: Build the assets
   build:

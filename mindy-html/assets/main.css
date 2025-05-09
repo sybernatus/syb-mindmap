@@ -1,7 +1,16 @@
 /* App-wide styling */
+
+:root {
+    --primary-color: #171c2c;
+    --secondary-color: #0d1c37;
+    --primary-text-color: #ffffff;
+    --primary-border-color: #7c7b7b;
+    --button-background-color: rgba(250, 253, 255, 0.5);
+}
+
 body {
-    background-color: #171c2c;
-    color: #ffffff;
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 5px;
     overflow: auto;
@@ -9,15 +18,42 @@ body {
 }
 
 #header {
-    max-width: 1200px;
+    max-height: 60px;
 }
 
 .banner {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
     top: 0;
     left: 0;
+    max-height: inherit;
+    .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+        max-height: inherit;
+    }
+}
+
+.useful-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+    max-height: inherit;
+    .github-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 5px;
+        background-color: var(--button-background-color);
+        border-radius: 10px;
+    }
 }
 
 .title {
@@ -35,9 +71,9 @@ body {
     width: 100%;
     max-height: calc(100vh - 80px);
     display: flex;
-    border: 1px solid #7c7b7b;
+    border: 1px solid var(--primary-border-color);
     border-radius: 10px;
-    background-color: #17263e;
+    background-color: var(--secondary-color);
     overflow: hidden;
     cursor: all-scroll;
 }
@@ -52,6 +88,7 @@ body {
     z-index: 1000; /* pour passer au-dessus du reste */
     min-width: 10px;
     button {
+        background-color: var(--button-background-color);
         margin: 0.2rem;
         border-radius: 0.4rem;
     }

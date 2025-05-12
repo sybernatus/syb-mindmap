@@ -27,7 +27,7 @@
 ## Description
 
 **Syb-mindmap** is a lightweight tool that generates mindmap diagrams directly from YAML or JSON files.  
-It allows developers and teams to define structured maps as code, making diagrams versionable, automatable, and easily maintainable.
+It allows developers and teams to define structured maps as code, making diagrams versionable, automatisable, and easily maintainable.
 
 ## Installation
 
@@ -104,7 +104,7 @@ data:
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License Version 2.0.
 See [LICENSE](./LICENSE) for details.
 
 ## Copyright

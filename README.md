@@ -1,4 +1,4 @@
-<div align="center">
+ <div align="center">
     <a href="https://github.com/sybernatus/syb-mindmap">
         <img width="200px" src="./assets/logo/logo.svg" alt="logo">
         <h1 style="width: 200px;">Syb-mindmap</h1>

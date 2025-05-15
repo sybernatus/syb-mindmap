@@ -53,8 +53,8 @@ pub fn NodeComp(props: NodeProps) -> Element {
             style: "font-family: {font_family};",
             style: "font-size: {font_size}px;",
             style: "color: {text_color.hex};",
-            top: "{pos_y}px",
-            left: "{pos_x}px",
+            style: "top: {pos_y}px;",
+            style: "left: {pos_x}px;",
             div {
                 class: "node-image",
                 style: "display: flex;",

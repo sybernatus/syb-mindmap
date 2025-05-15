@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use serde::{Deserialize, Serialize};
 use crate::layout::Position2D;
 
@@ -14,6 +15,12 @@ impl Pos2 {
 
     pub fn zero() -> Self {
         Self { x: 0.0, y: 0.0 }
+    }
+}
+
+impl Display for Pos2 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Pos2 {{ x: {}, y: {} }}", self.x, self.y)
     }
 }
 

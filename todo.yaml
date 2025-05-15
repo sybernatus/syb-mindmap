@@ -2,19 +2,11 @@
 $schema: ./assets/schemas/mindmap.schema.yaml
 data:
   text: GCP
-  image:
-    path: "./assets/logo/logo.png"
-    width: 100
   children:
   - text: Databases
     children:
       - text: Big Query
-      - text: Data Table
-  - text: Compute
-    children:
-      - text: Compute Engine
-      - text: App Engine
-        children:
-            - text: App Engine Standard
-            - text: App Engine Flexible
-        
+      - text: Cloud SQL
+        style_custom:
+          background_color:
+            hex: "#FF0000"

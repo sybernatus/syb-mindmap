@@ -18,12 +18,20 @@ tasks:
       cp --recursive --force ../assets/ext/ assets/
       git add assets
     description: Build the assets
-  build:
+  build.debug:
     options:
       cache: false
     deps:
       - build.assets
-    command: dx build --platform=web
+    command: dx build --platform web
+    description: Build the project in debug mode
+  build:
+    options:
+      cache: false
+    deps:
+      - build.debug
+      - build.assets
+    command: dx bundle --release --platform web --target release
     description: Build the project
   serve:
     deps:

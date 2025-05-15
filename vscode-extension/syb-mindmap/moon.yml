@@ -7,6 +7,26 @@ tasks:
   test:
     command: yarn run test
     description: Run tests
+  build.debug:
+    deps:
+      - "^:build.debug"
+    description: Build the project
+    options:
+      cache: false
+    script: |
+      #!/bin/bash
+      set -e
+      
+      yarn
+      mkdir --parents media
+      rm -rf media/*
+      cp --recursive --force $workspaceRoot/LICENSE ./LICENSE
+      cp --recursive --force $workspaceRoot/target/dx/mindy-html/debug/web/public/* media
+      rm --recursive --force icons/logo.png
+      inkscape $workspaceRoot/assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
+      version="$( cat package.json | jq --raw-output --compact-output .version )"
+      code --uninstall-extension "syb-mindmap-${version}.vsix" || true
+      code --update-extensions && yarn run vsce package --allow-missing-repository
   build:
     deps:
       - "^:build"
@@ -20,12 +40,25 @@ tasks:
       yarn
       mkdir --parents media
       rm -rf media/*
-      cp --recursive --force $workspaceRoot/target/dx/mindy-html/debug/web/public/* media
+      cp --recursive --force $workspaceRoot/LICENSE ./LICENSE
+      cp --recursive --force $workspaceRoot/target/dx/mindy-html/release/web/public/* media
       rm --recursive --force icons/logo.png
       inkscape $workspaceRoot/assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
       version="$( cat package.json | jq --raw-output --compact-output .version )"
       code --uninstall-extension "syb-mindmap-${version}.vsix" || true
       code --update-extensions && yarn run vsce package --allow-missing-repository
+  serve.debug:
+    options:
+      runInCI: false
+      cache: false
+    description: Serve the project
+    deps:
+      - "build.debug"
+    script: |
+      #!/bin/bash
+      set -e
+      version="$( cat package.json | jq --raw-output --compact-output .version )"
+      code --install-extension "syb-mindmap-${version}.vsix" && code
   serve:
     options:
       runInCI: false

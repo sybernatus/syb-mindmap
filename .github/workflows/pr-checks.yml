@@ -28,18 +28,24 @@ jobs:
         run: git fetch --prune --unshallow
 
       - name: Install dependencies
+        id: cache-deps
         uses: actions/cache@v3
-        run: bash/repository/setup/index.bash
         with:
           path: |
             .bin
             ~/.cargo/registry
             ~/.cargo/git
             ~/.cargo/bin
-            ~/.proto  # ou le dossier où proto installe
-          key: ${{ runner.os }}-deps-${{ hashFiles('scripts/install.sh','**/Cargo.lock') }}-proto-${{ env.PROTO_VERSION }}
+            ~/.proto 
+            ${{ github.workspace }}/.bin
+            ${{ env.HOME }}/.proto/bin
+          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock') }}-proto-${{ env.PROTO_VERSION }}
           restore-keys: |
             ${{ runner.os }}-deps-
+
+      - name: Install dependencies
+        run: bash/repository/setup/index.bash
+        if: steps.cache-deps.outputs.cache-hit != 'true'
 
       - name: Launch moon test
         run: proto run moon -- ci :test :lint

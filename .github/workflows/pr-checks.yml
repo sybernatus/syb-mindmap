@@ -29,4 +29,4 @@ jobs:
         run: git branch
 
       - name: Launch moon test
-        run: proto run moon -- ci :test :lint
+        run: moon ci :test :lint

@@ -13,7 +13,8 @@ proto_version="0.49.1"
 # >>>> SCRIPT
 
 # Install inkscape
-sudo apt install --yes inkscape git || true
+sudo apt install --yes git || true
+#sudo apt install --yes inkscape git || true
 
 ## Install moon
 #curl --location "https://github.com/moonrepo/moon/releases/download/v${moon_version}/moon-x86_64-unknown-linux-gnu" --output "${repoDir:?}/.bin/moon"

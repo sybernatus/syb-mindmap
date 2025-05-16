@@ -4,7 +4,7 @@ language: typescript
 dependsOn:
   - "mindy-html"
 tasks:
-  build:
+  build.assets:
     deps:
       - "^:build"
     description: Build the project
@@ -22,6 +22,15 @@ tasks:
       cp --recursive --force $workspaceRoot/assets/logo/logo_dark.svg src/main/resources/META-INF/pluginIcon_dark.svg
       cp --recursive --force $workspaceRoot/assets/logo/* src/main/resources/logo/
       git add src/main/resources
+  build:
+    deps:
+      - "^:build"
+    description: Build the project
+    options:
+      cache: false
+    script: |
+      #!/bin/bash
+      set -e
       
       $workspaceRoot/.bin/pandoc README.md --from markdown_mmd --to html --output build/README.html
       
@@ -29,7 +38,7 @@ tasks:
       ./gradlew buildPlugin -PpluginVersion="${version}"
   test:
     deps:
-      - "build"
+      - "build.assets"
     command: ./gradlew test
     description: Run tests
   serve:

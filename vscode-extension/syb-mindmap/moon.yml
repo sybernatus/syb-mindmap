@@ -5,6 +5,8 @@ dependsOn:
   - "mindy-html"
 tasks:
   test:
+    options:
+      runInCI: false
     command: yarn run test
     description: Run tests
   build.debug:

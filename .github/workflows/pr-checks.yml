@@ -17,6 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup PATH
+        run: |
+          echo "${{ github.workspace }}/.bin" >> $GITHUB_PATH
+          echo "${{ env.HOME }}/.proto/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: bash/repository/setup/index.bash
 
@@ -25,5 +30,3 @@ jobs:
 
       - name: Launch moon test
         run: proto run moon -- ci :test :lint
-        env:
-          PATH: ${{ github.workspace }}/.bin:${{ env.HOME }}/.proto/bin:${{ env.PATH }}

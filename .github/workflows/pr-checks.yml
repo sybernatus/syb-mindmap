@@ -12,6 +12,8 @@ on:
 
 jobs:
   test:
+    name: "Moon Test & Lint"
+
     runs-on: ubuntu-latest
 
     steps:
@@ -29,4 +31,4 @@ jobs:
         run: bash/repository/setup/index.bash
 
       - name: Launch moon test
-        run: proto run moon -- ci :test :lint
+        run: proto run moon -- run -ns :test :lint

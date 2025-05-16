@@ -1,11 +1,12 @@
 /* App-wide styling */
 
 :root {
-    --primary-color: #171c2c;
-    --secondary-color: #0d1c37;
-    --primary-text-color: #ffffff;
-    --primary-border-color: #7c7b7b;
-    --button-background-color: rgba(250, 253, 255, 0.5);
+    --primary-color: #1E1E20;
+    --secondary-color: #2d2f31;
+    --primary-text-color: #A9B7C6;
+    --primary-border-color: #9876AA;
+    --button-text-color: #E1E3E6;
+    --button-background-color: #65537A;
 }
 
 body {
@@ -81,15 +82,16 @@ body {
 
 .floating-menu {
     position: absolute;
-    top: 0.5rem;     /* ou 0 pour coller au bord */
+    top: 0.5rem;
     right: 0.5rem;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     padding: 0.5rem;
-    z-index: 1000; /* pour passer au-dessus du reste */
+    z-index: 1000;
     min-width: 10px;
     button {
         background-color: var(--button-background-color);
+        color: var(--button-text-color);
         margin: 0.2rem;
         border-radius: 0.4rem;
     }
@@ -123,9 +125,9 @@ svg {
 
 .node {
     display: flex;
-    border: 1px solid #ffffff;
+    border: 0.17rem solid var(--primary-border-color);
     border-radius: 15px;
-    cursor: pointer;
+    /*cursor: pointer;*/
     position: absolute;
     box-sizing: border-box;
     z-index: 1;
@@ -137,10 +139,10 @@ svg {
     }
 }
 
-.node:hover {
-    transform: scale(1.05) translate(-50%, -50%);
-    box-shadow: 0 0 8px rgba(250, 253, 255, 0.5);
-}
+/*.node:hover {*/
+/*    transform: scale(1.05) translate(-50%, -50%);*/
+/*    box-shadow: 0 0 8px rgba(250, 253, 255, 0.5);*/
+/*}*/
 
 .link-renderer {
     position: absolute;

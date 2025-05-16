@@ -19,13 +19,13 @@ pub struct NodeStyle {
 impl Default for NodeStyle {
     fn default() -> Self {
         Self {
-            background_color: Color::from_hex("#777777".to_string()),
+            background_color: Color::from_hex("#333333".to_string()),
             hidden: false,
             text_wrapping: true,
             font_size: 16.0,
             padding: 10.0,
             font_family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif".to_string(),
-            text_color: Color::from_hex("#000000".to_string()),
+            text_color: Color::from_hex("#A9B7C6".to_string()),
             max_width: 400.0,
             min_width: 0.0,
             min_height: 0.0,

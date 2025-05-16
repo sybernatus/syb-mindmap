@@ -7,9 +7,12 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="115ef62d-e9ea-4b28-a96f-c68deb0fa64e" name="Changes" comment="docs(license): review license">
+    <list default="true" id="115ef62d-e9ea-4b28-a96f-c68deb0fa64e" name="Changes" comment="feat(ui): increase worksheet min size">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mindy-engine/src/mindmap/style.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-engine/src/mindmap/style.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mindy-engine/src/node/style.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-engine/src/node/style.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mindy-html/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mindy-html/src/link_beziers/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/src/link_beziers/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mindy-html/src/listeners/webview/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/src/listeners/webview/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -92,7 +95,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "develop",
+    "git-widget-placeholder": "feat/worksheet-style",
     "go.import.settings.migrated": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/ash/github.com/sybernatus/syb-mindmap/idea-plugin/src/main/resources/icons",
@@ -161,8 +164,17 @@
       <workItem from="1747023427409" duration="1307000" />
       <workItem from="1747024755503" duration="903000" />
       <workItem from="1747025666826" duration="1274000" />
-      <workItem from="1747360282590" duration="494000" />
+      <workItem from="1747360282590" duration="3386000" />
     </task>
+    <task id="LOCAL-00001" summary="feat(ui): increase worksheet min size">
+      <option name="closed" value="true" />
+      <created>1747360831885</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747360831885</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -171,7 +183,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat(idea): update project structure" />
     <MESSAGE value="docs(license): review license" />
-    <option name="LAST_COMMIT_MESSAGE" value="docs(license): review license" />
+    <MESSAGE value="feat(ui): increase worksheet min size" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(ui): increase worksheet min size" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>

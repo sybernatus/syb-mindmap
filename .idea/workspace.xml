@@ -9,12 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="115ef62d-e9ea-4b28-a96f-c68deb0fa64e" name="Changes" comment="docs(license): review license">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mindy-engine/src/layout/pos2.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-engine/src/layout/pos2.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mindy-html/moon.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/moon.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mindy-html/src/node/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/src/node/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/todo.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vscode-extension/syb-mindmap/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/vscode-extension/syb-mindmap/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vscode-extension/syb-mindmap/moon.yml" beforeDir="false" afterPath="$PROJECT_DIR$/vscode-extension/syb-mindmap/moon.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mindy-html/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mindy-html/src/listeners/webview/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/mindy-html/src/listeners/webview/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +92,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "fix/node-misplaced",
+    "git-widget-placeholder": "develop",
     "go.import.settings.migrated": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/ash/github.com/sybernatus/syb-mindmap/idea-plugin/src/main/resources/icons",
@@ -146,6 +142,14 @@
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -157,6 +161,7 @@
       <workItem from="1747023427409" duration="1307000" />
       <workItem from="1747024755503" duration="903000" />
       <workItem from="1747025666826" duration="1274000" />
+      <workItem from="1747360282590" duration="494000" />
     </task>
     <servers />
   </component>

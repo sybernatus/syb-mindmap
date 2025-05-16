@@ -9,6 +9,11 @@ tasks:
       runInCI: false
     command: yarn run test
     description: Run tests
+  lint:
+    options:
+      runInCI: false
+    command: yarn run lint
+    description: Run tests
   build.debug:
     deps:
       - "^:build.debug"

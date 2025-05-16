@@ -8,6 +8,8 @@ trap 'echo "Error occurred at line $LINENO"' ERR
 mkdir --parents "${repoDir:?}/.bin"
 
 cargo_edit_version="0.13.2"
+cargo_binstall_version="1.12.3"
+cargo_dioxus_cli_version="0.6.3"
 pandoc_version="3.6.4"
 proto_version="0.49.1"
 # >>>> SCRIPT
@@ -26,6 +28,8 @@ sudo apt install --yes inkscape || true
 
 # Install cargo-edit
 cargo install cargo-edit --version "${cargo_edit_version}" || true
+cargo install cargo-binstall --version "${cargo_binstall_version}" || true
+cargo install dioxus-cli --version "${cargo_dioxus_cli_version}" || true
 
 # Install pandoc
 curl --location "https://github.com/jgm/pandoc/releases/download/${pandoc_version}/pandoc-${pandoc_version}-linux-amd64.tar.gz" | tar -xz -C "${repoDir:?}/.bin"

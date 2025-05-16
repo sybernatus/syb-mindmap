@@ -21,4 +21,4 @@ jobs:
         run: bash/repository/setup/index.bash
 
       - name: Launch moon test
-        run: moon ci :test :lint
+        run: proto run moon ci :test :lint

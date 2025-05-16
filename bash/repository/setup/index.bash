@@ -12,9 +12,6 @@ pandoc_version="3.6.4"
 proto_version="0.49.1"
 # >>>> SCRIPT
 
-# Install cargo-edit
-cargo install cargo-edit --version "${cargo_edit_version}" || true
-
 # Install inkscape
 sudo apt install inkscape || true
 
@@ -30,6 +27,9 @@ rm --recursive --force "${repoDir:?}/.bin/proto-tmp"
 chmod +x "${repoDir:?}/.bin/proto" "${repoDir:?}/.bin/proto-shim"
 
 "${repoDir:?}/.bin/proto" install
+
+# Install cargo-edit
+cargo install cargo-edit --version "${cargo_edit_version}" || true
 
 # Install pandoc
 curl --location "https://github.com/jgm/pandoc/releases/download/${pandoc_version}/pandoc-${pandoc_version}-linux-amd64.tar.gz" | tar -xz -C "${repoDir:?}/.bin"

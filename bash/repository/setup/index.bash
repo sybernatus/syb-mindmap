@@ -35,4 +35,4 @@ cargo install cargo-edit --version "${cargo_edit_version}" || true
 curl --location "https://github.com/jgm/pandoc/releases/download/${pandoc_version}/pandoc-${pandoc_version}-linux-amd64.tar.gz" | tar -xz -C "${repoDir:?}/.bin"
 mv "${repoDir:?}/.bin/pandoc-${pandoc_version}/bin/pandoc" "${repoDir:?}/.bin/pandoc"
 rm --recursive --force "${repoDir:?}/.bin/pandoc-${pandoc_version}"
-# <<<< SCRIPT1
+# <<<< SCRIPT

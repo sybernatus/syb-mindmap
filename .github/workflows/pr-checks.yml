@@ -1,4 +1,6 @@
 name: CI
+env:
+  PATH: ${{ github.workspace }}/.bin:${{ env.HOME }}/.proto/bin:${{ env.PATH }}
 
 on:
   push:

@@ -4,9 +4,6 @@ language: typescript
 dependsOn:
   - "mindy-html"
 tasks:
-  test:
-    command: ./gradlew test
-    description: Run tests
   build:
     deps:
       - "^:build"
@@ -30,6 +27,11 @@ tasks:
       
       version="$( cat build.gradle.kts | grep --extended-regexp "^version =" | cut --delimiter '"' --field 2 )"
       ./gradlew buildPlugin -PpluginVersion="${version}"
+  test:
+    deps:
+      - "build"
+    command: ./gradlew test
+    description: Run tests
   serve:
     options:
       runInCI: false

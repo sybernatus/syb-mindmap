@@ -29,10 +29,10 @@ chmod +x "${repoDir:?}/.bin/proto" "${repoDir:?}/.bin/proto-shim"
 "${repoDir:?}/.bin/proto" install
 
 # Install cargo-edit
-cargo install cargo-edit --version "${cargo_edit_version}" || true
+#cargo install cargo-edit --version "${cargo_edit_version}" || true
 
 # Install pandoc
-curl --location "https://github.com/jgm/pandoc/releases/download/${pandoc_version}/pandoc-${pandoc_version}-linux-amd64.tar.gz" | tar -xz -C "${repoDir:?}/.bin"
-mv "${repoDir:?}/.bin/pandoc-${pandoc_version}/bin/pandoc" "${repoDir:?}/.bin/pandoc"
-rm --recursive --force "${repoDir:?}/.bin/pandoc-${pandoc_version}"
+#curl --location "https://github.com/jgm/pandoc/releases/download/${pandoc_version}/pandoc-${pandoc_version}-linux-amd64.tar.gz" | tar -xz -C "${repoDir:?}/.bin"
+#mv "${repoDir:?}/.bin/pandoc-${pandoc_version}/bin/pandoc" "${repoDir:?}/.bin/pandoc"
+#rm --recursive --force "${repoDir:?}/.bin/pandoc-${pandoc_version}"
 # <<<< SCRIPT

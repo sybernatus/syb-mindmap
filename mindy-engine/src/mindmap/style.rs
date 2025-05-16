@@ -16,7 +16,7 @@ impl Default for MindmapStyle {
         Self {
             padding_horizontal: 40.0,
             padding_vertical: 20.0,
-            root_node_color: Color::from_hex("#AA4545".to_string()),
+            root_node_color: Color::from_hex("#3C4B64".to_string()),
         }
     }
 }

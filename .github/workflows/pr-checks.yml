@@ -1,6 +1,4 @@
 name: CI
-env:
-  PATH: ${{ github.workspace }}/.bin:${{ env.HOME }}/.proto/bin:${{ env.PATH }}
 
 on:
   push:
@@ -24,3 +22,5 @@ jobs:
 
       - name: Launch moon test
         run: proto run moon ci :test :lint
+        env:
+          PATH: ${{ github.workspace }}/.bin:${{ env.HOME }}/.proto/bin:${{ env.PATH }}

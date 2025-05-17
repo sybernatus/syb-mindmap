@@ -24,12 +24,12 @@ chmod +x "${repoDir:?}/.bin/proto" "${repoDir:?}/.bin/proto-shim"
 "${repoDir:?}/.bin/proto" install
 
 # Install inkscape
-sudo apt install --yes inkscape || true
+#sudo apt install --yes inkscape || true
 
 # Install cargo-edit
-cargo install cargo-edit --version "${cargo_edit_version}" || true
-cargo install cargo-binstall --version "${cargo_binstall_version}" || true
-cargo install dioxus-cli --version "${cargo_dioxus_cli_version}" || true
+#cargo install cargo-edit --version "${cargo_edit_version}" || true
+#cargo install cargo-binstall --version "${cargo_binstall_version}" || true
+#cargo install dioxus-cli --version "${cargo_dioxus_cli_version}" || true
 
 # Install pandoc
 curl --location "https://github.com/jgm/pandoc/releases/download/${pandoc_version}/pandoc-${pandoc_version}-linux-amd64.tar.gz" | tar -xz -C "${repoDir:?}/.bin"

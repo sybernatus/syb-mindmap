@@ -27,6 +27,10 @@ jobs:
       - name: Un-shallow the repository
         run: git fetch --prune --unshallow
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
       - name: Cache dependencies
         id: cache-deps
         uses: actions/cache@v4
@@ -42,7 +46,8 @@ jobs:
             target/
             ${{ github.workspace }}/.bin
             ${{ env.HOME }}/.proto/bin
-          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**') }}
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**', '**/yarn.lock') }}
 
       - name: Install dependencies
         run: bash/repository/setup/index.bash

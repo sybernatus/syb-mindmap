@@ -19,7 +19,7 @@ export async function loadWebview(context: vscode.ExtensionContext) {
 				vscode.Uri.joinPath(context.extensionUri, 'media', 'assets')
 			]
 		}
-	)
+	);
 
 	const _ = await listenOpenFile(panel);
 

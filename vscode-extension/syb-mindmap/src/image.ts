@@ -22,9 +22,9 @@ async function compressImageToBase64(filePath: string): Promise<string> {
 // Get the image MIME type based on the file extension
 function getMimeType(filePath: string): string {
     const ext = path.extname(filePath).toLowerCase();
-    if (ext === '.png') return MIME_TYPE.PNG;
-    if (ext === '.jpg' || ext === '.jpeg') return MIME_TYPE.JPEG;
-    if (ext === '.svg') return MIME_TYPE.SVG;
+    if (ext === '.png') { return MIME_TYPE.PNG; }
+    if (ext === '.jpg' || ext === '.jpeg') { return MIME_TYPE.JPEG; }
+    if (ext === '.svg') { return MIME_TYPE.SVG; }
     return MIME_TYPE.OCTET_STREAM;
 }
 
@@ -56,7 +56,7 @@ async function inlineImageField(node: any, baseDir: string): Promise<void> {
 }
 
 async function traverseNodeTree(node: any, baseDir: string): Promise<void> {
-    if (typeof node !== 'object' || node === null) return;
+    if (typeof node !== 'object' || node === null) { return; }
 
     await inlineImageField(node, baseDir);
 

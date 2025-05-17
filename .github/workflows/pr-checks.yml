@@ -57,4 +57,4 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
 
       - name: Launch moon test
-        run: proto run moon -- run -ns :lint :test
+        run: proto run moon -- ci :lint :test

@@ -33,13 +33,14 @@ jobs:
         with:
           path: |
             .bin
+            .moon/cache
             ~/.cargo/registry
             ~/.cargo/git
             ~/.cargo/bin
             ~/.proto 
             ${{ github.workspace }}/.bin
             ${{ env.HOME }}/.proto/bin
-          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock') }}-proto-${{ env.PROTO_VERSION }}
+          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**') }}-proto-${{ env.PROTO_VERSION }}
           restore-keys: |
             ${{ runner.os }}-deps-
 

@@ -27,9 +27,9 @@ jobs:
       - name: Un-shallow the repository
         run: git fetch --prune --unshallow
 
-      - name: Install dependencies
-        id: cache-deps
-        uses: actions/cache@v3
+      - name: Cache dependencies load
+        id: cache-deps-load
+        uses: actions/cache/restore@v4
         with:
           path: |
             .bin
@@ -41,12 +41,25 @@ jobs:
             ${{ github.workspace }}/.bin
             ${{ env.HOME }}/.proto/bin
           key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**') }}-proto-${{ env.PROTO_VERSION }}
-          restore-keys: |
-            ${{ runner.os }}-deps-
 
       - name: Install dependencies
         run: bash/repository/setup/index.bash
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+        if: steps.cache-deps-load.outputs.cache-hit != 'true'
+
+      - name: Cache dependencies save
+        id: cache-deps-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .bin
+            .moon/cache
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+            ~/.proto 
+            ${{ github.workspace }}/.bin
+            ${{ env.HOME }}/.proto/bin
+          key: ${{ steps.cache-deps-restore.outputs.cache-primary-key }}
 
       - name: Launch moon test
         run: proto run moon -- ci :test :lint

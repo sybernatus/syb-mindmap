@@ -38,6 +38,7 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
+            ~/.proto
             target/
             ${{ github.workspace }}/.bin
             ${{ env.HOME }}/.proto/bin

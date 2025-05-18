@@ -24,7 +24,9 @@ chmod +x "${repoDir:?}/.bin/proto" "${repoDir:?}/.bin/proto-shim"
 "${repoDir:?}/.bin/proto" install
 
 # Install inkscape
-sudo apt install --yes inkscape || true
+#sudo apt install --yes inkscape || true
+curl --location "https://inkscape.org/gallery/item/56343/Inkscape-ebf0e94-x86_64.AppImage" --output "${repoDir:?}/.bin/inkscape"
+chmod +x "${repoDir:?}/.bin/inkscape"
 
 # Install cargo-edit
 cargo install cargo-edit --version "${cargo_edit_version}" || true

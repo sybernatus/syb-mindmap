@@ -50,7 +50,7 @@ jobs:
             /usr/bin/inkscape
             /var/cache/apt/archives
             /usr/bin/inkscape
-          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**', '**/yarn.lock', '/etc/apt/sources.list', '**/sources.list.d/**') }}
+          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**', '**/yarn.lock') }}
 
       - name: Install dependencies
         run: bash/repository/setup/index.bash

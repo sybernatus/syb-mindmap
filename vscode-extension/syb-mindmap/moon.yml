@@ -30,7 +30,7 @@ tasks:
       cp --recursive --force $workspaceRoot/LICENSE ./LICENSE
       cp --recursive --force $workspaceRoot/target/dx/mindy-html/debug/web/public/* media
       rm --recursive --force icons/logo.png
-      inkscape $workspaceRoot/assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
+      $workspaceRoot/.bin/inkscape $workspaceRoot/assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
       version="$( cat package.json | jq --raw-output --compact-output .version )"
       code --uninstall-extension "syb-mindmap-${version}.vsix" || true
       code --update-extensions && yarn run vsce package --allow-missing-repository
@@ -50,7 +50,7 @@ tasks:
       cp --recursive --force $workspaceRoot/LICENSE ./LICENSE
       cp --recursive --force $workspaceRoot/target/dx/mindy-html/release/web/public/* media
       rm --recursive --force icons/logo.png
-      inkscape $workspaceRoot/assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
+      $workspaceRoot/.bin/inkscape $workspaceRoot/assets/logo/logo.svg --export-width=256 --export-height=256 --export-filename=icons/logo.png
       version="$( cat package.json | jq --raw-output --compact-output .version )"
       code --uninstall-extension "syb-mindmap-${version}.vsix" || true
       code --update-extensions && yarn run vsce package --allow-missing-repository

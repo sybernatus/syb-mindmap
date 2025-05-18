@@ -48,7 +48,8 @@ jobs:
             ${{ env.HOME }}/.proto/bin
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             /var/cache/apt/archives
-          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**', '**/yarn.lock') }}
+            /usr/bin/inkscape
+          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**') }}
 
       - name: Install dependencies
         run: bash/repository/setup/index.bash

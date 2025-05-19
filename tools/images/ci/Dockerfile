@@ -1,6 +1,6 @@
 FROM ubuntu:24.04 as builder
 
-ARG extra_tools="inkscape buildah"
+ARG extra_tools="inkscape buildah openjdk-17-jdk"
 
 ARG cargo_edit_version="0.13.2"
 ARG cargo_binstall_version="1.12.3"

@@ -31,4 +31,4 @@ jobs:
           echo "${{ env.HOME }}/.proto/bin" >> $GITHUB_PATH
 
       - name: Launch moon test
-        run: moon -- ci :lint :test
+        run: moon ci :lint :test

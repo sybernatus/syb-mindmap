@@ -6,7 +6,7 @@ ARG cargo_edit_version="0.13.2"
 ARG cargo_binstall_version="1.12.3"
 ARG cargo_dioxus_cli_version="0.6.3"
 ARG pandoc_version="3.6.4"
-ARG proto_version="0.49.1"
+ARG proto_version="0.47.11"
 
 # Copy setup scripts
 ENV HOME=/root

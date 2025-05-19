@@ -23,7 +23,7 @@ tasks:
       cp --recursive --force $workspaceRoot/assets/logo/* src/main/resources/logo/
       git add src/main/resources
       mkdir --parents build
-      $workspaceRoot/.bin/pandoc README.md --from markdown_mmd --to html --output build/README.html
+      pandoc README.md --from markdown_mmd --to html --output build/README.html
 
   build:
     deps:

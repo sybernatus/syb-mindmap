@@ -16,7 +16,9 @@ jobs:
     container:
       image: ghcr.io/sybernatus/syb-mindmap-ci:0.14.0
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v4
 

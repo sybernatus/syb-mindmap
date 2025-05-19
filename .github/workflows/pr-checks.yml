@@ -16,6 +16,7 @@ jobs:
     container:
       image: ghcr.io/sybernatus/syb-mindmap-ci:0.14.0
       credentials:
+        username: "sybernatus"
         password: ${{ secrets.GHCR_IMAGE_TOKEN }}
     runs-on: ubuntu-latest
     permissions:

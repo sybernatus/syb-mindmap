@@ -13,7 +13,8 @@ on:
 jobs:
   test:
     name: "Moon Test & Lint"
-
+    container:
+      image: ghcr.io/sybernatus/syb-mindmap-ci:0.14.0
     runs-on: ubuntu-latest
 
     steps:
@@ -23,34 +24,6 @@ jobs:
         run: |
           echo "${{ github.workspace }}/.bin" >> $GITHUB_PATH
           echo "${{ env.HOME }}/.proto/bin" >> $GITHUB_PATH
-
-      - name: Un-shallow the repository
-        run: git fetch --prune --unshallow
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache dependencies
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: |
-            .bin
-            .moon/cache
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            ~/.proto
-            target/
-            ${{ github.workspace }}/.bin
-            ${{ env.HOME }}/.proto/bin
-          key: ${{ runner.os }}-deps-${{ hashFiles('bash/repository/setup/index.bash','**/Cargo.lock', '.moon/cache/**') }}
-
-      - name: Install dependencies
-        run: bash/repository/setup/index.bash
-        if: steps.cache-deps.outputs.cache-hit != 'true'
 
       - name: Launch moon test
         run: proto run moon -- ci :lint :test

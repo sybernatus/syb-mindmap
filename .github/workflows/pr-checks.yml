@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+      - 'develop'
+  pull_request:
+    branches-ignore:
+      - 'main'
+      - 'develop'
+
+jobs:
+  test:
+    name: "Moon Test & Lint"
+    container:
+      image: ghcr.io/sybernatus/syb-mindmap-ci:0.14.0
+      credentials:
+        username: "sybernatus"
+        password: ${{ secrets.GHCR_IMAGE_TOKEN }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: git safe directory
+        run: git config --global --add safe.directory /__w/syb-mindmap/syb-mindmap
+
+      - name: Un-shallow the repository
+        run: git fetch --prune --unshallow
+
+      - name: Launch moon test
+        run: moon ci :lint :test

@@ -4,10 +4,7 @@ language: typescript
 dependsOn:
   - "mindy-html"
 tasks:
-  test:
-    command: ./gradlew test
-    description: Run tests
-  build:
+  build.assets:
     deps:
       - "^:build"
     description: Build the project
@@ -25,11 +22,26 @@ tasks:
       cp --recursive --force $workspaceRoot/assets/logo/logo_dark.svg src/main/resources/META-INF/pluginIcon_dark.svg
       cp --recursive --force $workspaceRoot/assets/logo/* src/main/resources/logo/
       git add src/main/resources
-      
-      $workspaceRoot/.bin/pandoc README.md --from markdown_mmd --to html --output build/README.html
+      mkdir --parents build
+      pandoc README.md --from markdown_mmd --to html --output build/README.html
+
+  build:
+    deps:
+      - "^:build"
+    description: Build the project
+    options:
+      cache: false
+    script: |
+      #!/bin/bash
+      set -e
       
       version="$( cat build.gradle.kts | grep --extended-regexp "^version =" | cut --delimiter '"' --field 2 )"
       ./gradlew buildPlugin -PpluginVersion="${version}"
+  test:
+    deps:
+      - "build.assets"
+    command: ./gradlew test
+    description: Run tests
   serve:
     options:
       runInCI: false

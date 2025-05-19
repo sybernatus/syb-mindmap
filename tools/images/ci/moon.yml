@@ -1,0 +1,40 @@
+$schema: https://moonrepo.dev/schemas/project.json
+id: tools/images/ci
+language: docker
+tasks:
+  docker.login:
+    env:
+      GHCR_USERNAME: "${GHCR_USERNAME}"
+      GHCR_IMAGE_TOKEN: "${GHCR_IMAGE_TOKEN}"
+    options:
+      runInCI: true
+    command: buildah login --username "${GHCR_USERNAME}" --password "${GHCR_IMAGE_TOKEN}" ghcr.io
+  release:
+    description: Release the CI image for the project
+    deps:
+      - docker.login
+    options:
+      cache: false
+      runFromWorkspaceRoot: true
+    script: |
+      #!/bin/bash
+      set -e
+      
+      image_name="ghcr.io/sybernatus/syb-mindmap-ci"
+      image_version="$( git tag --sort=-creatordate | head -n1 )"
+      
+      buildah bud --layers --tag "${image_name}:${image_version}" --file $workspaceRoot/tools/images/ci/Dockerfile .
+      buildah push "${image_name}:${image_version}"
+  build:
+    description: Build the CI image for the project
+    options:
+      cache: false
+      runFromWorkspaceRoot: true
+    script: |
+      #!/bin/bash
+      set -e
+      
+      image_name="ghcr.io/sybernatus/syb-mindmap-ci"
+      image_version="unstable"
+      
+      buildah bud --layers --tag "${image_name}:${image_version}" --file $workspaceRoot/tools/images/ci/Dockerfile .

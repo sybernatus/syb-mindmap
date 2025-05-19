@@ -36,7 +36,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src",
+    "lint": "eslint src --max-warnings=0",
     "test": "vscode-test",
     "deploy:debug": "code --uninstall-extension syb-mindmap-0.0.1.vsix || true && code --update-extensions && yarn run vsce package --allow-missing-repository && code --install-extension syb-mindmap-0.0.1.vsix"
   },

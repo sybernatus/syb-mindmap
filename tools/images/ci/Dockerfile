@@ -34,3 +34,6 @@ ENV PATH="${HOME}/.proto/bin:${HOME}/.proto/shims/:$PATH"
 RUN bash -c "bash <(curl -fsSL https://moonrepo.dev/install/proto.sh) '${proto_version}' --yes"
 COPY .prototools .prototools
 RUN proto install
+
+# Final env
+ENV PATH="${HOME}/.cargo/bin:${HOME}/.proto/bin:${HOME}/.proto/shims/:${PATH}"

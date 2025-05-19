@@ -28,5 +28,8 @@ jobs:
       - name: git safe directory
         run: git config --global --add safe.directory /__w/syb-mindmap/syb-mindmap
 
+      - name: Un-shallow the repository
+        run: git fetch --prune --unshallow
+
       - name: Launch moon test
         run: moon ci :lint :test

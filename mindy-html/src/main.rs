@@ -9,8 +9,6 @@ mod node_renderer;
 use crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update, mouse_zooming_update};
 use crate::listeners::webview::{init_message, WebviewListener};
 use crate::mindmap::MindmapComp;
-use base64::engine::general_purpose::STANDARD;
-use base64::Engine;
 use dioxus::prelude::*;
 use std::string::ToString;
 
@@ -35,33 +33,6 @@ fn App() -> Element {
     rsx! {
         // document::Link { rel: "stylesheet", href: MAIN_CSS }
         document::Style { "{CSS_DATA}" }
-        header {
-            class: "banner",
-            div {
-                class: "logo-container",
-                img {
-                    class: "logo",
-                    src: "data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_ICON.to_string())}",
-                }
-                h1 {
-                    class: "title",
-                    "Mindmap"
-                }
-            }
-            div {
-                class: "useful-links",
-                a {
-                    class: "menu-item",
-                    href: "https://github.com/sybernatus/syb-mindmap",
-                    target: "_blank",
-                    img {
-                        class: "github-icon",
-                        src: "data:image/svg+xml;base64,{STANDARD.encode(GITHUB_ICON.to_string())}",
-                        alt: "Github Repository",
-                    }
-                }
-            }
-        }
         div {
             class: "app",
             id: "app",

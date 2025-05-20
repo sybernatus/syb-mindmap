@@ -18,60 +18,66 @@ body {
     height: 100%;
 }
 
-#header {
-    max-height: 60px;
-}
-
 .banner {
     display: flex;
     align-items: center;
+    position: absolute;
     justify-content: space-between;
-    padding: 10px;
-    top: 0;
-    left: 0;
+    padding: 0;
+    bottom: 0.5rem;
+    left: 0.5rem;
     max-height: inherit;
+    z-index: 10;
     .logo-container {
         display: flex;
+        height: 20px;
+        padding: 5px 10px;
         align-items: center;
         justify-content: center;
-        margin-left: 10px;
+        margin-right: 10px;
         max-height: inherit;
+        border-radius: 10px;
+
+        .title {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .logo {
+            height: 20px;
+            width: auto;
+            margin-right: 10px;
+        }
     }
 }
 
 .useful-links {
     display: flex;
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    padding: 0;
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-end;
-    padding: 10px;
     border-radius: 10px;
-    margin-right: 10px;
+    margin-right: 0;
     max-height: inherit;
+    z-index: 11;
     .github-icon {
-        width: 40px;
-        height: 40px;
-        margin-right: 5px;
-        background-color: var(--button-background-color);
+        margin: auto;
+        width: 30px;
         border-radius: 10px;
     }
-}
-
-.title {
-    font-size: 24px;
-    margin: 0;
-}
-
-.logo {
-    height: 40px;
-    width: auto;
-    margin-right: 10px;
+    a {
+        height: 30px;
+    }
 }
 
 .app {
     width: 100%;
-    min-height: calc(70vh - 80px);
-    max-height: calc(95vh - 80px);
+    min-height: 50vh;
+    max-height: calc(100vh - 15px);
     display: flex;
     border: 1px solid var(--primary-border-color);
     border-radius: 10px;
@@ -85,15 +91,11 @@ body {
     top: 0.5rem;
     right: 0.5rem;
     border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem;
-    z-index: 1000;
+    padding: 0;
+    z-index: 10;
     min-width: 10px;
     button {
-        background-color: var(--button-background-color);
-        color: var(--button-text-color);
-        margin: 0.2rem;
-        border-radius: 0.4rem;
+        margin-left: 0.5rem;
     }
 }
 
@@ -156,4 +158,16 @@ svg {
     z-index: 0;
 }
 
-
+.button {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
+    margin: 0;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    &:hover {
+        background-color: #7A4F9D;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+}

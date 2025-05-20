@@ -1,6 +1,6 @@
 use crate::link_renderer::LinkRendererComp;
 use crate::node_renderer::{NodeRendererComp};
-use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION, SHEET_ZOOM};
+use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION, SHEET_ZOOM, GITHUB_ICON, MINDMAP_ICON};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
@@ -55,28 +55,59 @@ pub fn MindmapComp() -> Element {
             div {
                 class: "floating-menu",
                 button {
+                    class: "button",
                     onclick: move |_| {
                         *SHEET_ZOOM.write() = SHEET_ZOOM() - 0.1;
                     },
                     "-"
                 }
                 button {
+                    class: "button",
                     onclick: move |_| {
                         *SHEET_ZOOM.write() = SHEET_ZOOM() + 0.1;
                     },
                     "+"
                 }
                 button {
+                    class: "button",
                     onclick: move |_| {
                         *SHEET_POSITION.write() = (-mindmap_root_node_position().x as f64, -mindmap_root_node_position().y as f64);
                     },
                     "Root"
                 }
                 button {
+                    class: "button",
                     onclick: move |_| {
                         *SHEET_POSITION.write() = (0.0, 0.0);
                     },
                     "Origin"
+                }
+            }
+            div {
+                class: "banner",
+                div {
+                    class: "logo-container",
+                    img {
+                        class: "logo",
+                        src: "data:image/svg+xml;base64,{STANDARD.encode(MINDMAP_ICON.to_string())}",
+                    }
+                    h1 {
+                        class: "title",
+                        "Syb-Mindmap"
+                    }
+                }
+            }
+            div {
+                class: "useful-links",
+                a {
+                    class: "button",
+                    href: "https://github.com/sybernatus/syb-mindmap",
+                    target: "_blank",
+                    img {
+                        class: "github-icon",
+                        src: "data:image/svg+xml;base64,{STANDARD.encode(GITHUB_ICON.to_string())}",
+                        alt: "Github Repository",
+                    }
                 }
             }
             div {

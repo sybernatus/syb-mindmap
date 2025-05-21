@@ -1,6 +1,6 @@
 use crate::link_renderer::LinkRendererComp;
 use crate::node_renderer::{NodeRendererComp};
-use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION, SHEET_ZOOM, GITHUB_ICON, MINDMAP_ICON};
+use crate::{MINDMAP_BACKGROUND_DATA, SHEET_POSITION, SHEET_ZOOM, GITHUB_ICON, MINDMAP_ICON, MENU_PICTURE_ICON};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use dioxus::logger::tracing;
@@ -82,6 +82,31 @@ pub fn MindmapComp() -> Element {
                     },
                     "Origin"
                 }
+                button {
+                    class: "button",
+                    onclick: move |_| {
+                        // JS : capture #diagram sur un canvas, puis télécharge en PNG
+                        let js = r#"
+                          html2canvas(document.getElementById('mindmap-background'), { backgroundColor: null })
+                            .then(canvas => {
+                              canvas.toBlob(blob => {
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = 'diagram.png';
+                                a.click();
+                                URL.revokeObjectURL(url);
+                              });
+                            });
+                        "#;
+                        let _ = document::eval(js);
+                    },
+                    img {
+                        class: "img",
+                        src: "data:image/svg+xml;base64,{STANDARD.encode(MENU_PICTURE_ICON.to_string())}",
+                        alt: "Download as PNG",
+                    }
+                }
             }
             div {
                 class: "banner",
@@ -112,6 +137,7 @@ pub fn MindmapComp() -> Element {
             }
             div {
                 class: "mindmap-background",
+                id: "mindmap-background",
                 style: "transform: scale({SHEET_ZOOM()}) translate({SHEET_POSITION().0}px, {SHEET_POSITION().1}px);",
                 style: "min-width: {mindmap_size().width}px;",
                 style: "min-height: {mindmap_size().height}px;",

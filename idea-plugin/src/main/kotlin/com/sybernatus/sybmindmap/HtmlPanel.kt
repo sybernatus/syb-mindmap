@@ -66,6 +66,7 @@ class HtmlPanel(private val listenerDisposable: Disposable) : JPanel(BorderLayou
   private fun escapeForJavaScript(s: String): String {
     return s
       .replace("\\", "\\\\")
+      .replace("\'", "\\\'")
       .replace("\"", "\\\"")
       .replace("\n", "\\n")
       .replace("\r", "")

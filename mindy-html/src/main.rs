@@ -11,10 +11,12 @@ use crate::listeners::webview::{init_message, WebviewListener};
 use crate::mindmap::MindmapComp;
 use dioxus::prelude::*;
 use std::string::ToString;
+use dioxus::document::Script;
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
 const GITHUB_ICON: &str = include_str!("../assets/ext/github-circle.svg");
+const MENU_PICTURE_ICON: &str = include_str!("../assets/ui/picture.svg");
 const MINDMAP_ICON: &str = include_str!("../assets/logo/logo.svg");
 static SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));
 static SHEET_ZOOM: GlobalSignal<f64> = GlobalSignal::new(|| 1.0);
@@ -32,6 +34,7 @@ fn App() -> Element {
 
     rsx! {
         // document::Link { rel: "stylesheet", href: MAIN_CSS }
+        Script { src: "https://html2canvas.hertzen.com/dist/html2canvas.min.js" }
         document::Style { "{CSS_DATA}" }
         div {
             class: "app",

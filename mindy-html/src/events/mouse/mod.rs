@@ -25,6 +25,7 @@ pub fn mouse_data_update(
 pub fn mouse_position_update(
     is_dragging: Signal<bool>,
     mut last_mouse: Signal<(f64, f64)>,
+    zoom: Signal<f64>,
 ) -> impl Fn(Event<MouseData>) {
     move |event: Event<MouseData>| {
         use_future(move || {
@@ -35,9 +36,11 @@ pub fn mouse_position_update(
                         value.data.coordinates().client().x,
                         value.data.coordinates().client().y,
                     );
+                    let dx = (current_mouse.0 - last_mouse().0) / zoom();
+                    let dy = (current_mouse.1 - last_mouse().1) / zoom();
                     *SHEET_POSITION.write() = (
-                        SHEET_POSITION().0 + current_mouse.0 - last_mouse().0,
-                        SHEET_POSITION().1 + current_mouse.1 - last_mouse().1,
+                        SHEET_POSITION().0 + dx,
+                        SHEET_POSITION().1 + dy,
                     );
                     last_mouse.set(current_mouse);
                 }
@@ -56,15 +59,18 @@ pub fn mouse_dragging_disable(mut is_dragging: Signal<bool>) -> impl Fn(Event<Mo
 
 
 
-pub fn mouse_zooming_update() -> impl Fn(Event<WheelData>) {
+pub fn mouse_zooming_update(mut zoom: Signal<f64>) -> impl Fn(Event<WheelData>) {
     move |event: Event<WheelData>| {
         use_future(move || {
             let value = event.clone();
             async move {
                 if SHEET_ZOOM() < 0.01 {
                     *SHEET_ZOOM.write() = 0.01;
+                    zoom.set(0.01);
                 } else {
-                    *SHEET_ZOOM.write() = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
+                    let scale = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
+                    *SHEET_ZOOM.write() = scale;
+                    zoom.set(scale);
                 }
             }
         });

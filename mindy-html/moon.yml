@@ -40,5 +40,5 @@ tasks:
     options:
       runInCI: false
       persistent: true
-    command: dx serve
+    command: dx serve --platform web
     description: Serve the project

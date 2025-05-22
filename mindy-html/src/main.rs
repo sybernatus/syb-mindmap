@@ -29,6 +29,7 @@ fn main() {
 fn App() -> Element {
     let is_dragging = use_signal(|| false);
     let last_mouse = use_signal(|| (0.0, 0.0));
+    let zoom = use_signal(|| 0.0);
     WebviewListener::new().add_message_listener();
     init_message();
 
@@ -41,9 +42,9 @@ fn App() -> Element {
             id: "app",
             onmousedown: mouse_data_update(is_dragging, last_mouse),
             onmouseup: mouse_dragging_disable(is_dragging),
-            onmousemove: mouse_position_update(is_dragging, last_mouse),
+            onmousemove: mouse_position_update(is_dragging, last_mouse, zoom),
             onmouseout: mouse_dragging_disable(is_dragging),
-            onwheel: mouse_zooming_update(),
+            onwheel: mouse_zooming_update(zoom),
             MindmapComp { }
         }
     }

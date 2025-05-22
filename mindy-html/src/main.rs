@@ -11,7 +11,7 @@ use crate::listeners::webview::{init_message, WebviewListener};
 use crate::mindmap::MindmapComp;
 use dioxus::prelude::*;
 use std::string::ToString;
-use dioxus::document::Script;
+use dioxus::document::{Script};
 
 const CSS_DATA: &str = include_str!("../assets/main.css");
 const MINDMAP_BACKGROUND_DATA: &str = include_str!("../assets/background.svg");
@@ -30,8 +30,15 @@ fn App() -> Element {
     let is_dragging = use_signal(|| false);
     let last_mouse = use_signal(|| (0.0, 0.0));
     let zoom = use_signal(|| 0.0);
+    let mut zoom_read = use_signal(|| 0.0);
     WebviewListener::new().add_message_listener();
     init_message();
+
+    use_effect(move || {
+        let zoom = zoom();
+        zoom_read.set(zoom);
+    });
+
 
     rsx! {
         // document::Link { rel: "stylesheet", href: MAIN_CSS }
@@ -42,7 +49,7 @@ fn App() -> Element {
             id: "app",
             onmousedown: mouse_data_update(is_dragging, last_mouse),
             onmouseup: mouse_dragging_disable(is_dragging),
-            onmousemove: mouse_position_update(is_dragging, last_mouse, zoom),
+            onmousemove: mouse_position_update(is_dragging, last_mouse, zoom_read),
             onmouseout: mouse_dragging_disable(is_dragging),
             onwheel: mouse_zooming_update(zoom),
             MindmapComp { }

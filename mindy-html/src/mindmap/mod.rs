@@ -11,6 +11,8 @@ use mindy_engine::layout::size::Size;
 
 pub(crate) static MINDMAP: GlobalSignal<Mindmap> = GlobalSignal::new(|| Mindmap::default());
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[component]
 pub fn MindmapComp() -> Element {
     let mut mindmap_size: Signal<Size> = use_signal(|| Size::default());
@@ -118,7 +120,7 @@ pub fn MindmapComp() -> Element {
                     }
                     h1 {
                         class: "title",
-                        "Syb-Mindmap"
+                        "Syb-Mindmap - v{VERSION}"
                     }
                 }
             }

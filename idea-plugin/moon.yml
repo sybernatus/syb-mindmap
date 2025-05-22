@@ -28,6 +28,7 @@ tasks:
   build:
     deps:
       - "^:build"
+      - "build.assets"
     description: Build the project
     options:
       cache: false
@@ -48,7 +49,7 @@ tasks:
     description: Serve the project
     deps:
       - "build"
-    command: "./gradlew runIde --continuous"
+    command: "./gradlew clean runIde --continuous"
   publish:
     command: ./gradlew publishPlugin
     description: Publish the plugin

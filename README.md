@@ -17,12 +17,12 @@
       - [Using Command Line](#using-command-line)
     - [Intellij IDEA](#intellij-idea)
       - [Using JetBrains Marketplace](#using-jetbrains-marketplace)
-  - [Usage](#usage)
-    - [YAML format](#yaml-format)
-    - [Json format](#json-format)
-  - [Contributors](#contributors)
-  - [License](#license)
-  - [Copyright](#copyright)
+- [Usage](#usage)
+  - [YAML format](#yaml-format)
+  - [Json format](#json-format)
+- [Contributors](#contributors)
+- [License](#license)
+- [Copyright](#copyright)
 
 ## Description
 

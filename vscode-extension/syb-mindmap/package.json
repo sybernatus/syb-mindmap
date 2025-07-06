@@ -2,7 +2,7 @@
   "name": "syb-mindmap",
   "displayName": "syb-mindmap",
   "description": "mindmap as code",
-  "version": "0.17.1",
+  "version": "0.17.2",
   "publisher": "sybernatus",
   "repository": "https://github.com/sybernatus/mindy-gen",
   "icon": "icons/logo.png",

@@ -1,0 +1,30 @@
+Index: mindy-html/src/main.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>mod events;\nmod link_beziers;\nmod link_renderer;\nmod listeners;\nmod mindmap;\nmod node;\nmod node_renderer;\n\nuse crate::events::mouse::{mouse_data_update, mouse_dragging_disable, mouse_position_update, mouse_zooming_update};\nuse crate::listeners::webview::{init_message, WebviewListener};\nuse crate::mindmap::MindmapComp;\nuse dioxus::prelude::*;\nuse std::string::ToString;\nuse dioxus::document::Script;\n\nconst CSS_DATA: &str = include_str!(\"../assets/main.css\");\nconst MINDMAP_BACKGROUND_DATA: &str = include_str!(\"../assets/background.svg\");\nconst GITHUB_ICON: &str = include_str!(\"../assets/ext/github-circle.svg\");\nconst MENU_PICTURE_ICON: &str = include_str!(\"../assets/ui/picture.svg\");\nconst MINDMAP_ICON: &str = include_str!(\"../assets/logo/logo.svg\");\nstatic SHEET_POSITION: GlobalSignal<(f64, f64)> = GlobalSignal::new(|| (0.0, 0.0));\nstatic SHEET_ZOOM: GlobalSignal<f64> = GlobalSignal::new(|| 1.0);\n\nfn main() {\n    launch(App);\n}\n\n#[component]\nfn App() -> Element {\n    let is_dragging = use_signal(|| false);\n    let last_mouse = use_signal(|| (0.0, 0.0));\n    let zoom = use_signal(|| 0.0);\n    WebviewListener::new().add_message_listener();\n    init_message();\n\n    rsx! {\n        // document::Link { rel: \"stylesheet\", href: MAIN_CSS }\n        Script { src: \"https://html2canvas.hertzen.com/dist/html2canvas.min.js\" }\n        document::Style { \"{CSS_DATA}\" }\n        div {\n            class: \"app\",\n            id: \"app\",\n            onmousedown: mouse_data_update(is_dragging, last_mouse),\n            onmouseup: mouse_dragging_disable(is_dragging),\n            onmousemove: mouse_position_update(is_dragging, last_mouse, zoom),\n            onmouseout: mouse_dragging_disable(is_dragging),\n            onwheel: mouse_zooming_update(zoom),\n            MindmapComp { }\n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/mindy-html/src/main.rs b/mindy-html/src/main.rs
+--- a/mindy-html/src/main.rs	(revision 5dc409690362b6ec3ae4019f22c97218ed603000)
++++ b/mindy-html/src/main.rs	(date 1751869941450)
+@@ -29,7 +29,6 @@
+ fn App() -> Element {
+     let is_dragging = use_signal(|| false);
+     let last_mouse = use_signal(|| (0.0, 0.0));
+-    let zoom = use_signal(|| 0.0);
+     WebviewListener::new().add_message_listener();
+     init_message();
+ 
+@@ -42,9 +41,9 @@
+             id: "app",
+             onmousedown: mouse_data_update(is_dragging, last_mouse),
+             onmouseup: mouse_dragging_disable(is_dragging),
+-            onmousemove: mouse_position_update(is_dragging, last_mouse, zoom),
++            onmousemove: mouse_position_update(is_dragging, last_mouse),
+             onmouseout: mouse_dragging_disable(is_dragging),
+-            onwheel: mouse_zooming_update(zoom),
++            onwheel: mouse_zooming_update(),
+             MindmapComp { }
+         }
+     }

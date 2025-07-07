@@ -1,0 +1,53 @@
+Index: mindy-html/src/events/mouse/mod.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>use crate::{SHEET_POSITION, SHEET_ZOOM};\nuse dioxus::logger::tracing;\nuse dioxus::prelude::*;\n\npub fn mouse_data_update(\n    mut is_dragging: Signal<bool>,\n    mut last_mouse: Signal<(f64, f64)>,\n) -> impl Fn(Event<MouseData>) {\n    move |event: Event<MouseData>| {\n        use_future(move || {\n            let value = event.clone();\n            async move {\n                tracing::trace!(\"Mouse down event: {:?}\", value);\n                is_dragging.set(true);\n                last_mouse.set((\n                    value.data().coordinates().client().x,\n                    value.data().coordinates().client().y,\n                ));\n                tracing::trace!(\"Mouse down position: {:?}\", last_mouse);\n            }\n        });\n    }\n}\n\npub fn mouse_position_update(\n    is_dragging: Signal<bool>,\n    mut last_mouse: Signal<(f64, f64)>,\n    zoom: Signal<f64>,\n) -> impl Fn(Event<MouseData>) {\n    move |event: Event<MouseData>| {\n        use_future(move || {\n            let value = event.clone();\n            async move {\n                if is_dragging() {\n                    let current_mouse = (\n                        value.data.coordinates().client().x,\n                        value.data.coordinates().client().y,\n                    );\n                    let dx = (current_mouse.0 - last_mouse().0) / zoom();\n                    let dy = (current_mouse.1 - last_mouse().1) / zoom();\n                    *SHEET_POSITION.write() = (\n                        SHEET_POSITION().0 + dx,\n                        SHEET_POSITION().1 + dy,\n                    );\n                    last_mouse.set(current_mouse);\n                }\n            }\n        });\n    }\n}\n\npub fn mouse_dragging_disable(mut is_dragging: Signal<bool>) -> impl Fn(Event<MouseData>) {\n    move |_event: Event<MouseData>| {\n        use_future(move || async move {\n            is_dragging.set(false);\n        });\n    }\n}\n\n\n\npub fn mouse_zooming_update(mut zoom: Signal<f64>) -> impl Fn(Event<WheelData>) {\n    move |event: Event<WheelData>| {\n        use_future(move || {\n            let value = event.clone();\n            async move {\n                if SHEET_ZOOM() < 0.01 {\n                    *SHEET_ZOOM.write() = 0.01;\n                    zoom.set(0.01);\n                } else {\n                    let scale = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);\n                    *SHEET_ZOOM.write() = scale;\n                    zoom.set(scale);\n                }\n            }\n        });\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/mindy-html/src/events/mouse/mod.rs b/mindy-html/src/events/mouse/mod.rs
+--- a/mindy-html/src/events/mouse/mod.rs	(revision 5dc409690362b6ec3ae4019f22c97218ed603000)
++++ b/mindy-html/src/events/mouse/mod.rs	(date 1751869941459)
+@@ -25,7 +25,6 @@
+ pub fn mouse_position_update(
+     is_dragging: Signal<bool>,
+     mut last_mouse: Signal<(f64, f64)>,
+-    zoom: Signal<f64>,
+ ) -> impl Fn(Event<MouseData>) {
+     move |event: Event<MouseData>| {
+         use_future(move || {
+@@ -36,11 +35,9 @@
+                         value.data.coordinates().client().x,
+                         value.data.coordinates().client().y,
+                     );
+-                    let dx = (current_mouse.0 - last_mouse().0) / zoom();
+-                    let dy = (current_mouse.1 - last_mouse().1) / zoom();
+                     *SHEET_POSITION.write() = (
+-                        SHEET_POSITION().0 + dx,
+-                        SHEET_POSITION().1 + dy,
++                        SHEET_POSITION().0 + current_mouse.0 - last_mouse().0,
++                        SHEET_POSITION().1 + current_mouse.1 - last_mouse().1,
+                     );
+                     last_mouse.set(current_mouse);
+                 }
+@@ -59,18 +56,15 @@
+ 
+ 
+ 
+-pub fn mouse_zooming_update(mut zoom: Signal<f64>) -> impl Fn(Event<WheelData>) {
++pub fn mouse_zooming_update() -> impl Fn(Event<WheelData>) {
+     move |event: Event<WheelData>| {
+         use_future(move || {
+             let value = event.clone();
+             async move {
+                 if SHEET_ZOOM() < 0.01 {
+                     *SHEET_ZOOM.write() = 0.01;
+-                    zoom.set(0.01);
+                 } else {
+-                    let scale = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
+-                    *SHEET_ZOOM.write() = scale;
+-                    zoom.set(scale);
++                    *SHEET_ZOOM.write() = SHEET_ZOOM() + -value.data.delta().strip_units().y.clamp(-0.1, 0.1);
+                 }
+             }
+         });

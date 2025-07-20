@@ -58,6 +58,7 @@ pub fn MindmapComp() -> Element {
                 class: "floating-menu",
                 button {
                     class: "button",
+                    title: "Zoom out",
                     onclick: move |_| {
                         *SHEET_ZOOM.write() = SHEET_ZOOM() - 0.1;
                     },
@@ -65,6 +66,7 @@ pub fn MindmapComp() -> Element {
                 }
                 button {
                     class: "button",
+                    title: "Zoom in",
                     onclick: move |_| {
                         *SHEET_ZOOM.write() = SHEET_ZOOM() + 0.1;
                     },
@@ -72,6 +74,7 @@ pub fn MindmapComp() -> Element {
                 }
                 button {
                     class: "button",
+                    title: "Center on root node",
                     onclick: move |_| {
                         *SHEET_POSITION.write() = (-mindmap_root_node_position().x as f64, -mindmap_root_node_position().y as f64);
                     },
@@ -79,6 +82,7 @@ pub fn MindmapComp() -> Element {
                 }
                 button {
                     class: "button",
+                    title: "Center on origin",
                     onclick: move |_| {
                         *SHEET_POSITION.write() = (0.0, 0.0);
                     },
@@ -86,6 +90,7 @@ pub fn MindmapComp() -> Element {
                 }
                 button {
                     class: "button",
+                    title: "Capture diagram",
                     onclick: move |_| {
                         // JS : capture #diagram sur un canvas, puis télécharge en PNG
                         let js = r#"
@@ -130,6 +135,7 @@ pub fn MindmapComp() -> Element {
                     class: "button",
                     href: "https://github.com/sybernatus/syb-mindmap",
                     target: "_blank",
+                    title: "Github repository",
                     img {
                         class: "github-icon",
                         src: "data:image/svg+xml;base64,{STANDARD.encode(GITHUB_ICON.to_string())}",

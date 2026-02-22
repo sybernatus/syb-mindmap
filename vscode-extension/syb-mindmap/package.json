@@ -41,19 +41,19 @@
     "deploy:debug": "code --uninstall-extension syb-mindmap-0.0.1.vsix || true && code --update-extensions && yarn run vsce package --allow-missing-repository && code --install-extension syb-mindmap-0.0.1.vsix"
   },
   "dependencies": {
-    "sharp": "^0.34.4",
-    "yaml": "^2.8.1"
+    "sharp": "^0.34.5",
+    "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.99.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@typescript-eslint/parser": "^8.46.2",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.109.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
-    "eslint": "^9.38.0",
-    "typescript": "^5.9.3",
-    "@vscode/vsce": "^3.0.0"
+    "@vscode/vsce": "^3.7.1",
+    "eslint": "^9.39.3",
+    "typescript": "^5.9.3"
   }
 }

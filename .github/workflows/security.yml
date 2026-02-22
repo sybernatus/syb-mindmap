@@ -1,0 +1,21 @@
+name: Security Audit
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+  pull_request:
+    branches-ignore:
+      - 'main'
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  cargo-deny:
+    name: "cargo deny"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check

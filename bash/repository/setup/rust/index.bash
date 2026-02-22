@@ -10,7 +10,7 @@ mkdir --parents "${repoDir:?}/.bin"
 # >>>> INPUT
 cargo_edit_version="${1:-"0.13.2"}"
 cargo_binstall_version="${2:-"1.12.3"}"
-cargo_dioxus_cli_version="${3:-"0.6.3"}"
+cargo_dioxus_cli_version="${3:-"0.7.3"}"
 # <<<< INPUT
 
 # >>>> SCRIPT

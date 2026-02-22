@@ -12,5 +12,5 @@ extraTools="${1:-"inkscape"}"
 # <<<< INPUT
 
 # >>>> SCRIPT
-sudo apt get intall --yes ${extraTools}
+sudo apt-get install --yes ${extraTools}
 # <<<< SCRIPT

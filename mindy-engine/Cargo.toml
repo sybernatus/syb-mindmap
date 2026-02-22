@@ -2,13 +2,14 @@
 name = "mindy-engine"
 version = "0.18.0"
 edition = "2024"
+license = "Apache-2.0"
 
 [dependencies]
 gloo-timers = "0.3.0"
 serde = { version = "1.0.228", features = ["derive"] }
 tracing = "0.1.41"
 serde_json = "1.0.145"
-serde_yaml = "0.9.34+deprecated"
+serde_yml = "0.0"
 
 [lib]
 name = "mindy_engine"

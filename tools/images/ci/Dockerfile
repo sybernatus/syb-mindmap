@@ -4,9 +4,9 @@ ARG extra_tools="inkscape buildah openjdk-17-jdk"
 
 ARG cargo_edit_version="0.13.2"
 ARG cargo_binstall_version="1.12.3"
-ARG cargo_dioxus_cli_version="0.6.3"
+ARG cargo_dioxus_cli_version="0.7.3"
 ARG pandoc_version="3.6.4"
-ARG proto_version="0.47.11"
+ARG proto_version="0.49.1"
 
 # Copy setup scripts
 ENV HOME=/root

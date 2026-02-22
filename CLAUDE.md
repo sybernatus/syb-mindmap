@@ -26,7 +26,7 @@ moon.yml                   # Moonrepo root (tasks: setup, release, deploy)
 
 | Crate | Description | Key deps |
 |---|---|---|
-| `mindy-engine` | Parser + data model (YAML/JSON → tree) | serde, serde_yaml, serde_json, tracing |
+| `mindy-engine` | Parser + data model (YAML/JSON → tree) | serde, serde_yml, serde_json, tracing |
 | `mindy-html` | Dioxus WASM frontend | dioxus 0.7 (web), mindy-engine, web-sys |
 
 ### Moonrepo Tasks

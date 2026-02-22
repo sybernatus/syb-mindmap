@@ -54,6 +54,6 @@
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.38.0",
     "typescript": "^5.9.3",
-    "vsce": "^1.97.0"
+    "@vscode/vsce": "^3.0.0"
   }
 }

@@ -47,6 +47,9 @@ moon.yml                   # Moonrepo root (tasks: setup, release, deploy)
 | vscode-extension/syb-mindmap | `build` | build WASM release + package `.vsix` |
 | vscode-extension/syb-mindmap | `serve.debug` | build.debug + install extension + open VSCode |
 | vscode-extension/syb-mindmap | `serve` | build + install extension + open VSCode |
+| vscode-extension/syb-mindmap | `publish` | `vsce publish` (requires `build`) |
+| idea-plugin | `build` | `./gradlew buildPlugin` |
+| idea-plugin | `publish` | `./gradlew publishPlugin` (requires `build`) |
 
 ## Common Commands
 
@@ -84,9 +87,137 @@ cargo test                       # All workspace tests
 ### Release
 
 ```bash
-moon run :release                # Tag and release
-moon run :deploy                 # Promote to main
+moon run :release                # Bump version, generate changelog, tag and push
+moon run :deploy                 # Promote latest tag to main (force-push)
 ```
+
+### Publish
+
+```bash
+moon run "vscode-extension/syb-mindmap:publish"   # Publish .vsix to VSCode Marketplace
+moon run "idea-plugin:publish"                     # Publish to JetBrains Marketplace
+```
+
+## Release & Deploy Workflow
+
+### Release (`moon run :release`)
+
+Exécuté depuis `develop`. Effectue dans l'ordre :
+
+1. `git pull` — synchronise la branche locale
+2. `git cliff --bump` — calcule la prochaine version (semver) depuis les commits conventionnels et génère les changelogs :
+   - `.github/CHANGELOG.md`
+   - `vscode-extension/syb-mindmap/CHANGELOG.md`
+   - `idea-plugin/CHANGELOG.md`
+3. Bumpe la version dans tous les manifestes :
+   - `vscode-extension/syb-mindmap/package.json` via `yarn version`
+   - `idea-plugin/build.gradle.kts` via `sed`
+   - `Cargo.toml` (workspace) via `cargo set-version`
+4. Commit `chore: release tag 'x.y.z'` + tag git `x.y.z`
+5. `git push && git push --tags`
+
+```bash
+moon run :release
+```
+
+### Deploy (`moon run :deploy`)
+
+Promeut la dernière release sur `main`. Effectue dans l'ordre :
+
+1. Récupère le tag le plus récent (`git describe --tags --abbrev=0`)
+2. `git checkout main`
+3. `git reset --hard <tag>` — aligne `main` sur le tag
+4. `git push --force-with-lease` — force-push sécurisé
+
+```bash
+moon run :deploy
+```
+
+> **Ordre obligatoire** : toujours faire `release` avant `deploy`.
+
+### Publish VSCode (`moon run "vscode-extension/syb-mindmap:publish"`)
+
+Dépend de `build` (build WASM release + package `.vsix`). Lance :
+
+```bash
+yarn run vsce publish
+```
+
+**Variable d'environnement requise** : le token PAT VSCode Marketplace doit être
+configuré via `vsce` (stocké dans le keychain ou via `VSCE_PAT`).
+
+### Publish IntelliJ (`moon run "idea-plugin:publish"`)
+
+Dépend de `build` (`./gradlew buildPlugin`). Lance :
+
+```bash
+./gradlew publishPlugin
+```
+
+**Variables d'environnement requises** :
+
+| Variable | Usage |
+|---|---|
+| `CERTIFICATE_CHAIN` | Certificat de signature du plugin |
+| `PRIVATE_KEY` | Clé privée pour la signature |
+| `PRIVATE_KEY_PASSWORD` | Mot de passe de la clé privée |
+| `IDEA_PUBLISH_TOKEN` | Token JetBrains Marketplace |
+
+### Séquence complète d'une release
+
+```bash
+# 1. Depuis develop, après merge des features
+moon run :release
+
+# 2. Promouvoir sur main
+moon run :deploy
+
+# 3. Publier les extensions (nécessite les variables d'env ci-dessus)
+moon run "vscode-extension/syb-mindmap:publish"
+moon run "idea-plugin:publish"
+```
+
+## Release & Deploy Workflow
+
+### Release (`moon run :release`)
+
+Exécuté depuis `develop`. Effectue dans l'ordre :
+
+1. `git pull` — synchronise la branche locale
+2. `git cliff --bump` — calcule la prochaine version (semver) depuis les commits conventionnels et génère les changelogs :
+   - `.github/CHANGELOG.md`
+   - `vscode-extension/syb-mindmap/CHANGELOG.md`
+   - `idea-plugin/CHANGELOG.md`
+3. Bumpe la version dans tous les manifestes :
+   - `vscode-extension/syb-mindmap/package.json` via `yarn version`
+   - `idea-plugin/build.gradle.kts` via `sed`
+   - `Cargo.toml` (workspace) via `cargo set-version`
+4. Commit `chore: release tag 'x.y.z'` + tag git `x.y.z`
+5. `git push && git push --tags`
+
+### Deploy (`moon run :deploy`)
+
+Promeut la dernière release sur `main` :
+
+1. Récupère le tag le plus récent (`git describe --tags --abbrev=0`)
+2. `git checkout main`
+3. `git reset --hard <tag>`
+4. `git push --force-with-lease`
+
+> Toujours faire `release` avant `deploy`.
+
+### Publish
+
+```bash
+moon run "vscode-extension/syb-mindmap:publish"   # vsce publish → VSCode Marketplace
+moon run "idea-plugin:publish"                     # gradlew publishPlugin → JetBrains Marketplace
+```
+
+Variables d'env requises pour IntelliJ : `CERTIFICATE_CHAIN`, `PRIVATE_KEY`, `PRIVATE_KEY_PASSWORD`, `IDEA_PUBLISH_TOKEN`.
+
+Séquence complète : `release` → `deploy` → `publish` (VSCode + IntelliJ).
+
+Voir `CONTRIBUTING.md` pour la documentation complète.
 
 ## Development Workflow
 

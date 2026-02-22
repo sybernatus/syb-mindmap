@@ -43,14 +43,27 @@ moon.yml                   # Moonrepo root (tasks: setup, release, deploy)
 | mindy-html | `build` | `dx bundle --release --platform web --target release` |
 | mindy-html | `serve` | `dx serve --platform web` |
 | mindy-html | `test` | `cargo test` |
+| vscode-extension/syb-mindmap | `build.debug` | build WASM debug + package `.vsix` |
+| vscode-extension/syb-mindmap | `build` | build WASM release + package `.vsix` |
+| vscode-extension/syb-mindmap | `serve.debug` | build.debug + install extension + open VSCode |
+| vscode-extension/syb-mindmap | `serve` | build + install extension + open VSCode |
 
 ## Common Commands
 
 ### Develop
 
 ```bash
-moon run mindy-html:serve        # Dev server (hot reload)
+moon run mindy-html:serve        # Dev server navigateur (hot reload, http://localhost:8080)
 moon run mindy-html:build.debug  # Debug WASM build
+```
+
+### Tester dans VSCode
+
+```bash
+# Build debug + installe l'extension + ouvre VSCode
+moon run "vscode-extension/syb-mindmap:serve.debug"
+
+# Puis dans VSCode : Ctrl+Shift+P → "Syb Mindmap"
 ```
 
 ### Build

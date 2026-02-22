@@ -27,8 +27,11 @@ intellij {
     plugins.set(listOf(/* Plugin Dependencies */))
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 tasks {
-    // Set the JVM compatibility versions
     withType<JavaCompile> {
         sourceCompatibility = "17"
         targetCompatibility = "17"

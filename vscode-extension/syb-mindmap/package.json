@@ -7,7 +7,7 @@
   "repository": "https://github.com/sybernatus/mindy-gen",
   "icon": "icons/logo.png",
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.109.0"
   },
   "categories": [
     "Other"

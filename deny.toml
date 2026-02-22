@@ -1,7 +1,6 @@
 [advisories]
 version = 2
-vulnerability = "deny"
-unmaintained = "warn"
+unmaintained = "all"
 yanked = "warn"
 
 [licenses]
@@ -17,6 +16,7 @@ allow = [
     "CC0-1.0",
     "MPL-2.0",
     "Zlib",
+    "Unicode-3.0",
 ]
 
 [bans]

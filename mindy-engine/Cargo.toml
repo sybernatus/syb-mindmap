@@ -2,6 +2,7 @@
 name = "mindy-engine"
 version = "0.18.0"
 edition = "2024"
+license = "Apache-2.0"
 
 [dependencies]
 gloo-timers = "0.3.0"

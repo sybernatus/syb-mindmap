@@ -1,8 +1,7 @@
-# https://moonrepo.dev/docs/config/workspace
-$schema: 'https://moonrepo.dev/schemas/workspace.json'
+$schema: https://moonrepo.dev/schemas/workspace.json
 projects:
   globs:
-    - '**/moon.yml'
+  - '**/moon.yml'
 vcs:
-  manager: 'git'
-  defaultBranch: 'develop'
+  defaultBranch: develop
+  client: git

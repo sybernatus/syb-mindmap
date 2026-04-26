@@ -2,13 +2,13 @@ $schema: https://moonrepo.dev/schemas/project.json
 id: root
 tasks:
   setup:
-    command: "bash/repository/setup/index.bash"
+    command: bash/repository/setup/index.bash
   release:
-    command: "bash/repository/release/index.bash"
+    command: bash/repository/release/index.bash
   deploy:
     options:
       cache: false
-    script: |
+    script: |-
       #!/bin/bash
       set -e
 

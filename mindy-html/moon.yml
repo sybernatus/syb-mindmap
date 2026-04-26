@@ -2,13 +2,13 @@ $schema: https://moonrepo.dev/schemas/project.json
 id: mindy-html
 language: rust
 dependsOn:
-  - "mindy-engine"
+- mindy-engine
 tasks:
   test:
     command: cargo test
     description: Run tests
     env:
-      RUST_BACKTRACE: "1"
+      RUST_BACKTRACE: '1'
   build.assets:
     options:
       cache: false
@@ -23,20 +23,20 @@ tasks:
     options:
       cache: false
     deps:
-      - build.assets
+    - build.assets
     command: dx build --platform web
     description: Build the project in debug mode
   build:
     options:
       cache: false
     deps:
-      - build.debug
-      - build.assets
+    - build.debug
+    - build.assets
     command: dx bundle --release --platform web --target release
     description: Build the project
   serve:
     deps:
-      - build.assets
+    - build.assets
     options:
       runInCI: false
       persistent: true

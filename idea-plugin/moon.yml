@@ -2,18 +2,18 @@ $schema: https://moonrepo.dev/schemas/project.json
 id: idea-plugin
 language: typescript
 dependsOn:
-  - "mindy-html"
+- mindy-html
 tasks:
   build.assets:
     deps:
-      - "^:build"
+    - ^:build
     description: Build the project
     options:
       cache: false
     script: |
       #!/bin/bash
       set -e
-      
+
       mkdir --parents src/main/resources/html/
       mkdir --parents src/main/resources/html/logo
       rm --recursive --force src/main/resources/html/*
@@ -24,23 +24,22 @@ tasks:
       git add src/main/resources
       mkdir --parents build
       pandoc README.md --from markdown_mmd --to html --output build/README.html
-
   build:
     deps:
-      - "^:build"
-      - "build.assets"
+    - ^:build
+    - build.assets
     description: Build the project
     options:
       cache: false
     script: |
       #!/bin/bash
       set -e
-      
+
       version="$( cat build.gradle.kts | grep --extended-regexp "^version =" | cut --delimiter '"' --field 2 )"
       ./gradlew buildPlugin -PpluginVersion="${version}"
   test:
     deps:
-      - "build.assets"
+    - build.assets
     command: ./gradlew test
     description: Run tests
   serve:
@@ -48,13 +47,13 @@ tasks:
       runInCI: false
     description: Serve the project
     deps:
-      - "build"
-    command: "./gradlew clean runIde --continuous"
+    - build
+    command: ./gradlew clean runIde --continuous
   publish:
     command: ./gradlew publishPlugin
     description: Publish the plugin
     deps:
-      - "build"
+    - build
   stop:
     description: Stop gradlew daemon
-    command: "./gradlew --stop"
+    command: ./gradlew --stop

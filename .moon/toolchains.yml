@@ -1,0 +1,17 @@
+$schema: https://moonrepo.dev/schemas/toolchain.json
+node:
+  version: '20'
+javascript:
+  packageManager: yarn
+  dedupeOnLockfileChange: true
+  inferTasksFromScripts: false
+  syncProjectWorkspaceDependencies: false
+yarn:
+  version: 1.22.19
+rust:
+  version: 1.86.0
+  bins: []
+  components:
+  - cargo
+  syncToolchainConfig: false
+  targets: []

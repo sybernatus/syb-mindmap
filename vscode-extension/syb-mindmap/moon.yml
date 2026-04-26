@@ -2,7 +2,7 @@ $schema: https://moonrepo.dev/schemas/project.json
 id: vscode-extension/syb-mindmap
 language: typescript
 dependsOn:
-  - "mindy-html"
+- mindy-html
 tasks:
   test:
     options:
@@ -16,14 +16,14 @@ tasks:
     description: Run tests
   build.debug:
     deps:
-      - "^:build.debug"
+    - ^:build.debug
     description: Build the project
     options:
       cache: false
     script: |
       #!/bin/bash
       set -e
-      
+
       yarn
       mkdir --parents media
       rm -rf media/*
@@ -36,14 +36,14 @@ tasks:
       code --update-extensions && yarn run vsce package --allow-missing-repository
   build:
     deps:
-      - "^:build"
+    - ^:build
     description: Build the project
     options:
       cache: false
     script: |
       #!/bin/bash
       set -e
-      
+
       yarn
       mkdir --parents media
       rm -rf media/*
@@ -60,7 +60,7 @@ tasks:
       cache: false
     description: Serve the project
     deps:
-      - "build.debug"
+    - build.debug
     script: |
       #!/bin/bash
       set -e
@@ -72,14 +72,14 @@ tasks:
       cache: false
     description: Serve the project
     deps:
-      - "build"
+    - build
     script: |
-        #!/bin/bash
-        set -e
-        version="$( cat package.json | jq --raw-output --compact-output .version )"
-        code --install-extension "syb-mindmap-${version}.vsix" && code
+      #!/bin/bash
+      set -e
+      version="$( cat package.json | jq --raw-output --compact-output .version )"
+      code --install-extension "syb-mindmap-${version}.vsix" && code
   publish:
     command: yarn run vsce publish
     description: Publish the project
     deps:
-      - "build"
+    - build

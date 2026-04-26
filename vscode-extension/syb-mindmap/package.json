@@ -40,9 +40,12 @@
     "test": "vscode-test",
     "deploy:debug": "code --uninstall-extension syb-mindmap-0.0.1.vsix || true && code --update-extensions && yarn run vsce package --allow-missing-repository && code --install-extension syb-mindmap-0.0.1.vsix"
   },
+  "resolutions": {
+    "serialize-javascript": ">=7.0.5"
+  },
   "dependencies": {
     "sharp": "^0.34.5",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.3"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",

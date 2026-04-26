@@ -111,7 +111,7 @@ impl Mindmap {
     /// # Returns
     /// * `Result<Self, impl Error>` - The decoded mindmap
     pub fn from_yaml_string(yaml_str: String) -> Result<Self, impl Error> {
-        match serde_yml::from_str::<Self>(yaml_str.as_str()) {
+        match serde_yaml::from_str::<Self>(yaml_str.as_str()) {
             Ok(mindmap) => {
                 tracing::trace!("Mindmap from_yaml_str - {:?}", mindmap);
                 let mindmap = Mindmap::new(mindmap.metadata, mindmap.data);

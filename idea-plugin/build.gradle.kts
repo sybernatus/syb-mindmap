@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.sybernatus"
-version = "0.18.2"
+version = "0.18.3"
 
 repositories {
     mavenCentral()
